@@ -76,7 +76,7 @@
     }
   },
   "logo": {
-    "light": "/logo/lalals-logo-light.svg",
+    "light": "/logo/lalals-logo-light.png",
     "dark": "/logo/dark.svg"
   },
   "navbar": {
