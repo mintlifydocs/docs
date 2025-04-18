@@ -1,0 +1,1181 @@
+{
+  "openapi": "3.1.0",  
+  "info": {
+    "title": "Lalals API",
+    "version": "1.0.0",
+    "description": "API for retrieving conversion details by ID."
+  },
+  "servers": [
+    {
+      "url": "https://api.lalals.com/api/public/v1",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/byId": {
+      "get": {
+        "summary": "Get Conversion by ID",
+        "description": "Retrieve details of a conversion using `task_id` or `conversion_id`.",
+        "parameters": [
+          {
+            "name": "conversionType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["MUSIC_AI", "COVER", "TEXT_TO_SPEECH", "VOICE_CHANGER", "EXTRACTION"]
+            },
+            "description": "The type of Conversion you want to get your details from.",
+            "example": "MUSIC_AI"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Task ID associated with the conversion. \n **Note:** You must provide either `task_id` or `conversion_id`, but not both.",
+            "example": "12345678-abcd-1234-efgh-567890abcdef"
+          },
+          {
+            "name": "conversion_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Conversion ID to fetch details. \n **Note:** You must provide either `task_id` or `conversion_id`, but not both.",
+            "example": "87654321-dcba-4321-hgfe-098765fedcba" 
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "conversion": {
+                      "type": "object",
+                      "properties": {
+                        "task_id": {
+                          "type": "string"
+                        },
+                        "conversion_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "status_msg": {
+                          "type": "string"
+                        },
+                        "audio_url": {
+                          "type": "string"
+                        },
+                        "conversion_cost": {
+                          "type": "number"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "lyrics": {
+                          "type": "string"
+                        },
+                        "music_style": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "conversion": {
+                    "task_id": "12345678-abcd-1234-efgh-567890abcdef",
+                    "conversion_id": "87654321-dcba-4321-hgfe-098765fedcba",
+                    "status": "COMPLETED",
+                    "status_msg": "Conversion successful",
+                    "audio_url": "https://lalals.s3.amazonaws.com/audiofile.mp3",
+                    "conversion_cost": 1.25,
+                    "title": "Generated Song",
+                    "lyrics": "[Verse 1]...",
+                    "music_style": "Pop",
+                    "createdAt": "2025-01-01T12:00:00Z",
+                    "updatedAt": "2025-01-01T12:05:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "message": "Invalid request parameters"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/searchVoices": {
+      "get": {
+        "summary": "Get Voices by Name",
+        "description": "Search for voices to get their voice ID by their names using a query string.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The search string to filter voices by name"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Maximum number of voices per page"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Page number for pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "voices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voice_id": {
+                            "type": "string"
+                          },
+                          "voice_name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "voices": [
+                    {
+                      "voice_id": "JustinBieber",
+                      "voice_name": "Justin Bieber"
+                    }
+                  ],
+                  "limit": 20,
+                  "page": 0,
+                  "total": 2
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/getAllVoices": {
+      "get": {
+        "summary": "Get All Voices",
+        "description": "Fetch all available voices with their IDs.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20
+            },
+            "description": "Maximum number of voices per page"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Page number for pagination"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "voices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voice_id": {
+                            "type": "string"
+                          },
+                          "voice_name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "voices": [
+                    {
+                      "voice_id": "00126f62-1f31-434a-abc6-a5e958a737e3",
+                      "voice_name": "Joji"
+                    },
+                    {
+                      "voice_id": "0031cf05-6d3d-4c15-9115-d8236590b957",
+                      "voice_name": "Amy Winehouse"
+                    }
+                  ],
+                  "limit": 20,
+                  "page": 0,
+                  "total": 3108
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/MusicAI": {
+      "post": {
+        "summary": "Generate Custom Music",
+        "description": "Generate custom music using lyrics, style, or a text prompt.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "A natural language prompt for music generation"
+                  },
+                  "music_style": {
+                    "type": "string",
+                    "description": "Style of music to generate (e.g., Rock, Pop)"
+                  },
+                  "lyrics": {
+                    "type": "string",
+                    "description": "Custom lyrics for the generated music"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "Voice model to convert generated audio"
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "URL for callback upon completion"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "task_id": {
+                      "type": "string"
+                    },
+                    "conversion_id_1": {
+                      "type": "string"
+                    },
+                    "conversion_id_2": {
+                      "type": "string"
+                    },
+                    "eta": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Message published to queue",
+                  "task_id": "4fc2cdba-005d-4d14-a208-5fb02a2809da",
+                  "conversion_id_1": "05092d5c-f8b1-4c96-a4a3-45bc00de6268",
+                  "conversion_id_2": "52fcd3b6-3925-41ed-b4c6-aee17a29e40b",
+                  "eta": 154
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Insufficient credit balance"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+"/VoiceChanger": {
+  "post": {
+    "summary": "Convert voice from audio file or URL",
+    "description": "Convert the voice from an audio file or URL to a different voice.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_url": {
+                "type": "string",
+                "description": "URL of audio file to process",
+                "example": "https://example.com/audio.wav"
+              },
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Audio file to upload"
+              },
+              "voice_id": {
+                "type": "string",
+                "description": "Voice model ID",
+                "example": "demo-voice-id"
+              },
+              "remove_background": {
+                "type": "integer",
+                "description": "1 to remove background noise, 0 to keep",
+                "default": 0,
+                "enum": [0, 1]
+              },
+              "pitch": {
+                "type": "integer",
+                "description": "Pitch adjustment (-12 to +12)",
+                "default": 0,
+                "minimum": -12,
+                "maximum": 12
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL",
+                "example": "https://example.com/callback"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successful response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "task_id": { "type": "string" },
+                "conversion_id": { "type": "string" },
+                "eta": { "type": "integer" }
+              }
+            },
+            "example": {
+              "success": true,
+              "task_id": "84038e1e-3687-4f7a-9c55-692754b125ee",
+              "conversion_id": "e3631817-165d-4f17-a7e2-7008d200ff3e",
+              "eta": 22
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "The file could not be downloaded from the provided URL"
+            }
+          }
+        }
+      },
+      "402": {
+        "description": "Payment Required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "Insufficient credit balance"
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "Both audio_url and audio_file cannot be None"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "Internal Server Error"
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "ApiKeyAuth": []
+      }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "Python",
+        "source": "import requests\n\nurl = \"https://api.lalals.com/api/public/v1/VoiceChanger\"\n\npayload = {\n    \"audio_url\": \"<string>\",\n    \"voice_id\": \"<string>\",\n    \"remove_background\": \"<int>\",\n    \"pitch\": \"<int>\",\n    \"webhook_url\": \"<string>\"\n}\n\n# For file upload instead of URL:\n# files = {'audio_file': open('filepath', 'rb')}\n\nheaders = {\n    \"Authorization\": \"<API Key>\"\n}\n\nresponse = requests.post(url, data=payload, headers=headers)\n# For file upload:\n# response = requests.post(url, data=payload, files=files, headers=headers)\n\nprint(response.text)"
+      },
+      {
+        "lang": "PHP",
+        "source": "<?php\n$url = \"https://api.lalals.com/api/public/v1/VoiceChanger\";\n$apiKey = \"<API_KEY>\";\n\n// For URL-based processing\n$data = [\n    \"audio_url\" => \"<AUDIO_URL>\",\n    \"voice_id\" => \"<VOICE_ID>\",\n    \"remove_background\" => 0, // 0 or 1\n    \"pitch\" => 0, // -12 to +12\n    \"webhook_url\" => \"<WEBHOOK_URL>\"\n];\n\n// For file upload (uncomment and replace)\n// $data = [\"voice_id\" => \"<VOICE_ID>\"];\n// $file = new CURLFile('path/to/audio.wav', 'audio/wav', 'audio_file');\n\n$headers = [\n    \"Authorization: \" . $apiKey\n];\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_POST, 1);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\n// For file upload:\n// curl_setopt($ch, CURLOPT_POSTFIELDS, array_merge($data, ['audio_file' => $file]));\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;\n?>"
+      },
+      {
+        "lang": "Go",
+        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.lalals.com/api/public/v1/VoiceChanger\"\n\tapiKey := \"<API_KEY>\"\n\n\t// For URL-based processing\n\tpayload := map[string]string{\n\t\t\"audio_url\":        \"<AUDIO_URL>\",\n\t\t\"voice_id\":        \"<VOICE_ID>\",\n\t\t\"remove_background\": \"0\",\n\t\t\"pitch\":           \"0\",\n\t\t\"webhook_url\":     \"<WEBHOOK_URL>\",\n\t}\n\n\t// For file upload (uncomment and replace)\n\t// file, _ := os.Open(\"audio.wav\")\n\t// defer file.Close()\n\n\tbody := &bytes.Buffer{}\n\twriter := multipart.NewWriter(body)\n\n\tfor key, val := range payload {\n\t\t_ = writer.WriteField(key, val)\n\t}\n\n\t// For file upload:\n\t// part, _ := writer.CreateFormFile(\"audio_file\", \"audio.wav\")\n\t// io.Copy(part, file)\n\twriter.Close()\n\n\treq, _ := http.NewRequest(\"POST\", url, body)\n\treq.Header.Set(\"Authorization\", apiKey)\n\treq.Header.Set(\"Content-Type\", writer.FormDataContentType())\n\n\tclient := &http.Client{}\n\tresp, err := client.Do(req)\n\tif err != nil {\n\t\tfmt.Println(err)\n\t\treturn\n\t}\n\tdefer resp.Body.Close()\n\n\tresponse, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(response))\n}"
+      },
+      {
+        "lang": "Java",
+        "source": "import okhttp3.*;\n\nimport java.io.File;\nimport java.io.IOException;\n\npublic class VoiceChanger {\n    public static void main(String[] args) throws IOException {\n        String url = \"https://api.lalals.com/api/public/v1/VoiceChanger\";\n        String apiKey = \"<API_KEY>\";\n\n        // For URL-based processing\n        RequestBody requestBody = new FormBody.Builder()\n                .add(\"audio_url\", \"<AUDIO_URL>\")\n                .add(\"voice_id\", \"<VOICE_ID>\")\n                .add(\"remove_background\", \"0\")\n                .add(\"pitch\", \"0\")\n                .add(\"webhook_url\", \"<WEBHOOK_URL>\")\n                .build();\n\n        // For file upload (uncomment and replace)\n        /*\n        File audioFile = new File(\"audio.wav\");\n        RequestBody requestBody = new MultipartBody.Builder()\n                .setType(MultipartBody.FORM)\n                .addFormDataPart(\"voice_id\", \"<VOICE_ID>\")\n                .addFormDataPart(\"audio_file\", \"audio.wav\",\n                        RequestBody.create(audioFile, MediaType.parse(\"audio/wav\")))\n                .build();\n        */\n\n        Request request = new Request.Builder()\n                .url(url)\n                .post(requestBody)\n                .header(\"Authorization\", apiKey)\n                .build();\n\n        OkHttpClient client = new OkHttpClient();\n        try (Response response = client.newCall(request).execute()) {\n            System.out.println(response.body().string());\n        }\n    }\n}"
+      }
+    ]
+  }
+},  
+"/Cover": {
+      "post": {
+        "summary": "Convert audio to cover song",
+        "description": "Convert an audio file or URL into a cover song using a different voice.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audio_url": {
+                    "type": "string",
+                    "description": "URL of an audio file to process. Either audio_url or audio_file must be provided.",
+                    "default": ""
+                  },
+                  "audio_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Audio file to upload and process. Either audio_file or audio_url must be provided."
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "The ID of the voice model to use for voice transformation.",
+                    "required": true
+                  },
+                  "pitch": {
+                    "type": "integer",
+                    "description": "Pitch adjustment for the voice. Range from -12 to 12. Default: 0",
+                    "default": 0
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "A URL where the result will be sent once processing is completed.",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "task_id": {
+                      "type": "string"
+                    },
+                    "conversion_id": {
+                      "type": "string"
+                    },
+                    "eta": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "task_id": "b329c0df-b2eb-4914-b707-4d7dce53577e",
+                  "conversion_id": "16708396-da86-4a9e-9b90-66f774cc2382",
+                  "eta": 33
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "The file could not be downloaded from the provided URL"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Insufficient credit balance"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Both audio_url and audio_file cannot be None"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/TextToSpeech": {
+  "post": {
+    "summary": "Convert text to speech using a specified voice",
+    "description": "Synthesize speech from text with voice and gender customization, plus optional webhook callback.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Text to convert to speech"
+              },
+              "voice_id": {
+                "type": "string",
+                "description": "Voice model ID"
+              },
+              "gender": {
+                "type": "string",
+                "description": "Gender preference for the voice (e.g., \"male\", \"female\")"
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing"
+              }
+            },
+            "required": ["text", "voice_id", "gender"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully initiated TTS conversion",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "task_id": { "type": "string" },
+                "conversion_id": { "type": "string" },
+                "eta": { "type": "integer" }
+              },
+              "example": {
+                "success": true,
+                "task_id": "72eed5b0-8652-4bb4-9a95-eb0ad4850f12",
+                "conversion_id": "648a6823-b2a4-47b3-801e-f452c567ae6f",
+                "eta": 19
+              }
+            }
+          }
+        }
+      },
+      "402": {
+        "description": "Payment Required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Insufficient credit balance" }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Missing required field: text" }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "ApiKeyAuth": []
+      }
+    ]
+  }
+}, 
+"/Extraction": {
+  "post": {
+    "summary": "Extract data from an audio file or URL",
+    "description": "Initiate an audio extraction task using a file upload or a URL with optional webhook callback.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_url": {
+                "type": "string",
+                "description": "The URL of the audio file to extract from.",
+                "example": "https://www.youtube.com/watch?v=jGflUbPQfW8"
+              },
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Audio file to upload and process."
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing.",
+                "example": "http://webhook.lalals.com"
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully initiated audio extraction",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "task_id": { "type": "string" },
+                "conversion_id": { "type": "string" },
+                "eta": { "type": "integer" }
+              },
+              "example": {
+                "success": true,
+                "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
+                "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
+                "eta": 11
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "ApiKeyAuth": []
+      }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "Python",
+        "source": "import requests\n\nurl = \"https://api.lalals.com/api/public/v1/Extraction\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\nfiles = {\n    \"audio_file\": open(\"path_to_audio.mp3\", \"rb\")\n}\ndata = {\n    \"audio_url\": \"\",\n    \"webhook_url\": \"http://webhook.lalals.com\"\n}\n\nresponse = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
+      },
+      {
+        "lang": "PHP",
+        "source": "$curl = curl_init();\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => 'https://api.lalals.com/api/public/v1/Extraction',\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_POST => true,\n    CURLOPT_POSTFIELDS => [\n        'audio_url' => '',\n        'webhook_url' => 'http://webhook.lalals.com',\n        'audio_file' => new CURLFile('path_to_audio.mp3')\n    ],\n    CURLOPT_HTTPHEADER => [\n        'Authorization: <API_KEY>',\n        'Accept: application/json'\n    ]\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;"
+      },
+      {
+        "lang": "Go",
+        "source": "package main\n\nimport (\n    \"bytes\"\n    \"fmt\"\n    \"io\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n)\n\nfunc main() {\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n\n    file, _ := os.Open(\"path_to_audio.mp3\")\n    part, _ := writer.CreateFormFile(\"audio_file\", \"path_to_audio.mp3\")\n    io.Copy(part, file)\n    writer.WriteField(\"webhook_url\", \"http://webhook.lalals.com\")\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", \"https://api.lalals.com/api/public/v1/Extraction\", body)\n    req.Header.Add(\"Authorization\", \"<API_KEY>\")\n    req.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    responseBody, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(responseBody))\n}"
+      },
+      {
+        "lang": "Java",
+        "source": "import okhttp3.*;\nimport java.io.File;\nimport java.io.IOException;\n\npublic class LalalsExtraction {\n    public static void main(String[] args) throws IOException {\n        OkHttpClient client = new OkHttpClient();\n\n        MediaType mediaType = MediaType.parse(\"audio/mpeg\");\n        File file = new File(\"path_to_audio.mp3\");\n\n        RequestBody fileBody = RequestBody.create(file, mediaType);\n        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)\n            .addFormDataPart(\"audio_file\", file.getName(), fileBody)\n            .addFormDataPart(\"webhook_url\", \"http://webhook.lalals.com\")\n            .build();\n\n        Request request = new Request.Builder()\n            .url(\"https://api.lalals.com/api/public/v1/Extraction\")\n            .post(requestBody)\n            .addHeader(\"Authorization\", \"<API_KEY>\")\n            .addHeader(\"Accept\", \"application/json\")\n            .build();\n\n        Response response = client.newCall(request).execute();\n        System.out.println(response.body().string());\n    }\n}"
+      }
+    ]
+  }
+},
+"/stems_separation": {
+  "post": {
+    "summary": "Separate stems data from an audio file or URL",
+    "description": "Initiate an stems separation task using a file upload or a URL with optional webhook callback.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_url": {
+                "type": "string",
+                "description": "The URL of the audio file to separate stems from.",
+                "example": "https://www.youtube.com/watch?v=jGflUbPQfW8"
+              },
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Audio file to upload and process."
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing.",
+                "example": "http://webhook.lalals.com"
+              }
+            },
+            "required": []
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully initiated stems separation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "task_id": { "type": "string" },
+                "conversion_id": { "type": "string" },
+                "eta": { "type": "integer" }
+              },
+              "example": {
+                "success": true,
+                "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
+                "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
+                "eta": 11
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "ApiKeyAuth": []
+      }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "Python",
+        "source": "import requests\n\nurl = \"https://api.lalals.com/api/public/v1/stems_separation\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\nfiles = {\n    \"audio_file\": open(\"path_to_audio.mp3\", \"rb\")\n}\ndata = {\n    \"audio_url\": \"\",\n    \"webhook_url\": \"http://webhook.lalals.com\"\n}\n\nresponse = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
+      },
+      {
+        "lang": "PHP",
+        "source": "$curl = curl_init();\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => 'https://api.lalals.com/api/public/v1/stems_separation',\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_POST => true,\n    CURLOPT_POSTFIELDS => [\n        'audio_url' => '',\n        'webhook_url' => 'http://webhook.lalals.com',\n        'audio_file' => new CURLFile('path_to_audio.mp3')\n    ],\n    CURLOPT_HTTPHEADER => [\n        'Authorization: <API_KEY>',\n        'Accept: application/json'\n    ]\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;"
+      },
+      {
+        "lang": "Go",
+        "source": "package main\n\nimport (\n    \"bytes\"\n    \"fmt\"\n    \"io\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n)\n\nfunc main() {\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n\n    file, _ := os.Open(\"path_to_audio.mp3\")\n    part, _ := writer.CreateFormFile(\"audio_file\", \"path_to_audio.mp3\")\n    io.Copy(part, file)\n    writer.WriteField(\"webhook_url\", \"http://webhook.lalals.com\")\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", \"https://api.lalals.com/api/public/v1/stems_separation\", body)\n    req.Header.Add(\"Authorization\", \"<API_KEY>\")\n    req.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    responseBody, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(responseBody))\n}"
+      },
+      {
+        "lang": "Java",
+        "source": "import okhttp3.*;\nimport java.io.File;\nimport java.io.IOException;\n\npublic class LalalsStemSeparation {\n    public static void main(String[] args) throws IOException {\n        OkHttpClient client = new OkHttpClient();\n\n        MediaType mediaType = MediaType.parse(\"audio/mpeg\");\n        File file = new File(\"path_to_audio.mp3\");\n\n        RequestBody fileBody = RequestBody.create(file, mediaType);\n        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)\n            .addFormDataPart(\"audio_file\", file.getName(), fileBody)\n            .addFormDataPart(\"webhook_url\", \"http://webhook.lalals.com\")\n            .build();\n\n        Request request = new Request.Builder()\n            .url(\"https://api.lalals.com/api/public/v1/stems_separation\")\n            .post(requestBody)\n            .addHeader(\"Authorization\", \"<API_KEY>\")\n            .addHeader(\"Accept\", \"application/json\")\n            .build();\n\n        Response response = client.newCall(request).execute();\n        System.out.println(response.body().string());\n    }\n}"
+      }
+    ]
+  }
+}
+
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  }
+}

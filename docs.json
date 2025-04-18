@@ -7,7 +7,7 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "logo/Lalals Logo Main.svg",
   "navigation": {
     "tabs": [
       {
@@ -35,21 +35,34 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "API Documentation",
         "groups": [
           {
             "group": "API Documentation",
             "pages": [
-              "api-reference/introduction"
+              "api-documentation/introduction",
+              "api-documentation/sample-post-request",
+              "api-documentation/sample-get-request"
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Conversion Endpoints",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-documentation/endpoint/MusicAI",
+              "api-documentation/endpoint/cover",
+              "api-documentation/endpoint/voicetovoice",
+              "api-documentation/endpoint/TextToSpeech",
+              "api-documentation/endpoint/extraction",
+              "api-documentation/endpoint/stemsseparation",
+              "api-documentation/endpoint/denoise"
+            ]
+          },
+          {
+            "group": "Helper Endpoints",
+            "pages": [
+              "api-documentation/endpoint/getById",
+              "api-documentation/endpoint/searchVoices",
+              "api-documentation/endpoint/getAllVoices"
             ]
           }
         ]
@@ -59,37 +72,27 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "href": "http://localhost:3000/api-documentation/introduction",          
           "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/lalals-logo-light.png",
-    "dark": "/logo/dark.svg"
+    "light": "logo/Lalals Header.jpg",
+    "dark": "logo/Lalals Header White.png"
   },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Lalals",
+        "href": "https://lalals.com"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "API Key",
+      "href": "https://lalals.com/api"
     }
   },
   "footer": {
