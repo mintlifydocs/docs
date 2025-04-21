@@ -13,7 +13,10 @@
       {
         "tab": "Lalals API",
         "pages": [
-          "introduction"
+          "index/introduction",
+          "index/createapiaccount",
+          "index/keystocastle",
+          "index/yourfirstrequest"
       ]
       },
       {
