@@ -1,0 +1,131 @@
+---
+title: MusicAI
+---
+
+Create music powered by AI using just a prompt, lyrics, or a defined music style.
+
+**MusicAI** lets you generate original music compositions with minimal input. Whether you're a developer looking to integrate music into an app, a content creator seeking custom tracks, or a musician experimenting with ideas — this tool lets you:
+
+- 🎙 Compose songs with your own lyrics and style
+- 🎶 Generate complete tracks using only a short description (prompt)
+- 🧠 Apply custom AI voice stylings
+- 🔁 Get instant feedback or receive results via webhook
+
+MusicAI is built for speed, flexibility, and creativity. Submit your request and receive professional-sounding tracks in minutes.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /MusicAI
+```
+
+This is the primary endpoint for initiating music generation requests.
+
+---
+
+## ▶️ Sample Output
+
+Listen to a real sample output:
+
+<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Sample Audio</a>
+
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to play around — set your payload, hit send, and listen to the generated results live.
+
+You can test both `lyrics`-based and `prompt`-based generation methods.
+
+> 🎁 Don’t forget: you’ll receive two unique tracks for every request — explore both to find your perfect match!
+---
+
+## 🛠️ Request Parameters
+
+| Parameter       | Type    | Required | Description                                                                 |
+|----------------|---------|----------|-----------------------------------------------------------------------------|
+| `prompt`       | String  | Optional | A natural language prompt for music generation                              |
+| `music_style`  | String  | Optional | Style of music to generate (e.g., Rock, Pop)                                |
+| `lyrics`       | String  | Optional | Custom lyrics to be used in the music                                       |
+| `voice_id`     | String  | Optional | Voice model to apply on generated music                                     |
+| `webhook_url`  | String  | Optional | Webhook URL to receive a callback with the final audio result               |
+
+---
+
+## 🎚️ Modes of Generation
+
+### 🎵 Custom Mode
+Supply both `lyrics` and `music_style` to craft a personalized track with your exact preferences.
+
+### ✍️ Prompt Mode
+Just provide a `prompt`, and let the model generate everything for you — from lyrics to melody and instrumentation.
+
+> `voice_id` and `webhook_url` work in both modes for more control and automation.
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = "https://api.lalals.com/api/public/v1/MusicAI"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>",
+    "Content-Type": "application/json"
+}
+payload = {
+    "prompt": "song about a football match between Man City and Arsenal",
+    "music_style": "Pop",
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "lyrics": "",
+    "voice_id": "Drake"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+  "success": true,
+  "message": "Message published to queue",
+  "task_id": "4fc2cdba-005d-4d14-a208-5fb02a2809da",
+  "conversion_id_1": "05092d5c-f8b1-4c96-a4a3-45bc00de6268",
+  "conversion_id_2": "52fcd3b6-3925-41ed-b4c6-aee17a29e40b",
+  "eta": 154
+}
+```
+
+---
+
+## 📞 Webhook Response
+
+When the generation is complete, you'll receive the following at your webhook URL:
+
+```json
+{
+  "success": true,
+  "task_id": "fa4f1423-46ab-4d2c-b0a2-e872d67a069d",
+  "conversion_id": "0241b88a-79d1-4cea-aee1-575bd39a71ac",
+  "audio_url": "https://lalals.s3.us-east-1.amazonaws.com/projects/0241b88a-79d1-4cea-aee1-575bd39a71ac.wav",
+  "conversion_cost": 0.06621379591836735,
+  "title": "Under the Floodlights",
+  "lyrics": "[Verse 1]...",
+  "music_style": "Pop",
+  "prompt": "song about a football match between Man City and Arsenal"
+}
+```
+
+> 🎧 Note: You will receive **two separate webhook responses**, each with a unique `conversion_id` for the two generated versions.
+

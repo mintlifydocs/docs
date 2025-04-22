@@ -11,21 +11,55 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Lalals API",
-        "pages": [
-          "index/introduction",
-          "index/createapiaccount",
-          "index/keystocastle",
-          "index/yourfirstrequest"
-      ]
-      },
-      {
         "tab": "API Documentation",
         "groups": [
           {
             "group": "API Documentation",
             "pages": [
-              "api-documentation/introduction",
+                "api-documentation/index/introduction",
+                "api-documentation/index/createapiaccount",
+                "api-documentation/index/keystocastle",
+                "api-documentation/index/yourfirstrequest"
+              ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "api-documentation/index/authentication",
+              "api-documentation/index/pricing",
+              "api-documentation/index/statuscheck",
+              "api-documentation/index/webhook"
+            ]
+          },
+          {
+            "group": "Keep in mind",
+            "pages": [
+              "api-documentation/utilities/error",
+              "api-documentation/utilities/ratelimits",
+              "api-documentation/utilities/finalnotes"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "api-documentation/conversions/musicai",
+              "api-documentation/conversions/voicechanger",
+              "api-documentation/conversions/cover",
+              "api-documentation/conversions/texttospeech",
+              "api-documentation/conversions/soundgenerator",
+              "api-documentation/conversions/extraction",
+              "api-documentation/conversions/stemseparation",
+              "api-documentation/conversions/denoise",
+              "api-documentation/conversions/deecho",
+              "api-documentation/conversions/dereverb",
+              "api-documentation/conversions/fileconvert",
+              "api-documentation/conversions/audiotranscription",
+              "api-documentation/conversions/keyextractbpm"
+            ]
+          },
+          {
+            "group": "Sample Request Endpoints",
+            "pages": [
               "api-documentation/sample-post-request",
               "api-documentation/sample-get-request"
             ]

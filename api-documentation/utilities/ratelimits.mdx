@@ -1,0 +1,47 @@
+---
+title: Rate Limits
+---
+
+Rate limiting is essential to ensure fair use of the API and to prevent abuse. The API enforces rate limits to ensure that resources are distributed equitably and to maintain system stability.
+
+Below is a detailed breakdown of the rate limits for various API endpoints and best practices for avoiding issues related to exceeding the limits.
+
+---
+
+## ⏱️ Rate Limits by Endpoint
+
+### 🎼 **MusicAI**
+- **Limit**: Maximum **10 parallel** audio creation requests at a time.
+- **What This Means**: You can send up to 10 concurrent requests for music generation. If you need more requests, you will have to wait for some to complete before sending additional ones.
+
+### 🔄 **Other Conversions**
+- **Limit**: Maximum **60 conversions per minute**.
+- **What This Means**: You are allowed to process up to 60 audio conversions (like extracting vocals, converting formats, etc.) every minute. After that, further requests will be throttled until the next minute.
+
+### 📥 **GetConversionById**
+- **Limit**: Maximum **200 API calls per minute**.
+- **What This Means**: You can retrieve conversion details (like status, audio URLs, etc.) up to 200 times per minute. Exceeding this limit will result in throttling.
+
+---
+
+## 💡 Best Practices to Avoid Exceeding Rate Limits
+
+To ensure smooth and uninterrupted usage of the API, follow these guidelines:
+
+- **Batch Requests**: For endpoints like **GetConversionById**, consider batching multiple requests together instead of making individual calls. This reduces the overall number of API calls.
+- **Backoff Mechanism**: Implement a backoff mechanism in your app to automatically wait before retrying failed requests. This can help avoid hitting the rate limits too often.
+- **Monitor Usage**: Keep track of your API usage and ensure that you stay within the limits. Many clients can implement alerts to notify them when their usage approaches the rate limits.
+- **Throttling**: In case your application exceeds the limit, the API may throttle the requests. It is essential to handle these throttled responses gracefully and retry after some time.
+
+---
+
+## 🛑 What Happens When You Exceed Rate Limits?
+
+When the rate limits are exceeded, the API will return a **429 Too Many Requests** error. This indicates that you have hit the limit for that specific endpoint.
+
+**Example Response:**
+```json
+{
+  "error": "Rate Limit Exceeded",
+  "message": "You have exceeded the maximum number of requests allowed. Please try again later."
+}

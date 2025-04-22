@@ -1,5 +1,5 @@
 ---
-title: The First Time 😏
+title: The First Time 
 ---
 
 Welcome to your **first experience** with the Lalals API — where creativity meets technology 🎶🤖
@@ -39,19 +39,6 @@ We’ll use the `MUSIC_AI` feature with the following endpoint:
 POST https://api.lalals.com/api/public/v1/MusicAI
 ```
 
-> 🧠 Replace `<api_key>` with your actual API Key from your Lalals dashboard.
-
-
-## 🖧 Webhook Integration
-
-To get notified when the music generation is complete, we recommend setting up a webhook. This allows you to receive the URL of the generated song directly.
-> 🔗 Set the `webhook_url` to an endpoint on your server — this is where Lalals will notify you once the generation is done.
-
-> **Tip:** If you can’t use a webhook (e.g., code running on a user device), you can retrive the result through our helper endpoint [get conversion by id](/api-documentation/endpoint/CheckStatus) instead.
-
-
-
-
 ---
 
 ## 📬 Example Request
@@ -67,6 +54,18 @@ curl -X 'POST' \
   "webhook_url": "http://webhook.yourwebsite.com"
 }'
 ```
+
+> 🧠 Replace `<api_key>` with your actual API Key from your Lalals dashboard.
+
+
+## 🖧 Webhook Integration
+
+To get notified when the music generation is complete, we recommend setting up a webhook. This allows you to receive the URL of the generated song directly.
+> 🔗 Set the `webhook_url` to an endpoint on your server — this is where Lalals will notify you once the generation is done.
+
+> **Tip:** If you can’t use a webhook (e.g., code running on a user device), you can retrive the result through our helper endpoint [get conversion by id](/api-documentation/endpoint/CheckStatus) instead.
+
+
 
 ---
 
