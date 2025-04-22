@@ -1,0 +1,142 @@
+---
+title: Voice Changer
+openapi: 'POST /VoiceChanger'
+---
+
+Convert the voice from an audio file or URL to a different voice using AI voice models.
+
+The **VoiceChanger** endpoint provides real-time voice transformation by modifying the pitch, removing background noise, and converting the voice using a selected model. Ideal for creative content, dubbing, or personalized audio experiences.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /VoiceChanger
+```
+
+This is the primary endpoint for initiating voice conversion tasks.
+
+
+---
+
+## ▶️ Sample Output
+
+Listen to a voice-changed output:
+
+<audio controls>
+  <source src="/audiosamples/voicechanger_sample.wav" type="audio/wav" />
+  Your browser does not support the audio element.
+</audio>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/VoiceChanger) to test it live. Upload a sample, pick a voice, and experience real-time voice transformation.
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter           | Type        | Required | Description                                                                 |
+|--------------------|-------------|----------|-----------------------------------------------------------------------------|
+| `audio_url`        | `String`    | Optional | URL of the audio file to convert. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`       | `UploadFile`| Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `voice_id`         | `String`    | ✅ Yes   | Voice model to convert the audio into.                                      |
+| `remove_background`| `Integer`   | Optional | Set to `1` to remove background noise. Default is `0`.                      |
+| `pitch`            | `Integer`   | Optional | Adjust pitch between -12 and 12 semitones. Default is `0`.                  |
+| `webhook_url`      | `String`    | Optional | Callback URL for async response.                                            |
+
+> 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
+
+---
+
+## 📤 Sample Request
+
+### 🐚 cURL
+
+```bash
+curl -X POST "https://api.lalals.com/api/public/v1/VoiceChanger" \
+-H "accept: multipart/form-data" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
+-F "voice_id=Drake" \
+-F "remove_background=0" \
+-F "pitch=0" \
+-F "webhook_url=http://webhook.lalals.com"
+```
+
+### 🐍 Python
+
+```python
+import requests
+
+url = "https://api.lalals.com/api/public/v1/VoiceChanger"
+headers = {
+    "accept": "multipart/form-data",
+    "Authorization": "<api_key>"
+}
+
+input_audio_file = open("{path_to_your_audio_file}", "rb")
+payload = {
+    "audio_url": "",
+    "voice_id": "Drake",
+    "pitch": 0,
+    "remove_background": 0,
+    "webhook_url": "http://abc.requestcatcher.com/test",
+}
+
+response = requests.post(url, headers=headers, data=payload, files={"audio_file": input_audio_file})
+print(response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## 📥 Sample Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true,
+  "task_id": "84038e1e-3687-4f7a-9c55-692754b125ee",
+  "conversion_id": "e3631817-165d-4f17-a7e2-7008d200ff3e",
+  "eta": 22
+}
+```
+
+---
+
+## ❌ Common Errors
+
+- **400 Bad Request**: Invalid or missing input file.
+- **402 Payment Required**: Your credit balance is insufficient.
+- **422 Unprocessable Entity**: No `audio_url` or `audio_file` provided.
+- **500 Internal Server Error**: Something went wrong on our end.
+
+---
+
+## 📞 Webhook Response
+
+When the voice conversion completes, the webhook receives:
+
+```json
+{
+  "success": true,
+  "task_id": "84038e1e-3687-4f7a-9c55-692754b125ee",
+  "conversion_id": "e3631817-165d-4f17-a7e2-7008d200ff3e",
+  "audio_url": "https://lalals.s3.us-east-1.amazonaws.com/conversions/converted_audio.wav",
+  "conversion_cost": 0.031,
+  "voice_id": "Drake",
+  "pitch": 0
+}
+```
+
+You can download or stream the result directly from the `audio_url`.
+
+---
+
+## Payload and Request Formation
