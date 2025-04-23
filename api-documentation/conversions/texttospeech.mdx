@@ -1,0 +1,121 @@
+---
+title: Text To Speech
+openapi: 'POST /TextToSpeech'
+---
+
+Convert any given text into realistic speech using your chosen voice and gender.
+
+**TextToSpeech** enables you to instantly bring written content to life. Perfect for:
+
+- 🔈 Creating dynamic audio narrations or voiceovers
+- 🧑‍💼 Choosing gender-specific voice stylings for different contexts
+- 🔁 Using webhooks for real-time integration with your workflows
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /TextToSpeech
+```
+
+Use this endpoint to initiate a new text-to-speech audio generation.
+
+---
+
+## ▶️ Sample Output
+
+Prompt: A Sherlock Holmes passage with a male AI voice.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [TextToSpeech Endpoint Explorer](/api-documentation/endpoint/TextToSpeech) to try your own text samples.
+
+> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter      | Type    | Required | Description                                      |
+|----------------|---------|----------|--------------------------------------------------|
+| `text`         | String  | Yes      | The text content to convert to speech            |
+| `voice_id`     | String  | Yes      | Voice model to apply for synthesis               |
+| `gender`       | String  | Yes      | Gender of the voice ("male", "female")           |
+| `webhook_url`  | String  | No       | URL to receive a callback with generated audio   |
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = 'https://api.lalals.com/api/public/v1/TextToSpeech'
+api_key = '<api_key>'
+
+headers = {
+    "accept": "application/json",
+    "Authorization": api_key,
+    "Content-Type": "application/json"
+}
+
+data = {
+    'text': "The character Sherlock Holmes first appeared in print in 1887's A Study in Scarlet...",
+    'voice_id': 'Drake',
+    'gender': 'male',
+    'webhook_url': 'http://abc.requestcatcher.com/test'
+}
+
+response = requests.post(url, json=data, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+  "success": true,
+  "task_id": "72eed5b0-8652-4bb4-9a95-eb0ad4850f12",
+  "conversion_id": "648a6823-b2a4-47b3-801e-f452c567ae6f",
+  "eta": 19
+}
+```
+
+---
+
+## 📞 Webhook Response
+
+Once audio is ready, your webhook will receive:
+
+```json
+{
+  "success": true,
+  "task_id": "str",
+  "conversion_id": "str",
+  "audio_url": "str",
+  "conversion_cost": float
+}
+```
+
+> 🎧 Use the `audio_url` to listen or download your synthesized speech.
+
+---
+
+## ❌ Error Codes
+
+- **402 Payment Required**: Not enough credits to process the request
+- **422 Unprocessable Entity**: Invalid or missing fields
+- **500 Internal Server Error**: Server-side failure during processing
+
+
+## Payload and Request Formation

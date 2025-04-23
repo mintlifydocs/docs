@@ -1,0 +1,135 @@
+---
+title: Cover Song
+openapi: 'POST /Cover'
+---
+
+Convert an audio file or URL into a cover song using a different voice model.
+
+The **Cover Song** endpoint recreates a vocal track using AI voice models, allowing for pitch manipulation and background audio transformation. Perfect for covers, remixes, or experimenting with different vocal styles.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /Cover
+```
+
+This is the primary endpoint for initiating cover song conversion tasks.
+
+---
+
+## ▶️ Sample Output
+
+Listen to a real sample output:
+
+Prompt: original track reimagined with a different vocal style.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/conversions/cover_sample.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/cover_sample.mp3" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Cover Endpoint Explorer](/api-documentation/endpoint/Cover) to test it live. Upload your audio, select a voice model, and hear the transformation.
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter        | Type         | Required | Description                                                                 |
+|------------------|--------------|----------|-----------------------------------------------------------------------------|
+| `audio_url`      | `String`     | Optional | URL of the audio file to convert. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `voice_id`       | `String`     | ✅ Yes   | Voice model to convert the audio into.                                     |
+| `pitch`          | `Integer`    | Optional | Adjust pitch between -12 and 12 semitones. Default is `0`.                 |
+| `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
+
+> 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
+
+---
+
+## 📤 Sample Request
+
+### 🐚 cURL
+
+```bash
+curl -X POST "https://api.lalals.com/api/public/v1/Cover" \
+-H "accept: multipart/form-data" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
+-F "voice_id=Drake" \
+-F "pitch=0" \
+-F "webhook_url=http://webhook.lalals.com"
+```
+
+### 🐍 Python
+
+```python
+import requests
+
+url = "https://api.lalals.com/api/public/v1/Cover"
+headers = {
+    "accept": "multipart/form-data",
+    "Authorization": "<api_key>"
+}
+
+input_audio_file = open("{path_to_your_audio_file}", "rb")
+payload = {
+    "audio_url": "",
+    "voice_id": "Drake",
+    "pitch": 0,
+    "webhook_url": "http://abc.requestcatcher.com/test",
+}
+
+response = requests.post(url, headers=headers, data=payload, files={"audio_file": input_audio_file})
+print(response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## 📥 Sample Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true,
+  "task_id": "b329c0df-b2eb-4914-b707-4d7dce53577e",
+  "conversion_id": "16708396-da86-4a9e-9b90-66f774cc2382",
+  "eta": 33
+}
+```
+
+---
+
+## ❌ Common Errors
+
+- **400 Bad Request**: The file could not be downloaded from the provided URL.
+- **402 Payment Required**: Your credit balance is insufficient.
+- **422 Unprocessable Entity**: No `audio_url` or `audio_file` provided.
+- **500 Internal Server Error**: Something went wrong on our end.
+
+---
+
+## 📞 Webhook Response
+
+When the cover conversion completes, the webhook receives:
+
+```json
+{
+  "success": true,
+  "task_id": "762b304d-00b8-401b-b62a-99c5f972dffb",
+  "conversion_id": "fa318903-41af-460b-9ab4-86d2c77bea46",
+  "audio_url": "https://lalals.s3.us-east-1.amazonaws.com/projects/fa318903-41af-460b-9ab4-86d2c77bea46.wav",
+  "conversion_cost": 0.0327,
+  "conversion_duration": 113.57
+}
+```
+
+You can download or stream the result directly from the `audio_url`.
+
+## Payload and Request Formation

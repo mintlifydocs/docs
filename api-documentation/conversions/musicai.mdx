@@ -1,5 +1,6 @@
 ---
 title: Music AI
+openapi: 'POST /VoiceChanger'
 ---
 
 Create music powered by AI using just a prompt, lyrics, or a defined music style.
@@ -30,8 +31,10 @@ This is the primary endpoint for initiating music generation requests.
 
 Listen to a real sample output:
 
-<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Sample Audio</a>
+Prompt: a song about greenery, nature and forest.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3">Your browser does not support the audio playback.</audio>
 
+<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Download Audio</a>
 
 ---
 
@@ -130,3 +133,6 @@ When the generation is complete, you'll receive the following at your webhook UR
 
 > 🎧 Note: You will receive **two separate webhook responses**, each with a unique `conversion_id` for the two generated versions.
 
+---
+
+## Payload and Request Formation

@@ -1167,348 +1167,342 @@
     ]
   }
 },
-"/deecho": {
-  "post": {
-    "summary": "Remove echo from an audio file or URL",
-    "description": "Initiate an echo removal task using either an audio URL or file upload with optional webhook callback.",
-    "requestBody": {
-      "required": true,
-      "content": {
-        "multipart/form-data": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "audio_url": {
-                "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
-                "example": "https://www.youtube.com/watch?v=example123"
+  "/deecho": {
+    "post": {
+      "summary": "Remove echo from an audio file or URL",
+      "description": "Initiate an echo removal task using either an audio URL or file upload with optional webhook callback.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "audio_url": {
+                  "type": "string",
+                  "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                  "example": "https://www.youtube.com/watch?v=example123"
+                },
+                "audio_file": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Audio file to upload and process directly."
+                },
+                "webhook_url": {
+                  "type": "string",
+                  "description": "Callback URL for async processing results.",
+                  "example": "http://your-webhook-url.com/callback"
+                }
               },
-              "audio_file": {
-                "type": "string",
-                "format": "binary",
-                "description": "Audio file to upload and process directly."
-              },
-              "webhook_url": {
-                "type": "string",
-                "description": "Callback URL for async processing results.",
-                "example": "http://your-webhook-url.com/callback"
+              "anyOf": [
+                { "required": ["audio_url"] },
+                { "required": ["audio_file"] }
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successfully initiated echo removal",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean" },
+                  "task_id": { "type": "string" },
+                  "conversion_id": { "type": "string" },
+                  "eta": { "type": "integer" },
+                  "credit_estimate": { "type": "number", "format": "float" }
+                },
+                "example": {
+                  "success": true,
+                  "task_id": "deecho789",
+                  "conversion_id": "conv456",
+                  "eta": -1,
+                  "credit_estimate": 100.1
+                }
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Internal Server Error" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "security": [
+        { "ApiKeyAuth": [] }
+      ],
+      "x-codeSamples": [
+        {
+          "lang": "Python",
+          "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/deecho\"\nheaders = {\"Authorization\": \"<API_KEY>\", \"accept\": \"application/json\"}\n\n# Option 1: URL\nresponse = requests.post(url, headers=headers, json={\"audio_url\": \"https://example.com/audio.m4a\"})\n\n# Option 2: File Upload\nwith open(\"audio.m4a\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, files=files)\n\nprint(response.json())"
+        },
+        {
+          "lang": "PHP",
+          "source": "<?php\n$url = 'https://api.example.com/api/public/v1/deecho';\n$headers = ['Authorization: <API_KEY>', 'accept: application/json'];\n\n// Option 1: URL\n$data = ['audio_url' => 'https://example.com/audio.m4a'];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = ['audio_file' => new CURLFile('audio.m4a')];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+        },
+        {
+          "lang": "Go",
+          "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/deecho\"\n\ttoken := \"<API_KEY>\"\n\n\t// Option 1: URL\n\tpayload := bytes.NewBuffer([]byte(`{\"audio_url\":\"https://example.com/audio.m4a\"}`))\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
+        },
+        {
+          "lang": "Java",
+          "source": "import java.io.*;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\nimport org.apache.commons.io.FileUtils;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        String apiUrl = \"https://api.example.com/api/public/v1/deecho\";\n        String apiKey = \"<API_KEY>\";\n\n        // Option 1: URL\n        String jsonInput = \"{\\\"audio_url\\\": \\\"https://example.com/audio.m4a\\\"}\";\n        HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();\n        con.setRequestMethod(\"POST\");\n        con.setRequestProperty(\"Authorization\", apiKey);\n        con.setRequestProperty(\"Content-Type\", \"application/json\");\n        con.setDoOutput(true);\n        try(OutputStream os = con.getOutputStream()) {\n            byte[] input = jsonInput.getBytes(\"utf-8\");\n            os.write(input, 0, input.length);\n        }\n        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), \"utf-8\"))) {\n            StringBuilder response = new StringBuilder();\n            String responseLine;\n            while ((responseLine = br.readLine()) != null) {\n                response.append(responseLine.trim());\n            }\n            System.out.println(response.toString());\n        }\n\n        // Option 2: File Upload\n        String boundary = Long.toHexString(System.currentTimeMillis());\n        con = (HttpURLConnection) new URL(apiUrl).openConnection();\n        con.setRequestMethod(\"POST\");\n        con.setRequestProperty(\"Authorization\", apiKey);\n        con.setRequestProperty(\"Content-Type\", \"multipart/form-data; boundary=\" + boundary);\n        con.setDoOutput(true);\n        try (OutputStream out = con.getOutputStream();\n             PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, \"UTF-8\"), true)) {\n            File file = new File(\"audio.m4a\");\n            writer.append(\"--\" + boundary).append(\"\\r\\n\");\n            writer.append(\"Content-Disposition: form-data; name=\\\"audio_file\\\"; filename=\\\"\" + file.getName() + \"\\\"\").append(\"\\r\\n\");\n            writer.append(\"Content-Type: audio/mp4\").append(\"\\r\\n\");\n            writer.append(\"\\r\\n\").flush();\n            FileUtils.copyFile(file, out);\n            out.flush();\n            writer.append(\"\\r\\n\").flush();\n            writer.append(\"--\" + boundary + \"--\").append(\"\\r\\n\").flush();\n        }\n        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), \"utf-8\"))) {\n            StringBuilder response = new StringBuilder();\n            String responseLine;\n            while ((responseLine = br.readLine()) != null) {\n                response.append(responseLine.trim());\n            }\n            System.out.println(response.toString());\n        }\n    }\n}"
+        }
+      ]
+    }
+  },
+    "/denoise": {
+      "post": {
+        "summary": "Removes noise from an audio file or URL",
+        "description": "Initiate a noise removal task using either an audio URL or file upload with optional webhook callback.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audio_url": {
+                    "type": "string",
+                    "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                    "example": "https://www.youtube.com/watch?v=example123"
+                  },
+                  "audio_file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Audio file to upload and process directly."
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "Callback URL for async processing results.",
+                    "example": "http://your-webhook-url.com/callback"
+                  }
+                },
+                "anyOf": [
+                  { "required": ["audio_url"] },
+                  { "required": ["audio_file"] }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully initiated noise removal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "task_id": { "type": "string" },
+                    "conversion_id": { "type": "string" },
+                    "eta": { "type": "integer" },
+                    "credit_estimate": { "type": "number", "format": "float" }
+                  },
+                  "example": {
+                    "success": true,
+                    "task_id": "denoise789",
+                    "conversion_id": "conv456",
+                    "eta": -1,
+                    "credit_estimate": 100.1
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Internal Server Error" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { "ApiKeyAuth": [] }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Python",
+            "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/denoise\"\nheaders = {\"Authorization\": \"<API_KEY>\", \"accept\": \"application/json\"}\n\n# Option 1: URL\nresponse = requests.post(url, headers=headers, json={\"audio_url\": \"https://example.com/audio.m4a\"})\n\n# Option 2: File Upload\nwith open(\"audio.m4a\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, files=files)\n\nprint(response.json())"
+          },
+          {
+            "lang": "PHP",
+            "source": "<?php\n$url = 'https://api.example.com/api/public/v1/denoise';\n$headers = ['Authorization: <API_KEY>', 'accept: application/json'];\n\n// Option 1: URL\n$data = ['audio_url' => 'https://example.com/audio.m4a'];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = ['audio_file' => new CURLFile('audio.m4a')];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+          },
+          {
+            "lang": "Go",
+            "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/denoise\"\n\ttoken := \"<API_KEY>\"\n\n\t// Option 1: URL\n\tpayload := bytes.NewBuffer([]byte(`{\"audio_url\":\"https://example.com/audio.m4a\"}`))\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
+          },
+          {
+            "lang": "Java",
+            "source": "import java.io.*;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\nimport org.apache.commons.io.FileUtils;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        String apiUrl = \"https://api.example.com/api/public/v1/denoise\";\n        String apiKey = \"<API_KEY>\";\n\n        // Option 1: URL\n        String jsonInput = \"{\\\"audio_url\\\": \\\"https://example.com/audio.m4a\\\"}\";\n        HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();\n        con.setRequestMethod(\"POST\");\n        con.setRequestProperty(\"Authorization\", apiKey);\n        con.setRequestProperty(\"Content-Type\", \"application/json\");\n        con.setDoOutput(true);\n        try(OutputStream os = con.getOutputStream()) {\n            byte[] input = jsonInput.getBytes(\"utf-8\");\n            os.write(input, 0, input.length);\n        }\n        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), \"utf-8\"))) {\n            StringBuilder response = new StringBuilder();\n            String responseLine;\n            while ((responseLine = br.readLine()) != null) {\n                response.append(responseLine.trim());\n            }\n            System.out.println(response.toString());\n        }\n\n        // Option 2: File Upload\n        String boundary = Long.toHexString(System.currentTimeMillis());\n        con = (HttpURLConnection) new URL(apiUrl).openConnection();\n        con.setRequestMethod(\"POST\");\n        con.setRequestProperty(\"Authorization\", apiKey);\n        con.setRequestProperty(\"Content-Type\", \"multipart/form-data; boundary=\" + boundary);\n        con.setDoOutput(true);\n        try (OutputStream out = con.getOutputStream();\n             PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, \"UTF-8\"), true)) {\n            File file = new File(\"audio.m4a\");\n            writer.append(\"--\" + boundary).append(\"\\r\\n\");\n            writer.append(\"Content-Disposition: form-data; name=\\\"audio_file\\\"; filename=\\\"\" + file.getName() + \"\\\"\").append(\"\\r\\n\");\n            writer.append(\"Content-Type: audio/mp4\").append(\"\\r\\n\");\n            writer.append(\"\\r\\n\").flush();\n            FileUtils.copyFile(file, out);\n            out.flush();\n            writer.append(\"\\r\\n\").flush();\n            writer.append(\"--\" + boundary + \"--\").append(\"\\r\\n\").flush();\n        }\n        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), \"utf-8\"))) {\n            StringBuilder response = new StringBuilder();\n            String responseLine;\n            while ((responseLine = br.readLine()) != null) {\n                response.append(responseLine.trim());\n            }\n            System.out.println(response.toString());\n        }\n    }\n}"
+          }
+        ]
+      }
+    },
+      "/dereverb": {
+        "post": {
+          "summary": "Removes reverberation from an audio file or URL",
+          "description": "Initiate a reverberation removal task using either an audio URL or file upload with optional webhook callback.",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "audio_url": {
+                      "type": "string",
+                      "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                      "example": "https://www.youtube.com/watch?v=example123"
+                    },
+                    "audio_file": {
+                      "type": "string",
+                      "format": "binary",
+                      "description": "Audio file to upload and process directly."
+                    },
+                    "webhook_url": {
+                      "type": "string",
+                      "description": "Callback URL for async processing results.",
+                      "example": "http://your-webhook-url.com/callback"
+                    }
+                  },
+                  "anyOf": [
+                    { "required": ["audio_url"] },
+                    { "required": ["audio_file"] }
+                  ]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successfully initiated dereverberation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean" },
+                      "task_id": { "type": "string" },
+                      "conversion_id": { "type": "string" },
+                      "eta": { "type": "integer" },
+                      "credit_estimate": { "type": "number", "format": "float" }
+                    },
+                    "example": {
+                      "success": true,
+                      "task_id": "dereverb789",
+                      "conversion_id": "conv456",
+                      "eta": -1,
+                      "credit_estimate": 100.1
+                    }
+                  }
+                }
               }
             },
-            "anyOf": [
-              {
-                "required": ["audio_url"]
-              },
-              {
-                "required": ["audio_file"]
-              }
-            ]
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Successfully initiated echo removal",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean" },
-                "task_id": { "type": "string" },
-                "conversion_id": { "type": "string" },
-                "eta": { "type": "integer" },
-                "credit_estimate": { "type": "number", "format": "float" }
-              },
-              "example": {
-                "success": true,
-                "task_id": "deecho789",
-                "conversion_id": "conv456",
-                "eta": -1,
-                "credit_estimate": 100.1
-              }
-            }
-          }
-        }
-      },
-      "422": {
-        "description": "Validation Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
-              }
-            }
-          }
-        }
-      },
-      "500": {
-        "description": "Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Internal Server Error" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "security": [
-      {
-        "ApiKeyAuth": []
-      }
-    ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/deecho\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\n# Option 1: Using URL\npayload = {\n    \"audio_url\": \"https://www.youtube.com/watch?v=example123\",\n    \"webhook_url\": \"http://your-webhook-url.com/callback\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: Using file upload\nfiles = {\"audio_file\": open(\"audio.mp3\", \"rb\")}\npayload = {\"webhook_url\": \"http://your-webhook-url.com/callback\"}\nresponse = requests.post(url, headers=headers, files=files, data=payload)\n\nprint(response.json())"
-      },
-      {
-        "lang": "JavaScript",
-        "source": "// Using Fetch API with file upload\nconst formData = new FormData();\nformData.append('audio_file', fileInput.files[0]);\nformData.append('webhook_url', 'http://your-webhook-url.com/callback');\n\nfetch('https://api.example.com/api/public/v1/deecho', {\n  method: 'POST',\n  headers: {\n    'Authorization': '<API_KEY>'\n  },\n  body: formData\n})\n.then(response => response.json())\n.then(data => console.log(data));"
-      },
-      {
-        "lang": "Node.js",
-        "source": "const axios = require('axios');\nconst FormData = require('form-data');\nconst fs = require('fs');\n\n// Using file upload\nconst form = new FormData();\nform.append('audio_file', fs.createReadStream('audio.mp3'));\nform.append('webhook_url', 'http://your-webhook-url.com/callback');\n\naxios.post('https://api.example.com/api/public/v1/deecho', form, {\n  headers: {\n    ...form.getHeaders(),\n    'Authorization': '<API_KEY>'\n  }\n})\n.then(response => console.log(response.data))\n.catch(error => console.error(error));"
-      }
-    ]
-  }
-},
-"/denoise": {
-  "post": {
-    "summary": "Removes noise from an audio file or URL",
-    "description": "Initiate an noise removal task using either an audio URL or file upload with optional webhook callback.",
-    "requestBody": {
-      "required": true,
-      "content": {
-        "multipart/form-data": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "audio_url": {
-                "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
-                "example": "https://www.youtube.com/watch?v=example123"
-              },
-              "audio_file": {
-                "type": "string",
-                "format": "binary",
-                "description": "Audio file to upload and process directly."
-              },
-              "webhook_url": {
-                "type": "string",
-                "description": "Callback URL for async processing results.",
-                "example": "http://your-webhook-url.com/callback"
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean", "example": false },
+                      "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
+                    }
+                  }
+                }
               }
             },
-            "anyOf": [
-              {
-                "required": ["audio_url"]
-              },
-              {
-                "required": ["audio_file"]
-              }
-            ]
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Successfully initiated noise removal",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean" },
-                "task_id": { "type": "string" },
-                "conversion_id": { "type": "string" },
-                "eta": { "type": "integer" },
-                "credit_estimate": { "type": "number", "format": "float" }
-              },
-              "example": {
-                "success": true,
-                "task_id": "deecho789",
-                "conversion_id": "conv456",
-                "eta": -1,
-                "credit_estimate": 100.1
+            "500": {
+              "description": "Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "success": { "type": "boolean", "example": false },
+                      "error": { "type": "string", "example": "Internal Server Error" }
+                    }
+                  }
+                }
               }
             }
-          }
-        }
-      },
-      "422": {
-        "description": "Validation Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
-              }
-            }
-          }
-        }
-      },
-      "500": {
-        "description": "Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Internal Server Error" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "security": [
-      {
-        "ApiKeyAuth": []
-      }
-    ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/denoise\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\n# Option 1: Using URL\npayload = {\n    \"audio_url\": \"https://www.youtube.com/watch?v=example123\",\n    \"webhook_url\": \"http://your-webhook-url.com/callback\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: Using file upload\nfiles = {\"audio_file\": open(\"audio.mp3\", \"rb\")}\npayload = {\"webhook_url\": \"http://your-webhook-url.com/callback\"}\nresponse = requests.post(url, headers=headers, files=files, data=payload)\n\nprint(response.json())"
-      },
-      {
-        "lang": "JavaScript",
-        "source": "// Using Fetch API with file upload\nconst formData = new FormData();\nformData.append('audio_file', fileInput.files[0]);\nformData.append('webhook_url', 'http://your-webhook-url.com/callback');\n\nfetch('https://api.example.com/api/public/v1/denoise', {\n  method: 'POST',\n  headers: {\n    'Authorization': '<API_KEY>'\n  },\n  body: formData\n})\n.then(response => response.json())\n.then(data => console.log(data));"
-      },
-      {
-        "lang": "Node.js",
-        "source": "const axios = require('axios');\nconst FormData = require('form-data');\nconst fs = require('fs');\n\n// Using file upload\nconst form = new FormData();\nform.append('audio_file', fs.createReadStream('audio.mp3'));\nform.append('webhook_url', 'http://your-webhook-url.com/callback');\n\naxios.post('https://api.example.com/api/public/v1/denoise', form, {\n  headers: {\n    ...form.getHeaders(),\n    'Authorization': '<API_KEY>'\n  }\n})\n.then(response => console.log(response.data))\n.catch(error => console.error(error));"
-      }
-    ]
-  }
-},
-"/dereverb": {
-  "post": {
-    "summary": "Removes reverberation from an audio file or URL",
-    "description": "Initiate an reverberation removal task using either an audio URL or file upload with optional webhook callback.",
-    "requestBody": {
-      "required": true,
-      "content": {
-        "multipart/form-data": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "audio_url": {
-                "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
-                "example": "https://www.youtube.com/watch?v=example123"
-              },
-              "audio_file": {
-                "type": "string",
-                "format": "binary",
-                "description": "Audio file to upload and process directly."
-              },
-              "webhook_url": {
-                "type": "string",
-                "description": "Callback URL for async processing results.",
-                "example": "http://your-webhook-url.com/callback"
-              }
+          },
+          "security": [
+            { "ApiKeyAuth": [] }
+          ],
+          "x-codeSamples": [
+            {
+              "lang": "Python",
+              "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/dereverb\"\nheaders = {\"Authorization\": \"<API_KEY>\", \"accept\": \"application/json\"}\n\n# Option 1: URL\nresponse = requests.post(url, headers=headers, json={\"audio_url\": \"https://example.com/audio.m4a\"})\n\n# Option 2: File Upload\nwith open(\"audio.m4a\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, files=files)\n\nprint(response.json())"
             },
-            "anyOf": [
-              {
-                "required": ["audio_url"]
-              },
-              {
-                "required": ["audio_file"]
-              }
-            ]
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Successfully initiated dereverberation",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean" },
-                "task_id": { "type": "string" },
-                "conversion_id": { "type": "string" },
-                "eta": { "type": "integer" },
-                "credit_estimate": { "type": "number", "format": "float" }
-              },
-              "example": {
-                "success": true,
-                "task_id": "deecho789",
-                "conversion_id": "conv456",
-                "eta": -1,
-                "credit_estimate": 100.1
-              }
+            {
+              "lang": "PHP",
+              "source": "<?php\n$url = 'https://api.example.com/api/public/v1/dereverb';\n$headers = ['Authorization: <API_KEY>', 'accept: application/json'];\n\n// Option 1: URL\n$data = ['audio_url' => 'https://example.com/audio.m4a'];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = ['audio_file' => new CURLFile('audio.m4a')];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+            },
+            {
+              "lang": "Go",
+              "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/dereverb\"\n\ttoken := \"<API_KEY>\"\n\n\t// Option 1: URL\n\tpayload := bytes.NewBuffer([]byte(`{\"audio_url\":\"https://example.com/audio.m4a\"}`))\n\treq, _ := http.NewRequest(\"POST\", url, payload)\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
+            },
+            {
+              "lang": "Java",
+              "source": "import java.io.*;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\nimport org.apache.commons.io.FileUtils;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        String apiUrl = \"https://api.example.com/api/public/v1/dereverb\";\n        String apiKey = \"<API_KEY>\";\n\n        // Option 1: URL\n        String jsonInput = \"{\\\"audio_url\\\": \\\"https://example.com/audio.m4a\\\"}\";\n        HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();\n        con.setRequestMethod(\"POST\");\n        con.setRequestProperty(\"Authorization\", apiKey);\n        con.setRequestProperty(\"Content-Type\", \"application/json\");\n        con.setDoOutput(true);\n        try(OutputStream os = con.getOutputStream()) {\n            byte[] input = jsonInput.getBytes(\"utf-8\");\n            os.write(input, 0, input.length);\n        }\n        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), \"utf-8\"))) {\n            StringBuilder response = new StringBuilder();\n            String responseLine;\n            while ((responseLine = br.readLine()) != null) {\n                response.append(responseLine.trim());\n            }\n            System.out.println(response.toString());\n        }\n\n        // Option 2: File Upload\n        String boundary = Long.toHexString(System.currentTimeMillis());\n        con = (HttpURLConnection) new URL(apiUrl).openConnection();\n        con.setRequestMethod(\"POST\");\n        con.setRequestProperty(\"Authorization\", apiKey);\n        con.setRequestProperty(\"Content-Type\", \"multipart/form-data; boundary=\" + boundary);\n        con.setDoOutput(true);\n        try (OutputStream out = con.getOutputStream();\n             PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, \"UTF-8\"), true)) {\n            File file = new File(\"audio.m4a\");\n            writer.append(\"--\" + boundary).append(\"\\r\\n\");\n            writer.append(\"Content-Disposition: form-data; name=\\\"audio_file\\\"; filename=\\\"\" + file.getName() + \"\\\"\").append(\"\\r\\n\");\n            writer.append(\"Content-Type: audio/mp4\").append(\"\\r\\n\");\n            writer.append(\"\\r\\n\").flush();\n            FileUtils.copyFile(file, out);\n            out.flush();\n            writer.append(\"\\r\\n\").flush();\n            writer.append(\"--\" + boundary + \"--\").append(\"\\r\\n\").flush();\n        }\n        try(BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), \"utf-8\"))) {\n            StringBuilder response = new StringBuilder();\n            String responseLine;\n            while ((responseLine = br.readLine()) != null) {\n                response.append(responseLine.trim());\n            }\n            System.out.println(response.toString());\n        }\n    }\n}"
             }
-          }
-        }
-      },
-      "422": {
-        "description": "Validation Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
-              }
-            }
-          }
-        }
-      },
-      "500": {
-        "description": "Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Internal Server Error" }
-              }
-            }
-          }
+          ]
         }
       }
-    },
-    "security": [
-      {
-        "ApiKeyAuth": []
-      }
-    ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/dereverb\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\n# Option 1: Using URL\npayload = {\n    \"audio_url\": \"https://www.youtube.com/watch?v=example123\",\n    \"webhook_url\": \"http://your-webhook-url.com/callback\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: Using file upload\nfiles = {\"audio_file\": open(\"audio.mp3\", \"rb\")}\npayload = {\"webhook_url\": \"http://your-webhook-url.com/callback\"}\nresponse = requests.post(url, headers=headers, files=files, data=payload)\n\nprint(response.json())"
-      },
-      {
-        "lang": "JavaScript",
-        "source": "// Using Fetch API with file upload\nconst formData = new FormData();\nformData.append('audio_file', fileInput.files[0]);\nformData.append('webhook_url', 'http://your-webhook-url.com/callback');\n\nfetch('https://api.example.com/api/public/v1/dereverb', {\n  method: 'POST',\n  headers: {\n    'Authorization': '<API_KEY>'\n  },\n  body: formData\n})\n.then(response => response.json())\n.then(data => console.log(data));"
-      },
-      {
-        "lang": "Node.js",
-        "source": "const axios = require('axios');\nconst FormData = require('form-data');\nconst fs = require('fs');\n\n// Using file upload\nconst form = new FormData();\nform.append('audio_file', fs.createReadStream('audio.mp3'));\nform.append('webhook_url', 'http://your-webhook-url.com/callback');\n\naxios.post('https://api.example.com/api/public/v1/dereverb', form, {\n  headers: {\n    ...form.getHeaders(),\n    'Authorization': '<API_KEY>'\n  }\n})\n.then(response => console.log(response.data))\n.catch(error => console.error(error));"
-      }
-    ]
-  }
-}
 
   },
   "components": {
