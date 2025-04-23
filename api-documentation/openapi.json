@@ -549,7 +549,11 @@
                 "description": "Callback URL",
                 "example": "https://example.com/callback"
               }
-            }
+            },
+            "anyOf": [
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
+            ]
           }
         }
       }
@@ -711,7 +715,11 @@
                     "description": "A URL where the result will be sent once processing is completed.",
                     "default": ""
                   }
-                }
+                },
+                "anyOf": [
+                  { "required": ["audio_url"] },
+                  { "required": ["audio_file"] }
+                ]
               }
             }
           }
@@ -976,7 +984,10 @@
                 "example": "http://webhook.lalals.com"
               }
             },
-            "required": []
+            "anyOf": [
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
+            ]
           }
         }
       }
@@ -1085,7 +1096,10 @@
                 "example": "http://webhook.lalals.com"
               }
             },
-            "required": []
+            "anyOf": [
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
+            ]
           }
         }
       }

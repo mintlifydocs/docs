@@ -46,12 +46,12 @@
               "api-documentation/conversions/voicechanger",
               "api-documentation/conversions/cover",
               "api-documentation/conversions/texttospeech",
-              "api-documentation/conversions/soundgenerator",
               "api-documentation/conversions/extraction",
               "api-documentation/conversions/stemseparation",
               "api-documentation/conversions/denoise",
               "api-documentation/conversions/deecho",
               "api-documentation/conversions/dereverb",
+              "api-documentation/conversions/soundgenerator",
               "api-documentation/conversions/fileconvert",
               "api-documentation/conversions/audiotranscription",
               "api-documentation/conversions/keyextractbpm"

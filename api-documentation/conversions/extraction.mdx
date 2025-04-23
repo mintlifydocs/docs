@@ -1,0 +1,118 @@
+---
+title: Extraction
+openapi: 'POST /Extraction'
+---
+
+Extract data from an audio file or URL with an option to specify a webhook for callback.
+
+---
+
+## 🎧 Endpoint
+
+```http
+POST /Extraction
+```
+
+This is the endpoint used for initiating extraction tasks from audio inputs.
+
+---
+
+## 🔢 Request Parameters
+
+| Parameter        | Type         | Required | Description                                                                 |
+|------------------|--------------|----------|-----------------------------------------------------------------------------|
+| `audio_url`      | `String`     | Optional | The URL of an audio file to extract data from. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
+
+> 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
+
+---
+
+## 📤 Sample Request
+
+### 🐚 cURL
+
+```bash
+curl -X POST "https://api.lalals.com/api/public/v1/Extraction" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
+-F "webhook_url=http://webhook.lalals.com"
+```
+
+### 🐍 Python
+
+```python
+import requests
+
+url = "https://api.lalals.com/api/public/v1/Extraction"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>"
+}
+
+input_audio_file = open("{path_to_your_audio_file}", "rb")
+
+payload = {
+    "audio_url": "",
+    "webhook_url": "http://abcd.requestcatcher.com/test"
+}
+
+response = requests.post(url=url,
+                         headers=headers,
+                         data=payload,
+                         files={"audio_file": input_audio_file})
+
+print(response.status_code, response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## 📥 Sample Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true,
+  "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
+  "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
+  "eta": 11
+}
+```
+
+---
+
+## ❌ Common Errors
+
+- **422 Unprocessable Entity**: Both `audio_url` and `audio_file` cannot be `None`.
+- **500 Internal Server Error**: An error occurred on the server.
+
+---
+
+## 📞 Webhook Response
+
+When the extraction completes, the webhook receives:
+
+```json
+{
+  "success": true,
+  "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
+  "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
+  "audio_path": "https://aws.signed.url",
+  "vocal": "https://aws.signed.url/vocal",
+  "instrumental": "https://aws.signed.url/instrumental",
+  "back_vocal": "https://aws.signed.url/back_vocal",
+  "conversion_cost": 5.0,
+  "conversion_duration": 120.5
+}
+```
+
+You can download or stream each audio layer from the respective URLs.
+
+
+## Payload and Request Formation
