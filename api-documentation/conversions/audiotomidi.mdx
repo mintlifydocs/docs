@@ -1,0 +1,142 @@
+---
+title: Audio to MIDI
+openapi: 'POST /audio_to_midi'
+---
+
+Convert an audio file into a MIDI file using AI-driven audio analysis and transcription.
+
+The **Audio to MIDI** endpoint processes audio files to generate MIDI sequences. It can optionally create a sonified `.wav` file of the MIDI output and export note events into a `.csv` file for further analysis or editing.
+Ideal for music production, remixing, and advanced audio content creation.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /audio_to_midi
+```
+
+This is the primary endpoint for initiating audio-to-MIDI conversion tasks.
+
+---
+
+## ▶️ Sample Output
+
+Generated MIDI and optional outputs from a sample audio file:
+
+Prompt: short piano melody sample.
+
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://example-bucket.s3.amazonaws.com/midi_sample_sonified.wav">Your browser does not support audio playback.</audio>
+
+<a href="https://example-bucket.s3.amazonaws.com/generated_midi_sample.mid" target="_blank">Download MIDI</a>
+
+<a href="https://example-bucket.s3.amazonaws.com/generated_note_events.csv" target="_blank">Download Note Events CSV</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Audio to MIDI Endpoint Explorer](/api-documentation/endpoint/audio_to_midi) to test it live. Upload an audio file, and get back the MIDI version!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter         | Type      | Required | Default  | Description                                                                  |
+|-------------------|-----------|----------|----------|------------------------------------------------------------------------------|
+| `audio_path`      | `String`  | ✅ Yes   | -        | The **S3 path** of the input audio file to convert.                          |
+| `sonify_midi`     | `Boolean` | Optional | `true`   | If `true`, generates a `.wav` file that plays the MIDI output.                |
+| `save_note_events`| `Boolean` | Optional | `true`   | If `true`, saves predicted note events as a `.csv` file.                     |
+| `webhook_url`     | `String`  | Optional | `""`     | Callback URL for asynchronous result delivery.                               |
+
+> 💡 **Note:** `audio_path` must be a valid and accessible S3 URL.
+
+---
+
+## 📤 Sample Request
+
+### 🐚 cURL
+
+```bash
+curl -X POST "https://api.example.com/api/public/v1/audio_to_midi" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-d '{
+  "audio_path": "s3://your-bucket/input_audio.wav",
+  "sonify_midi": true,
+  "save_note_events": true,
+  "webhook_url": "https://yourdomain.com/webhook"
+}'
+```
+
+### 🐍 Python
+
+```python
+import requests
+
+url = "https://api.example.com/api/public/v1/audio_to_midi"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>"
+}
+
+payload = {
+    "audio_path": "s3://your-bucket/input_audio.wav",
+    "sonify_midi": True,
+    "save_note_events": True,
+    "webhook_url": "https://yourdomain.com/webhook"
+}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())
+```
+
+> 🔐 Replace `api_key`, `audio_path`, and `webhook_url` with your own values before sending.
+
+---
+
+## 📥 Sample Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true,
+  "task_id": "abcdef1234567890",
+  "status": "processing"
+}
+```
+
+---
+
+## ❌ Common Errors
+
+- **400 Bad Request**: Invalid `audio_path` or missing required parameters.
+- **404 Not Found**: Provided audio file not found in S3.
+- **422 Unprocessable Entity**: Unsupported audio format.
+- **500 Internal Server Error**: An unexpected error occurred while processing.
+
+---
+
+## 📞 Webhook Response
+
+When the conversion process completes, if a `webhook_url` was provided, the system sends a POST request:
+
+```json
+{
+  "success": true,
+  "task_id": "abcdef1234567890",
+  "midi_url": "https://your-bucket.s3.amazonaws.com/output_midi.mid",
+  "sonified_audio_url": "https://your-bucket.s3.amazonaws.com/output_audio.wav",
+  "note_events_csv_url": "https://your-bucket.s3.amazonaws.com/note_events.csv"
+}
+```
+
+You can download your generated files using the provided URLs.
+
+---
+
+## Payload and Request Formation
+
+Make sure the JSON payload is well-formed and all mandatory fields are included when sending the request.
+

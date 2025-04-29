@@ -1,0 +1,124 @@
+---
+title: Remix
+openapi: 'POST /remix'
+---
+
+Create a remix using an input audio file and a prompt.
+
+---
+
+## 🎵 Endpoint
+
+```http
+POST /Remix
+```
+
+This endpoint processes an input audio file along with a textual prompt to generate a remix. You can specify a `webhook_url` to receive a callback when processing completes.
+
+---
+
+## 🔢 Request Parameters
+
+| Parameter        | Type         | Required | Description                                                                 |
+|------------------|--------------|----------|-----------------------------------------------------------------------------|
+| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Required if `audio_path` is not provided.   |
+| `audio_path`     | `String`     | Optional | A URL to an audio file (S3 or YouTube). Required if `audio_file` is not provided. |
+| `prompt`         | `String`     | Required | The text prompt guiding the remix generation. Example: "Generate a soothing ambient soundscape." |
+| `lyrics`         | `String`     | Optional | If provided, lyrics will be used to generate the remix.                     |
+| `mode`           | `String`     | Required | Remix mode. Must be one of `REMIX`, `INPAINT`, `OVER_INSTRUMENTAL`.          |
+| `webhook_url`    | `String`     | Optional | Callback URL for async response. Defaults to empty string if not provided.  |
+
+> 💡 **Note:** You must provide either `audio_file` or `audio_path` — at least one is required.
+
+---
+
+## 📤 Sample Request
+
+### 👕 cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/Remix" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_file=@/path/to/your/audio.mp3" \
+-F "prompt=Create an upbeat pop remix" \
+-F "mode=REMIX" \
+-F "webhook_url=http://webhook.musicgpt.com"
+```
+
+### 🐍 Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/Remix"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>"
+}
+
+input_audio_file = open("{path_to_your_audio_file}", "rb")
+
+payload = {
+    "prompt": "Create an upbeat pop remix",
+    "mode": "REMIX",
+    "webhook_url": "http://abcd.requestcatcher.com/test"
+}
+
+response = requests.post(url=url,
+                         headers=headers,
+                         data=payload,
+                         files={"audio_file": input_audio_file})
+
+print(response.status_code, response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## 📥 Sample Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true,
+  "task_id": "stem123",
+  "conversion_id": "conv456",
+  "eta": -1,
+  "credit_estimate": 100.1,
+  "message": "Successfully published to queue"
+}
+```
+
+---
+
+## ❌ Common Errors
+
+- **422 Unprocessable Entity**: Missing required fields like `prompt`, or neither `audio_file` nor `audio_path` provided.
+- **500 Internal Server Error**: An unexpected error occurred during processing.
+
+---
+
+## 📞 Webhook Response
+
+When the remix process completes, the webhook receives:
+
+```json
+{
+  "success": true,
+  "conversion_type": "Remix",
+  "task_id": "8a73983c-96f4-4fd2-966c-96644e57139a",
+  "conversion_id": "7cf8e607-7237-48d6-8d1c-6e518e58abdf",
+  "audio_path": "files/1f465668-781f-4b5e-b3f1-0220c7d3ee15.wav",
+  "remix_audio_url": "https://musicgpt.s3.amazonaws.com/conversions/8a73983c-96f4-4fd2-966c-96644e57139a_remix.mp3",
+  "message": "Remix conversion Completed",
+  "conversion_duration": 311.14,
+  "conversion_cost": 3.12
+}
+```
+
+The response provides a downloadable or streamable remix audio file.
+

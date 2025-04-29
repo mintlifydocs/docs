@@ -34,11 +34,11 @@ This is the endpoint used for initiating extraction tasks from audio inputs.
 ### 🐚 cURL
 
 ```bash
-curl -X POST "https://api.lalals.com/api/public/v1/Extraction" \
+curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
 -H "accept: application/json" \
 -H "Authorization: <api_key>" \
 -F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
--F "webhook_url=http://webhook.lalals.com"
+-F "webhook_url=http://webhook.musicgpt.com"
 ```
 
 ### 🐍 Python
@@ -46,7 +46,7 @@ curl -X POST "https://api.lalals.com/api/public/v1/Extraction" \
 ```python
 import requests
 
-url = "https://api.lalals.com/api/public/v1/Extraction"
+url = "https://api.musicgpt.com/api/public/v1/Extraction"
 
 headers = {
     "accept": "application/json",

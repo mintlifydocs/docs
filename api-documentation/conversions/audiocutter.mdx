@@ -1,0 +1,97 @@
+---
+title: Audio Cutter
+openapi: 'POST /audio_cutter'
+---
+
+Trim your audio files with precision using AI.
+
+**Audio Cutter** allows you to select specific sections of audio recordings, making it perfect for creating highlights, clips, ringtones, and more.
+
+- ✂️ Easily extract the best parts of any audio
+- 🎶 Supports multiple formats like MP3, WAV, FLAC, and more
+- ⚡ Fast processing with high-quality output
+
+Audio Cutter ensures your trimmed audio sounds clean and professional.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /audio_cutter
+```
+
+Use this endpoint to trim a section from an existing audio file.
+
+---
+
+## ▶️ Sample Output
+
+Listen to the trimmed audio:
+
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-trimmed.mp3">Your browser does not support audio playback.</audio>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Audio Cutter Endpoint Explorer](/api-documentation/endpoint/audio_cutter) to cut and download trimmed audio segments instantly.
+
+> ✂️ Try trimming different parts to see how accurate the cut is!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter            | Type    | Required | Description                                                   |
+|----------------------|---------|----------|---------------------------------------------------------------|
+| `audio_path`         | String  | Yes      | The S3 path of the input audio file to trim                   |
+| `conversion_id`      | String  | Yes      | A unique identifier for the conversion request               |
+| `start_time`         | Float   | Yes      | The start time (in seconds) of the audio to trim              |
+| `end_time`           | Float   | Yes      | The end time (in seconds) of the audio to trim                |
+| `output_extension`   | String  | Yes      | Output format: mp3, wav, flac, ogg, aac, or webm              |
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/audio_cutter"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>",
+    "Content-Type": "application/json"
+}
+payload = {
+    "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
+    "conversion_id": "user_trim_12345",
+    "start_time": 10.5,
+    "end_time": 45.0,
+    "output_extension": "mp3"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+  "success": true,
+  "conversion_id": "user_trim_12345",
+  "credit_estimate": 0.01,
+  "conversion_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-trimmed.mp3"
+}
+```
+
+> 📂 The `conversion_path` field contains the direct link to download the trimmed audio.
+
+---
+

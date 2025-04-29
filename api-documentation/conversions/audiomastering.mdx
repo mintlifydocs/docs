@@ -1,0 +1,117 @@
+---
+title: Audio Mastering
+openapi: 'POST /audio_mastering'
+---
+
+Master your audio files professionally using a reference track.
+
+**Audio Mastering** uses intelligent processing to match the sonic quality of your track to a reference file — perfect for music production, podcasts, and post-production work.
+
+- 🎛️ Match tone, loudness, and clarity
+- 🎵 Supports formats like MP3, WAV, FLAC, and more
+- 🚀 Quick, accurate mastering with webhook support
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /audio_mastering
+```
+
+Use this endpoint to master an audio file based on a reference track.
+
+---
+
+## ▶️ Sample Output
+
+Listen to the mastered audio:
+
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-mastered.mp3">Your browser does not support audio playback.</audio>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Audio Mastering Endpoint Explorer](/api-documentation/endpoint/audio_mastering) to upload an audio and reference track for instant mastering.
+
+> 🎛️ Tip: Use a professionally mastered song as your reference for best results!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter              | Type    | Required | Description                                                                 |
+|------------------------|---------|----------|-----------------------------------------------------------------------------|
+| `audio_path`           | String  | Yes      | URL path of the input audio file to be mastered                            |
+| `conversion_id`        | String  | Yes      | Unique identifier for this conversion request                              |
+| `reference_audio_path` | String  | Yes      | URL path of the reference audio file to match                              |
+| `output_extension`     | String  | Optional | Desired output format (`mp3`, `wav`, `flac`, `ogg`, `aac`, `webm`)          |
+| `audio_duration`       | Float   | Yes      | Duration of input audio in seconds (for credit calculation)                |
+| `webhook_url`          | String  | Optional | URL to receive callback notification when processing completes             |
+| `user_id`              | String  | Optional | User ID for tracking (from authentication token)                           |
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/audio_mastering"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>",
+    "Content-Type": "application/json"
+}
+payload = {
+    "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
+    "conversion_id": "user_master_12345",
+    "reference_audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/reference-track.mp3",
+    "output_extension": "mp3",
+    "audio_duration": 180.5,
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "user_id": "user_67890"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+  "success": true,
+  "task_id": "0d12ef34-5678-4abc-9123-456def7890ab",
+  "conversion_id": "user_master_12345",
+  "credit_estimate": 0.02,
+  "eta": 120,
+  "message": "Mastering request accepted"
+}
+```
+
+---
+
+## 📞 Webhook Response
+
+If a `webhook_url` is provided, you will receive the following once processing completes:
+
+```json
+{
+  "success": true,
+  "task_id": "0d12ef34-5678-4abc-9123-456def7890ab",
+  "conversion_id": "user_master_12345",
+  "conversion_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-mastered.mp3",
+  "credit_cost": 0.02
+}
+```
+
+> 📂 If no webhook is provided, you can fetch the final mastered audio manually later using the `conversion_id`.
+
+---
+

@@ -1,0 +1,97 @@
+---
+title: Audio Speed Changer
+openapi: 'POST /audio_speed_changer'
+---
+
+Change the speed of your audio files without affecting quality.
+
+**Audio Speed Changer** allows you to easily speed up or slow down any audio file — perfect for creating remixes, practicing music, or adjusting spoken content.
+
+- ⏩ Speed up or slow down audio effortlessly
+- 🎶 Supports multiple formats like MP3, WAV, FLAC, and more
+- 🚀 Fast processing with high-quality output
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /audio_speed_changer
+```
+
+Use this endpoint to adjust the speed of an audio file.
+
+---
+
+## ▶️ Sample Output
+
+Listen to the speed-changed audio:
+
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speed-changed.mp3">Your browser does not support audio playback.</audio>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Audio Speed Changer Endpoint Explorer](/api-documentation/endpoint/audio_speed_changer) to upload audio files and adjust their playback speed.
+
+> ⏩ Try different speed factors like 1.5x or 0.75x to test quality!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter              | Type    | Required | Description                                                                 |
+|------------------------|---------|----------|-----------------------------------------------------------------------------|
+| `audio_path`           | String  | Yes      | The S3 path of the input audio file                                         |
+| `conversion_id`        | String  | Yes      | Unique identifier for this conversion request                              |
+| `speed_change_factor`  | Number  | Yes      | Factor to change speed (e.g., 2.0 = double speed, 0.5 = half speed) (min: 0.25, max: 4.0) |
+| `output_extension`     | String  | Yes      | Desired output format (`mp3`, `wav`, `flac`, `ogg`, `aac`, `webm`)          |
+| `webhook_url`          | String  | Optional | URL to receive callback notification when processing completes             |
+| `user_id`              | String  | Optional | User ID for tracking (from authentication token)                           |
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/audio_speed_changer"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>",
+    "Content-Type": "application/json"
+}
+payload = {
+    "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
+    "conversion_id": "user_speed_12345",
+    "speed_change_factor": 1.5,
+    "output_extension": "mp3",
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "user_id": "user_67890"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+  "success": true,
+  "conversion_id": "user_speed_12345",
+  "credit_estimate": 0.01,
+  "conversion_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speed-changed.mp3"
+}
+```
+
+> 📂 The `conversion_path` field contains the direct link to download the speed-modified audio.
+
+---
+

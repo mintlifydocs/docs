@@ -1,13 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Lalals API",
+  "name": "Musicgpt API",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "logo/Lalals Logo Main.svg",
+  "favicon": "logo/MusicGPT Icon.svg",
   "navigation": {
     "tabs": [
       {
@@ -54,7 +54,12 @@
               "api-documentation/conversions/soundgenerator",
               "api-documentation/conversions/fileconvert",
               "api-documentation/conversions/audiotranscription",
-              "api-documentation/conversions/keyextractbpm"
+              "api-documentation/conversions/extractkeybpm",
+              "api-documentation/conversions/audiotomidi",
+              "api-documentation/conversions/audiocutter",
+              "api-documentation/conversions/audiospeedchanger",
+              "api-documentation/conversions/audiomastering",
+              "api-documentation/conversions/remix"
             ]
           },
           {
@@ -62,6 +67,14 @@
             "pages": [
               "api-documentation/sample-post-request",
               "api-documentation/sample-get-request"
+            ] 
+          },
+          {
+            "group": "Helper Endpoints",
+            "pages": [
+              "api-documentation/endpoint/getById",
+              "api-documentation/endpoint/searchVoices",
+              "api-documentation/endpoint/getAllVoices"
             ]
           },
           {
@@ -73,21 +86,18 @@
               "api-documentation/endpoint/TextToSpeech",
               "api-documentation/endpoint/extraction",
               "api-documentation/endpoint/stemsseparation",
-              "api-documentation/endpoint/soundcreator",
+              "api-documentation/endpoint/soundgenerator",
               "api-documentation/endpoint/denoise",
               "api-documentation/endpoint/deecho",
               "api-documentation/endpoint/dereverb",
               "api-documentation/endpoint/fileconvert",
-              "api-documentation/endpoint/audio_transcribe",
-              "api-documentation/endpoint/extract_key_bpm"
-            ]
-          },
-          {
-            "group": "Helper Endpoints",
-            "pages": [
-              "api-documentation/endpoint/getById",
-              "api-documentation/endpoint/searchVoices",
-              "api-documentation/endpoint/getAllVoices"
+              "api-documentation/endpoint/audiotranscribe",
+              "api-documentation/endpoint/extract_key_bpm",
+              "api-documentation/endpoint/audio_to_midi",
+              "api-documentation/endpoint/audio_cutter",
+              "api-documentation/endpoint/audio_speed_changer",
+              "api-documentation/endpoint/audio_mastering",
+              "api-documentation/endpoint/remix"
             ]
           }
         ]
@@ -104,28 +114,28 @@
     }
   },
   "logo": {
-    "light": "logo/Lalals Header.jpg",
-    "dark": "logo/Lalals Header White.png"
+    "light": "https://lalals.s3.us-east-1.amazonaws.com/ApiDocumentationFiles/MusicGPT+Logo+Black.svg",
+    "dark": "https://lalals.s3.us-east-1.amazonaws.com/ApiDocumentationFiles/MusicGPT+Logo+White.svg"
   },
   "navbar": {
     "links": [
       {
-        "label": "Lalals",
-        "href": "https://lalals.com"
+        "label": "Musicgpt",
+        "href": "https://musicgpt.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "API Key",
-      "href": "https://lalals.com/api"
+      "href": "https://musicgpt.com/api"
     }
   },
   "footer": {
     "socials": {
-      "twitter": "https://twitter.com/lalalsmusic",
-      "instagram": "https://instagram.com/lalalsmusic",
-      "youtube": "https://youtube.com/@lalalsmusic",
-      "discord": "https://discord.gg/lalals"
+      "twitter": "https://twitter.com/musicgptmusic",
+      "instagram": "https://instagram.com/musicgptmusic",
+      "youtube": "https://youtube.com/@musicgptmusic",
+      "discord": "https://discord.gg/musicgpt"
     }
   }  
 }

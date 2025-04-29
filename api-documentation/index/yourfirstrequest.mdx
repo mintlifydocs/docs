@@ -2,30 +2,35 @@
 title: The First Time 
 ---
 
-Welcome to your **first experience** with the Lalals API — where creativity meets technology 🎶🤖
+Welcome to your **first experience** with the Musicgpt API — where creativity meets technology 🎶🤖
 
 ---
 
 ## 🎛️ Available Features
 
-Here’s what you can create with Lalals:
+Here’s what you can create with Musicgpt:
 
 | Feature                 | Description                                      |
 |-------------------------|--------------------------------------------------|
-| `TEXT_TO_SPEECH`        | Speak the given text in selected voice           |
-| `VOICE_CHANGER`         | Change any vocal of given audio to any voice     |
 | `MUSIC_AI`              | Generate the song you imagine with a prompt      |
-| `EXTRACTION`            | Extract vocals or instrumentals                  |
+| `TEXT_TO_SPEECH`        | Speak the given text in selected voice           |
 | `COVER`                 | Create a cover song                              |
+| `VOICE_CHANGER`         | Change any vocal of given audio to any voice     |
+| `EXTRACTION`            | Extract vocals or instrumentals                  |
 | `STEMS_SEPARATION`      | Separate stems from a track                      |
-| `VOCAL_EXTRACTION`      | Isolate vocals from audio                        |
 | `DENOISING`             | Remove unwanted noise                            |
 | `DEECHO`                | Reduce echo from audio                           |
 | `DEREVERB`              | Reduce reverb                                    |
-| `SOUND_GENERATOR`       | Generate sound from a prompt                     |
-| `AUDIO_TRANSCRIPTION`   | Transcribe audio to text                         |
-| `FILE_CONVERT`          | Convert file formats                             |
 | `KEY_BPM_EXTRACTION`    | Extract musical key and BPM                      |
+| `AUDIO_TO_MIDI`         | Convert audio to MIDI format                     |
+| `FILE_CONVERT`          | Convert file formats                             |
+| `AUDIO_TRANSCRIPTION`   | Transcribe audio to text                         |
+| `SOUND_GENERATOR`       | Generate sound from a prompt                     |
+| `AUDIO_CUTTER`          | Cut or trim audio files                          |
+| `AUDIO_MASTERING`       | Enhance the overall sound quality                |
+| `AUDIO_SPEED_CHANGER`   | Change the playback speed of audio               |
+| `REMIX`                 | Create a remix using provided or AI-generated stems |
+
 
 ---
 
@@ -36,7 +41,7 @@ Let’s generate a **country song about our love for AI-generated music** ❤️
 We’ll use the `MUSIC_AI` feature with the following endpoint:
 
 ```http
-POST https://api.lalals.com/api/public/v1/MusicAI
+POST https://api.musicgpt.com/api/public/v1/MusicAI
 ```
 
 ---
@@ -45,7 +50,7 @@ POST https://api.lalals.com/api/public/v1/MusicAI
 
 ```bash
 curl -X 'POST' \
-'https://api.lalals.com/api/public/v1/MusicAI' \
+'https://api.musicgpt.com/api/public/v1/MusicAI' \
 -H 'accept: application/json' \
 -H 'Authorization: <api_key>' \
 -H 'Content-Type: application/json' \
@@ -55,13 +60,13 @@ curl -X 'POST' \
 }'
 ```
 
-> 🧠 Replace `<api_key>` with your actual API Key from your Lalals dashboard.
+> 🧠 Replace `<api_key>` with your actual API Key from your Musicgpt dashboard.
 
 
 ## 🖧 Webhook Integration
 
 To get notified when the music generation is complete, we recommend setting up a webhook. This allows you to receive the URL of the generated song directly.
-> 🔗 Set the `webhook_url` to an endpoint on your server — this is where Lalals will notify you once the generation is done.
+> 🔗 Set the `webhook_url` to an endpoint on your server — this is where Musicgpt will notify you once the generation is done.
 
 > **Tip:** If you can’t use a webhook (e.g., code running on a user device), you can retrive the result through our helper endpoint [get conversion by id](/api-documentation/endpoint/CheckStatus) instead.
 
@@ -89,7 +94,7 @@ To get notified when the music generation is complete, we recommend setting up a
 
 ## 🎉 Mission Accomplished!
 
-You just generated your **first AI song** using the Lalals API. Now go make something amazing ✨
+You just generated your **first AI song** using the Musicgpt API. Now go make something amazing ✨
 
 Need more help? Check out other endpoints and guides in the [documentation]("/api-documentation/introduction")!
 

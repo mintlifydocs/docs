@@ -1,0 +1,136 @@
+---
+title: Dereverb  
+openapi: 'POST /dereverb'  
+
+---
+
+Remove reverb from an input audio file with optional webhook callback for asynchronous updates.
+
+---
+
+## 🎷 Endpoint
+
+```http
+POST /dereverb
+```
+
+This endpoint removes reverberation (echo) from an uploaded or linked audio file. A `webhook_url` can be provided for asynchronous task status updates.
+
+---
+
+## 🔢 Request Parameters
+
+| Parameter        | Type         | Required | Description                                                                 |
+|------------------|--------------|----------|-----------------------------------------------------------------------------|
+| `audio_url`      | `String`     | Optional | The URL of an audio file to clean. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
+
+> 💡 **Note:** Either `audio_url` or `audio_file` must be provided — one is required.
+
+---
+
+## 📤 Sample Request
+
+### 👚 cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/Dereverb" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
+-F "webhook_url=http://webhook.musicgpt.com"
+```
+
+### 🐍 Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/Dereverb"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>"
+}
+
+input_audio_file = open("{path_to_your_audio_file}", "rb")
+
+payload = {
+    "audio_url": "",
+    "webhook_url": "http://abcd.requestcatcher.com/test"
+}
+
+response = requests.post(url=url,
+                         headers=headers,
+                         data=payload,
+                         files={"audio_file": input_audio_file})
+
+print(response.status_code, response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## 📥 Sample Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true,
+  "task_id": "dereverb_task",
+  "conversion_id": "dereverb_conv",
+  "eta": -1,
+  "credit_estimate": 85.0,
+  "message": "Successfully published to queue"
+}
+```
+
+---
+
+## ❌ Common Errors
+
+- **422 Unprocessable Entity**: Both `audio_url` and `audio_file` cannot be `None`.
+- **500 Internal Server Error**: A server error occurred during processing.
+
+---
+
+## 📞 Webhook Response
+
+Once reverb removal is completed, the webhook receives:
+
+```json
+{
+  "success": true,
+  "conversion_type": "Dereverb",
+  "task_id": "123abc-dereverb",
+  "conversion_id": "456xyz-dereverb",
+  "audio_path": "files/audio_original.wav",
+  "no_reverb": "https://musicgpt.s3.amazonaws.com/conversions/123abc-dereverb_no_reverb.mp3",
+  "no_reverb_wav": "https://musicgpt.s3.amazonaws.com/conversions/123abc-dereverb_no_reverb.wav",
+  "reverb": "https://musicgpt.s3.amazonaws.com/conversions/123abc-dereverb_reverb.mp3",
+  "reverb_wav": "https://musicgpt.s3.amazonaws.com/conversions/123abc-dereverb_reverb.wav",
+  "message": "dereverb conversion Completed",
+  "conversion_duration": 275.48,
+  "conversion_cost": 2.75
+}
+```
+
+You can stream or download the cleaned audio and isolated reverb in both `.mp3` and `.wav` formats.
+
+---
+
+## ▶️ Sample Output
+
+Listen to a real sample output:
+
+##### Input Audio : <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/FileConversions/shaswatstagetestapril26.mp3">Your browser does not support the audio playback.</audio>
+
+##### Output :
+- `echo` <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.amazonaws.com/conversions/93643cc4-acc7-401b-bcbf-dfe1fd972e22_drums.mp3">Your browser does not support the audio playback.</audio>
+
+- `no_echo`  <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.amazonaws.com/conversions/93643cc4-acc7-401b-bcbf-dfe1fd972e22_piano.mp3">Your browser does not support the audio playback.</audio>
+
+---

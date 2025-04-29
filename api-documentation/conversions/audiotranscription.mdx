@@ -1,0 +1,116 @@
+---
+title: 'Audio Transcribe'
+openapi: 'POST /audio_transcribe'
+---
+
+Convert your audio recordings into high-accuracy text using AI.
+
+**Audio Transcribe** enables seamless transcription for podcasts, interviews, lectures, meetings, and more.
+
+- 📅 Fast and accurate speech-to-text conversion
+- 🌍 Supports multiple languages
+- 🔄 Instant or asynchronous transcription with webhook support
+
+Audio Transcribe ensures reliable, professional-grade transcripts for your audio content.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /audio_transcribe
+```
+
+Use this endpoint to transcribe audio recordings into text.
+
+---
+
+## ▶️ Sample Output
+
+Listen to the original audio:
+
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speech.mp3">Your browser does not support audio playback.</audio>
+
+Transcript Output:
+
+> "Welcome to our podcast. Today we’re exploring how AI is changing creative industries."
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Audio Transcribe Endpoint Explorer](/api-documentation/endpoint/audio_transcribe) to upload audio files and get instant transcripts.
+
+> 🚀 Try uploading different languages or noisy audio recordings to test the transcription quality!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter        | Type    | Required | Description                                                  |
+|------------------|---------|----------|--------------------------------------------------------------|
+| `audio_url`      | String  | Yes      | URL to the audio file you want to transcribe                 |
+| `language`       | String  | Optional | Language code (e.g., `en`, `es`, `fr`) for targeted accuracy |
+| `webhook_url`    | String  | Optional | Webhook URL to receive the transcription asynchronously     |
+| `user_id`        | String  | Optional | Optional user ID for tracking purposes                      |
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/audio_transcribe"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>",
+    "Content-Type": "application/json"
+}
+payload = {
+    "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speech.mp3",
+    "language": "en",
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "user_id": "user_67890"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+"success": true,
+"task_id": "ab56b4d9-3a5c-4c2e-92f2-9d8b7c9e0d2d",
+"conversion_id": "f4a1e3a3-04e1-42f8-9b1a-5fd9c47b4a1c",
+"eta": 90,
+"credit_estimate": 0.015,
+"message": "Transcription request accepted"
+}
+```
+
+---
+
+## 📞 Webhook Response
+
+When transcription completes, your webhook will receive:
+
+```json
+{
+"success": true,
+"task_id": "ab56b4d9-3a5c-4c2e-92f2-9d8b7c9e0d2d",
+"conversion_id": "f4a1e3a3-04e1-42f8-9b1a-5fd9c47b4a1c",
+"transcript_text": "Welcome to our podcast. Today we’re exploring how AI is changing creative industries.",
+"credit_cost": 0.015
+}
+```
+
+> 🔊 If no webhook is provided, you can fetch the transcript manually later using the `conversion_id`.
+
+---

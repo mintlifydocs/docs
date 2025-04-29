@@ -23,10 +23,11 @@ This is the primary endpoint for initiating cover song conversion tasks.
 
 Listen to a real sample output:
 
-Prompt: original track reimagined with a different vocal style.
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/conversions/cover_sample.mp3">Your browser does not support the audio playback.</audio>
+Input audio path: 
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/ApiDocumentationFiles/input_audio_sample_api_docs.m4a">Your browser does not support the audio playback.</audio>
 
-<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/cover_sample.mp3" target="_blank">Download Audio</a>
+Output:
+<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/cover_sample.mp3" target="_blank">Download Audio</a>
 
 ---
 
@@ -55,13 +56,13 @@ Visit the [Cover Endpoint Explorer](/api-documentation/endpoint/Cover) to test i
 ### 🐚 cURL
 
 ```bash
-curl -X POST "https://api.lalals.com/api/public/v1/Cover" \
+curl -X POST "https://api.musicgpt.com/api/public/v1/Cover" \
 -H "accept: multipart/form-data" \
 -H "Authorization: <api_key>" \
 -F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
 -F "voice_id=Drake" \
 -F "pitch=0" \
--F "webhook_url=http://webhook.lalals.com"
+-F "webhook_url=http://webhook.musicgpt.com"
 ```
 
 ### 🐍 Python
@@ -69,7 +70,7 @@ curl -X POST "https://api.lalals.com/api/public/v1/Cover" \
 ```python
 import requests
 
-url = "https://api.lalals.com/api/public/v1/Cover"
+url = "https://api.musicgpt.com/api/public/v1/Cover"
 headers = {
     "accept": "multipart/form-data",
     "Authorization": "<api_key>"
@@ -124,7 +125,7 @@ When the cover conversion completes, the webhook receives:
   "success": true,
   "task_id": "762b304d-00b8-401b-b62a-99c5f972dffb",
   "conversion_id": "fa318903-41af-460b-9ab4-86d2c77bea46",
-  "audio_url": "https://lalals.s3.us-east-1.amazonaws.com/projects/fa318903-41af-460b-9ab4-86d2c77bea46.wav",
+  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/projects/fa318903-41af-460b-9ab4-86d2c77bea46.wav",
   "conversion_cost": 0.0327,
   "conversion_duration": 113.57
 }

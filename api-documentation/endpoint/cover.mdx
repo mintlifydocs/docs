@@ -2,13 +2,3 @@
 title: 'Cover'
 openapi: 'POST /Cover'
 ---
-```python
-# Correct Python Example (Upload File)
-import requests
-
-url = "https://api.example.com/VoiceChanger"
-payload = {"voice_id": "demo-voice"}
-files = {"audio_file": open("audio.mp3", "rb")}
-
-response = requests.post(url, data=payload, files=files)
-print(response.json())

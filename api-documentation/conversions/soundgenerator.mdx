@@ -1,0 +1,124 @@
+---
+title: Sound Generator
+openapi: 'POST /sound_generator'
+---
+
+Create custom sounds with AI using just a simple prompt.
+
+**Sound Generator** lets you synthesize high-quality sound effects and audio textures directly from text prompts. Perfect for developers, game designers, filmmakers, and creative technologists who need original sounds on demand.
+
+- 🎛 Generate realistic or abstract sounds
+- 🧠 Fine-tuned AI audio creation
+- 🔁 Instant feedback or asynchronous delivery via webhook
+
+Sound Generator is designed for flexibility, speed, and professional-grade quality.
+
+---
+
+## 📡 Endpoint
+
+```http
+POST /sound_generator
+```
+
+Use this endpoint to generate sounds based on a text description.
+
+---
+
+## ▶️ Sample Output
+
+Listen to an actual sample:
+
+Prompt: a roaring thunderstorm with distant thunder.
+
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-thunderstorm.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-thunderstorm.mp3" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/SoundGenerator) to try live prompt-based sound creation.
+
+> 🚀 Experiment with different descriptions — from realistic sounds (like "city street at night") to fantastical ones ("alien spacecraft landing")!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter        | Type    | Required | Description                                             |
+|------------------|---------|----------|---------------------------------------------------------|
+| `prompt`         | String  | Yes      | A natural language description of the sound you want    |
+| `webhook_url`    | String  | Optional | Webhook URL to receive a callback with the audio result |
+| `user_id`        | String  | Optional | Optional user ID for tracking purposes                  |
+
+---
+
+## 📥 Sample Request
+
+### 🐍 Python
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/SoundGenerator"
+headers = {
+    "accept": "application/json",
+    "Authorization": "<api_key>",
+    "Content-Type": "application/json"
+}
+payload = {
+    "prompt": "sound of an ancient temple door creaking open",
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "user_id": "user_12345"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## 📤 Sample Response
+
+### ✅ Success (200 OK)
+```json
+{
+  "success": true,
+  "task_id": "4e7098c1-7d49-42af-a053-d30509d19e7c",
+  "conversion_id": "9b8a09cc-3527-4e6f-874c-4eb29733dcb4",
+  "eta": 120,
+  "credit_estimate": 0.034,
+  "message": "Sound generation request accepted"
+}
+```
+
+---
+
+## 📞 Webhook Response
+
+Once the sound is ready, your webhook will receive:
+
+```json
+{
+  "success": true,
+  "task_id": "4e7098c1-7d49-42af-a053-d30509d19e7c",
+  "conversion_id": "9b8a09cc-3527-4e6f-874c-4eb29733dcb4",
+  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/projects/9b8a09cc-3527-4e6f-874c-4eb29733dcb4.wav",
+  "credit_cost": 0.034,
+  "prompt": "sound of an ancient temple door creaking open"
+}
+```
+
+> 🎷 Note: If your webhook is set, you’ll get the sound automatically once ready. Otherwise, you can fetch it manually using the `conversion_id`.
+
+---
+
+## ⚙️ Payload and Request Formation
+
+- **Minimal Input**: Only `prompt` is mandatory.
+- **Optional Automation**: Add `webhook_url` for hands-free result delivery.
+- **User Tracking**: Attach `user_id` if you want to monitor per-user activities or analytics.
+
+---
+

@@ -25,9 +25,9 @@ This is the primary endpoint for initiating voice conversion tasks.
 Listen to a real sample output:
 
 Prompt: a song about greenery, nature and forest.
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3">Your browser does not support the audio playback.</audio>
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/covert1.mp3">Your browser does not support the audio playback.</audio>
 
-<a href="https://lalals.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Download Audio</a>
+<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Download Audio</a>
 
 ---
 
@@ -57,14 +57,14 @@ Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/VoiceChan
 ### 🐚 cURL
 
 ```bash
-curl -X POST "https://api.lalals.com/api/public/v1/VoiceChanger" \
+curl -X POST "https://api.musicgpt.com/api/public/v1/VoiceChanger" \
 -H "accept: multipart/form-data" \
 -H "Authorization: <api_key>" \
 -F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
 -F "voice_id=Drake" \
 -F "remove_background=0" \
 -F "pitch=0" \
--F "webhook_url=http://webhook.lalals.com"
+-F "webhook_url=http://webhook.musicgpt.com"
 ```
 
 ### 🐍 Python
@@ -72,7 +72,7 @@ curl -X POST "https://api.lalals.com/api/public/v1/VoiceChanger" \
 ```python
 import requests
 
-url = "https://api.lalals.com/api/public/v1/VoiceChanger"
+url = "https://api.musicgpt.com/api/public/v1/VoiceChanger"
 headers = {
     "accept": "multipart/form-data",
     "Authorization": "<api_key>"
@@ -128,7 +128,7 @@ When the voice conversion completes, the webhook receives:
   "success": true,
   "task_id": "84038e1e-3687-4f7a-9c55-692754b125ee",
   "conversion_id": "e3631817-165d-4f17-a7e2-7008d200ff3e",
-  "audio_url": "https://lalals.s3.us-east-1.amazonaws.com/conversions/converted_audio.wav",
+  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/converted_audio.wav",
   "conversion_cost": 0.031,
   "voice_id": "Drake",
   "pitch": 0
