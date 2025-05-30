@@ -24,13 +24,9 @@ This is the primary endpoint for initiating audio-to-MIDI conversion tasks.
 
 Generated MIDI and optional outputs from a sample audio file:
 
-Prompt: short piano melody sample.
+<a href="https://lalals.s3.amazonaws.com/AudioToMidi/f5b563e5-e414-47ec-989b-255c74d90119.mid" target="_blank">Download MIDI(.mid)</a>
 
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://example-bucket.s3.amazonaws.com/midi_sample_sonified.wav">Your browser does not support audio playback.</audio>
-
-<a href="https://example-bucket.s3.amazonaws.com/generated_midi_sample.mid" target="_blank">Download MIDI</a>
-
-<a href="https://example-bucket.s3.amazonaws.com/generated_note_events.csv" target="_blank">Download Note Events CSV</a>
+<a href="https://lalals.s3.amazonaws.com/AudioToMidi/f5b563e5-e414-47ec-989b-255c74d90119.wav" target="_blank">Download Sonified MIDI(.wav)</a>
 
 ---
 
@@ -124,11 +120,14 @@ When the conversion process completes, if a `webhook_url` was provided, the syst
 
 ```json
 {
-  "success": true,
-  "task_id": "abcdef1234567890",
-  "midi_url": "https://your-bucket.s3.amazonaws.com/output_midi.mid",
-  "sonified_audio_url": "https://your-bucket.s3.amazonaws.com/output_audio.wav",
-  "note_events_csv_url": "https://your-bucket.s3.amazonaws.com/note_events.csv"
+  "success": true, 
+  "conversion_type": "Audio to MIDI", 
+  "task_id": "f5b563e5-e414-47ec-989b-255c74d90119", 
+  "conversion_id": "c7127f6b-e9a4-4d22-8804-d94a8521155a", 
+  "midi_file_path": "https://lalals.s3.amazonaws.com/AudioToMidi/f5b563e5-e414-47ec-989b-255c74d90119.mid", 
+  "sonify_file_path": "https://lalals.s3.amazonaws.com/AudioToMidi/f5b563e5-e414-47ec-989b-255c74d90119.wav", 
+  "notes_file_path": "", 
+  "message": "Audio to Midi Completed"
 }
 ```
 

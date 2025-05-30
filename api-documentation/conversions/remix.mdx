@@ -1,6 +1,6 @@
 ---
 title: Remix
-openapi: 'POST /remix'
+openapi: 'POST /Remix'
 ---
 
 Create a remix using an input audio file and a prompt.
@@ -84,12 +84,14 @@ print(response.status_code, response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "stem123",
-  "conversion_id": "conv456",
-  "eta": -1,
-  "credit_estimate": 100.1,
-  "message": "Successfully published to queue"
+  "success":true,
+  "message":"Remix request submitted successfully",
+  "task_id":"85deefa5-3bb8-4dc6-933e-6a81c80c4c0d",
+  "conversion_id_1":"c1d31cd5-f1fd-4182-b6bd-7647d96965c1",
+  "conversion_id_2":"14abd6fb-3b5e-4220-9798-ce2728523732",
+  "eta":184,
+  "status":"IN_QUEUE",
+  "credit_estimate":0.99
 }
 ```
 

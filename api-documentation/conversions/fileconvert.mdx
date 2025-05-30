@@ -30,6 +30,22 @@ This endpoint processes an uploaded or linked audio file and converts it to a sp
 | `webhook_url`       | `String`     | Optional | Callback URL to receive the result once conversion is complete.             |
 
 ---
+## ▶️ Sample Output
+
+Listen to a real sample output:
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.wav" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [File Conversion Endpoint Explorer](/api-documentation/endpoint/fileconvert) to try your own text samples.
+
+> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
+
+---
 
 ## 📤 Sample Request
 
@@ -84,13 +100,30 @@ print(response.status_code, response.json())
 
 ```json
 {
-  "success": true,
-  "conversion_id": "conv_abc123xyz456",
-  "output_path": "",
-  "credit_estimate": 100.1
+  "success":true,
+  "task_id":"7024eac0-02e2-4811-96e3-7031f007f97f",
+  "conversion_id":"a1286a84-d886-47d9-a717-77af15894cb9",
+  "eta":-1,
+  "credit_estimate":19.833,
+  "message":"",
+  "status":"IN_QUEUE"
 }
 ```
+---
 
+## 📥 Webhook Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_id": "a1286a84-d886-47d9-a717-77af15894cb9", 
+  "output_file_path": "https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.mp3", 
+  "conversion_type": "File Conversion", 
+  "task_id": "7024eac0-02e2-4811-96e3-7031f007f97f"
+}
+```
 ---
 
 ## ❌ Common Errors

@@ -79,12 +79,13 @@ print(response.status_code, response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "keybpm_task",
-  "conversion_id": "keybpm_conv",
-  "eta": -1,
-  "credit_estimate": 45.0,
-  "message": "Successfully published to queue"
+  "success":true,
+  "task_id":"69ec90f0-a00a-48f8-bdb3-8728a635e057",
+  "conversion_id":"8be8c439-dbc9-4ae6-8fe3-3fcb95f5a60a",
+  "eta":-1,
+  "credit_estimate":0.48,
+  "message":"Successfully Published to Queue",
+  "status":"IN_QUEUE"
 }
 ```
 
@@ -103,18 +104,15 @@ Once key and BPM extraction is completed, the webhook receives:
 
 ```json
 {
-  "success": true,
-  "task_id": "",
-  "conversion_id": "",
-  "conversion_path": "userAudios/f4b26657-83c2-4ae9-b809-a8d064283e41.wav",
-  "conversion_duration": "0",
-  "key_changes": {
-    "0-100": ["B major"]
-  },
-  "dominant_key": "B major",
-  "bpm": 154,
-  "conversion_type": "Key BPM Extraction",
-  "conversion_path_wav": "userAudios/f4b26657-83c2-4ae9-b809-a8d064283e41.wav"
+  "success": true, 
+  "task_id": "69ec90f0-a00a-48f8-bdb3-8728a635e057", 
+  "conversion_id": "8be8c439-dbc9-4ae6-8fe3-3fcb95f5a60a", 
+  "conversion_path": "files/a4037db1-d163-48b3-b1ba-cb93c2045228.wav", 
+  "conversion_duration": "0", 
+  "key_changes": {"0-120": ["A# major"], "120-140": ["D# major", "G minor"], "140-220": ["A# major", "A# minor"]}, 
+  "dominant_key": "A# major", 
+  "bpm": 162, 
+  "conversion_type": "Key BPM Extraction"
 }
 ```
 

@@ -28,8 +28,9 @@ Use this endpoint to trim a section from an existing audio file.
 ## ▶️ Sample Output
 
 Listen to the trimmed audio:
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/FileConversions/8993b364-9141-4de7-ab38-5a4178618f0e.mp3">Your browser does not support audio playback.</audio>
 
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-trimmed.mp3">Your browser does not support audio playback.</audio>
+<a href="https://lalals.s3.amazonaws.com/FileConversions/8993b364-9141-4de7-ab38-5a4178618f0e.wav" target="_blank">Download Audio</a>
 
 ---
 
@@ -47,8 +48,8 @@ Visit the [Audio Cutter Endpoint Explorer](/api-documentation/endpoint/audio_cut
 |----------------------|---------|----------|---------------------------------------------------------------|
 | `audio_path`         | String  | Yes      | The S3 path of the input audio file to trim                   |
 | `conversion_id`      | String  | Yes      | A unique identifier for the conversion request               |
-| `start_time`         | Float   | Yes      | The start time (in seconds) of the audio to trim              |
-| `end_time`           | Float   | Yes      | The end time (in seconds) of the audio to trim                |
+| `start_time`         | Float   | Yes      | The start time (in milliseconds) of the audio to trim              |
+| `end_time`           | Float   | Yes      | The end time (in milliseconds) of the audio to trim                |
 | `output_extension`   | String  | Yes      | Output format: mp3, wav, flac, ogg, aac, or webm              |
 
 ---
@@ -61,13 +62,11 @@ import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_cutter"
 headers = {
-    "accept": "application/json",
     "Authorization": "<api_key>",
     "Content-Type": "application/json"
 }
 payload = {
     "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
-    "conversion_id": "user_trim_12345",
     "start_time": 10.5,
     "end_time": 45.0,
     "output_extension": "mp3"
@@ -84,11 +83,30 @@ print(response.json())
 ### ✅ Success (200 OK)
 ```json
 {
-  "success": true,
-  "conversion_id": "user_trim_12345",
-  "credit_estimate": 0.01,
-  "conversion_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-trimmed.mp3"
+  "success":true,
+  "task_id":"b0ac9d46-64d7-4843-af48-a0b6effe3666",
+  "conversion_id":"fe19945b-d466-4183-b559-5d264bddd492",
+  "eta":66,
+  "credit_estimate":25.0,
+  "message":"Message published to queue",
+  "status":"IN_QUEUE"
 }
+```
+---
+
+## 📞 Webhook Response
+
+When audio cutter conversion completes, your webhook will receive:
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Audio Cutter", 
+  "task_id": "8993b364-9141-4de7-ab38-5a4178618f0e", 
+  "conversion_id": "3f07f1ba-9eb5-4581-95ed-427eac1dda0c", 
+  "output_file": "https://lalals.s3.amazonaws.com/FileConversions/8993b364-9141-4de7-ab38-5a4178618f0e.mp3", 
+  "message": "Audio cutter completed"
+} 
 ```
 
 > 📂 The `conversion_path` field contains the direct link to download the trimmed audio.

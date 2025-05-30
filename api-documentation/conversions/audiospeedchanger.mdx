@@ -26,8 +26,7 @@ Use this endpoint to adjust the speed of an audio file.
 ## ▶️ Sample Output
 
 Listen to the speed-changed audio:
-
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speed-changed.mp3">Your browser does not support audio playback.</audio>
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/FileConversions/b0ac9d46-64d7-4843-af48-a0b6effe3666.wav">Your browser does not support audio playback.</audio>
 
 ---
 
@@ -60,17 +59,14 @@ import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_speed_changer"
 headers = {
-    "accept": "application/json",
     "Authorization": "<api_key>",
     "Content-Type": "application/json"
 }
 payload = {
     "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
-    "conversion_id": "user_speed_12345",
     "speed_change_factor": 1.5,
     "output_extension": "mp3",
     "webhook_url": "https://abcd.requestcatcher.com/",
-    "user_id": "user_67890"
 }
 
 response = requests.post(url, json=payload, headers=headers)
@@ -84,10 +80,28 @@ print(response.json())
 ### ✅ Success (200 OK)
 ```json
 {
-  "success": true,
-  "conversion_id": "user_speed_12345",
-  "credit_estimate": 0.01,
-  "conversion_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speed-changed.mp3"
+  "success":true,
+  "task_id":"b0ac9d46-64d7-4843-af48-a0b6effe3666",
+  "conversion_id":"fe19945b-d466-4183-b559-5d264bddd492",
+  "eta":66,
+  "credit_estimate":25.0,
+  "message":"Message published to queue",
+  "status":"IN_QUEUE"
+}
+```
+---
+## 📞 Webhook Response
+
+When transcription completes, your webhook will receive:
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Audio Speed Changer", 
+  "task_id": "b0ac9d46-64d7-4843-af48-a0b6effe3666", 
+  "conversion_id": "fe19945b-d466-4183-b559-5d264bddd492", 
+  "output_file": "https://lalals.s3.amazonaws.com/FileConversions/b0ac9d46-64d7-4843-af48-a0b6effe3666.wav", 
+  "message": "Audio speed changer completed"
 }
 ```
 

@@ -29,11 +29,10 @@ Use this endpoint to generate sounds based on a text description.
 
 Listen to an actual sample:
 
-Prompt: a roaring thunderstorm with distant thunder.
+Prompt: sound of waves crashing at the sea shore.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3">Your browser does not support the audio playback.</audio>
 
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-thunderstorm.mp3">Your browser does not support the audio playback.</audio>
-
-<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-thunderstorm.mp3" target="_blank">Download Audio</a>
+<a href="https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav" target="_blank">Download Audio</a>
 
 ---
 
@@ -63,14 +62,12 @@ import requests
 
 url = "https://api.musicgpt.com/api/public/v1/SoundGenerator"
 headers = {
-    "accept": "application/json",
     "Authorization": "<api_key>",
     "Content-Type": "application/json"
 }
 payload = {
     "prompt": "sound of an ancient temple door creaking open",
-    "webhook_url": "https://abcd.requestcatcher.com/",
-    "user_id": "user_12345"
+    "webhook_url": "https://abcd.requestcatcher.com/"
 }
 
 response = requests.post(url, json=payload, headers=headers)
@@ -84,12 +81,13 @@ print(response.json())
 ### ✅ Success (200 OK)
 ```json
 {
-  "success": true,
-  "task_id": "4e7098c1-7d49-42af-a053-d30509d19e7c",
-  "conversion_id": "9b8a09cc-3527-4e6f-874c-4eb29733dcb4",
-  "eta": 120,
-  "credit_estimate": 0.034,
-  "message": "Sound generation request accepted"
+  "success":true,
+  "task_id":"0af8567f-6156-4bb2-9adc-99b0c8792700",
+  "conversion_id":"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8",
+  "eta":84,
+  "credit_estimate":0.99,
+  "message":"",
+  "status":"IN_QUEUE"
 }
 ```
 
@@ -101,12 +99,17 @@ Once the sound is ready, your webhook will receive:
 
 ```json
 {
-  "success": true,
-  "task_id": "4e7098c1-7d49-42af-a053-d30509d19e7c",
-  "conversion_id": "9b8a09cc-3527-4e6f-874c-4eb29733dcb4",
-  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/projects/9b8a09cc-3527-4e6f-874c-4eb29733dcb4.wav",
-  "credit_cost": 0.034,
-  "prompt": "sound of an ancient temple door creaking open"
+  "success": true, 
+  "conversion_type": "Sound Creator", 
+  "task_id": "0af8567f-6156-4bb2-9adc-99b0c8792700", 
+  "conversion_id": "9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8", 
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3", 
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav", 
+  "conversion_duration": 2.089795918367347, 
+  "message": "Audio Generation Completed Successfully", 
+  "conversion_paths": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": "https://lalals.s3.amazonaws.com/https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3"}, 
+  "conversion_paths_wav": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": "https://lalals.s3.amazonaws.com/https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav"}, 
+  "conversion_durations": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": 2.089795918367347}
 }
 ```
 

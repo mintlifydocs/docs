@@ -29,6 +29,22 @@ This endpoint removes reverberation (echo) from an uploaded or linked audio file
 > 💡 **Note:** Either `audio_url` or `audio_file` must be provided — one is required.
 
 ---
+## ▶️ Sample Output
+
+Listen to a real sample output:
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.wav" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Dereverb Endpoint Explorer](/api-documentation/endpoint/dereverb) to try your own text samples.
+
+> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
+
+---
 
 ## 📤 Sample Request
 
@@ -79,15 +95,37 @@ print(response.status_code, response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "dereverb_task",
-  "conversion_id": "dereverb_conv",
-  "eta": -1,
-  "credit_estimate": 85.0,
-  "message": "Successfully published to queue"
+  "success":true,
+  "task_id":"e99d00bb-2ddf-4279-a15e-6e22801ee575",
+  "conversion_id":"fbcf0c40-a33d-40aa-8c1d-7bb6f9df0b0f",
+  "eta":40,
+  "credit_estimate":0.48,
+  "message":"Message published to queue",
+  "status":"IN_QUEUE"
 }
 ```
+---
 
+## 📥 Webhook Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Dereverb", 
+  "task_id": "e99d00bb-2ddf-4279-a15e-6e22801ee575", 
+  "conversion_id": "fbcf0c40-a33d-40aa-8c1d-7bb6f9df0b0f", 
+  "audio_path": "files/4efbdeff-48a2-401c-a9e6-8a2ffe465487.wav", 
+  "noreverb": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.mp3", 
+  "noreverb_wav": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.wav", 
+  "reverb": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_noreverb.mp3", 
+  "reverb_wav": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_noreverb.wav", 
+  "message": "de_reverb conversion Completed", 
+  "conversion_duration": 136.83045351473922, 
+  "conversion_cost": "0.48"
+}
+```
 ---
 
 ## ❌ Common Errors

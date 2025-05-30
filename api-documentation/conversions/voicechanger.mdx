@@ -25,15 +25,15 @@ This is the primary endpoint for initiating voice conversion tasks.
 Listen to a real sample output:
 
 Prompt: a song about greenery, nature and forest.
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/covert1.mp3">Your browser does not support the audio playback.</audio>
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.mp3">Your browser does not support the audio playback.</audio>
 
-<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Download Audio</a>
+<a href="https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.wav" target="_blank">Download Audio</a>
 
 ---
 
 ## 🧪 Try it Yourself
 
-Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/VoiceChanger) to test it live. Upload a sample, pick a voice, and experience real-time voice transformation.
+Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/voicetovoice) to test it live. Upload a sample, pick a voice, and experience real-time voice transformation.
 
 ---
 
@@ -101,10 +101,31 @@ print(response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "84038e1e-3687-4f7a-9c55-692754b125ee",
-  "conversion_id": "e3631817-165d-4f17-a7e2-7008d200ff3e",
-  "eta": 22
+  "success":true,
+  "task_id": "fdcca59e-9788-43fc-9ee6-e9983064c432",  
+  "conversion_id":"3b8dd3e8-104a-4a2f-86ba-3ed722f5190a",
+  "eta":16,
+  "credit_estimate":1.07,
+  "message":"",
+  "status":"IN_QUEUE"
+}
+```
+
+---
+## 📥 Webhook Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Voice Conversion", 
+  "task_id": "fdcca59e-9788-43fc-9ee6-e9983064c432", 
+  "conversion_id": "67092f68-045d-4e3c-8006-532f144dd610", 
+  "audio_url": "https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.mp3", 
+  "audio_url_wav": "https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.wav", 
+  "conversion_cost": "0.78", 
+  "conversion_duration": 272.44
 }
 ```
 

@@ -1,9 +1,10 @@
 ---
+
 title: Extraction
 openapi: 'POST /Extraction'
----
+---------------------------
 
-Extract data from an audio file or URL with an option to specify a webhook for callback.
+Extract vocals, instrumentals, or other stems from an audio file or URL, with optional preprocessing. This endpoint supports file uploads or remote URLs and allows webhook callbacks for async updates.
 
 ---
 
@@ -13,31 +14,50 @@ Extract data from an audio file or URL with an option to specify a webhook for c
 POST /Extraction
 ```
 
-This is the endpoint used for initiating extraction tasks from audio inputs.
+Use this endpoint to extract stems like vocals, drums, guitar, or more from an audio source.
 
 ---
 
 ## 🔢 Request Parameters
 
-| Parameter        | Type         | Required | Description                                                                 |
-|------------------|--------------|----------|-----------------------------------------------------------------------------|
-| `audio_url`      | `String`     | Optional | The URL of an audio file to extract data from. Either `audio_url` or `audio_file` must be provided. |
-| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
-| `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
+| Parameter               | Type         | Required | Description                                                                                 |
+| ----------------------- | ------------ | -------- | ------------------------------------------------------------------------------------------- |
+| `audio_url`             | `string`     | Optional | URL of the audio file to extract from. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`            | `UploadFile` | Optional | Audio file to upload and process. Either `audio_url` or `audio_file` must be provided.      |
+| `stems`                 | `string`     | Optional | JSON string list of required stems. e.g., `["vocals", "drums"]`. Full list below.           |
+| `preprocessing_options` | `string`     | Optional | JSON string list of preprocessing options. e.g., `["Denoise"]`. Full list below.            |
+| `webhook_url`           | `string`     | Optional | Callback URL to receive async processing results.                                           |
 
-> 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
+> ✨ **Available Stems:** `vocals`, `instrumental`, `male_vocal`, `female_vocal`, `lead_vocal`, `back_vocal`, `bass`, `drums`, `guitar`, `piano`, `keys`, `strings`, `winds`, `rhythm_guitar`, `solo_guitar`, `acoustic_guitar`, `electric_guitar`, `kick_drum`, `snare_drum`, `toms`, `hi_hat`, `ride`, `crash`
+
+> ⚙️ **Preprocessing Options:** `Denoise`, `Deecho`, `Dereverb`
 
 ---
+## ▶️ Sample Output
 
+Sample Output : Vocals
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.wav" target="_blank">Download Audio</a>
+
+
+Sample Output : instrumentals
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.wav" target="_blank">Download Audio</a>
+
+---
 ## 📤 Sample Request
 
-### 🐚 cURL
+### 🦚 cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
 -H "accept: application/json" \
 -H "Authorization: <api_key>" \
--F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
+-F "audio_file=@path_to_audio.mp3" \
+-F "stems=[\"vocals\",\"drums\"]" \
+-F "preprocessing_options=[\"Denoise\"]" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
@@ -45,30 +65,28 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
 
 ```python
 import requests
+import json
 
 url = "https://api.musicgpt.com/api/public/v1/Extraction"
-
 headers = {
     "accept": "application/json",
     "Authorization": "<api_key>"
 }
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
-
-payload = {
-    "audio_url": "",
-    "webhook_url": "http://abcd.requestcatcher.com/test"
+files = {
+    "audio_file": open("path_to_audio.mp3", "rb")
+}
+data = {
+    "stems": json.dumps(["vocals", "drums"]),
+    "preprocessing_options": json.dumps(["Denoise"]),
+    "webhook_url": "http://webhook.musicgpt.com"
 }
 
-response = requests.post(url=url,
-                         headers=headers,
-                         data=payload,
-                         files={"audio_file": input_audio_file})
-
-print(response.status_code, response.json())
+response = requests.post(url, headers=headers, data=data, files=files)
+print(response.json())
 ```
 
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+> 🔐 Replace `path_to_audio.mp3`, `api_key`, and `webhook_url` with actual values.
 
 ---
 
@@ -78,10 +96,36 @@ print(response.status_code, response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
-  "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
-  "eta": 11
+  "success":true,
+  "task_id":"1683c35d-3990-4aac-98da-6847a6893893",
+  "conversion_id":"dded3f43-4715-4564-88e0-b66ebc00c466",
+  "eta":147,
+  "credit_estimate":5.55,
+  "message":"Message published to queue",
+  "status":"IN_QUEUE"
+}
+```
+
+---
+
+## 📥 Webhook Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Extraction", 
+  "task_id": "1683c35d-3990-4aac-98da-6847a6893893", 
+  "conversion_id": "dded3f43-4715-4564-88e0-b66ebc00c466", 
+  "audio_url": "{\"vocals\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.mp3\", 
+                \"instrumental\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.mp3\", 
+                \"solo_guitar\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_solo_guitar.mp3\"}", 
+  "audio_url_wav": "{\"vocals\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.wav\", 
+                \"instrumental\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.wav\", 
+                \"solo_guitar\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_solo_guitar.wav\"}", 
+  "conversion_cost": "5.55", 
+  "conversion_duration": 136.83045351473922
 }
 ```
 
@@ -89,14 +133,14 @@ print(response.status_code, response.json())
 
 ## ❌ Common Errors
 
-- **422 Unprocessable Entity**: Both `audio_url` and `audio_file` cannot be `None`.
-- **500 Internal Server Error**: An error occurred on the server.
+* **422 Unprocessable Entity**: When neither `audio_url` nor `audio_file` is provided.
+* **500 Internal Server Error**: A server-side error occurred.
 
 ---
 
-## 📞 Webhook Response
+## 🗰️ Webhook Response
 
-When the extraction completes, the webhook receives:
+If a `webhook_url` is provided, it receives this payload on completion:
 
 ```json
 {
@@ -112,7 +156,7 @@ When the extraction completes, the webhook receives:
 }
 ```
 
-You can download or stream each audio layer from the respective URLs.
+Download or stream individual stems from their respective URLs.
 
 
 ## Payload and Request Formation

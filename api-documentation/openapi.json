@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://audiosmithapistagelb-40978575.us-east-1.elb.amazonaws.com/api/public/v1",
+      "url": "https://api.musicgpt.com/api/public/v1",
       "description": "Production server"
     }
   ],
@@ -23,7 +23,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["MUSIC_AI", "COVER", "TEXT_TO_SPEECH", "VOICE_CHANGER", "EXTRACTION"]
+              "enum": ["MUSIC_AI", "TEXT_TO_SPEECH", "VOICE_CONVERSION", "EXTRACTION", "COVER", "STEMS_SEPARATION", "VOCAL_EXTRACTION", "DENOISING", "DEECHO", "DEREVERB", "SOUND_GENERATOR", "AUDIO_TRANSCRIPTION", "AUDIO_SPEED_CHANGER", "AUDIO_MASTERING", "AUDIO_CUTTER", "REMIX"]                  
             },
             "description": "The type of Conversion you want to get your details from.",
             "example": "MUSIC_AI"
@@ -879,7 +879,7 @@
                 "description": "Callback URL for async processing"
               }
             },
-            "required": ["text", "voice_id", "gender"]
+            "required": ["text", "voice_id"]
           }
         }
       }
@@ -958,230 +958,139 @@
   }
 }, 
 "/Extraction": {
-  "post": {
-    "summary": "Extract data from an audio file or URL",
-    "description": "Initiate an audio extraction task using a file upload or a URL with optional webhook callback.",
-    "requestBody": {
-      "required": true,
-      "content": {
-        "multipart/form-data": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "audio_url": {
-                "type": "string",
-                "description": "The URL of the audio file to extract from.",
-                "example": "https://www.youtube.com/watch?v=jGflUbPQfW8"
-              },
-              "audio_file": {
-                "type": "string",
-                "format": "binary",
-                "description": "Audio file to upload and process."
-              },
-              "webhook_url": {
-                "type": "string",
-                "description": "Callback URL for async processing.",
-                "example": "http://webhook.musicgpt.com"
-              }
-            },
-            "anyOf": [
-              { "required": ["audio_url"] },
-              { "required": ["audio_file"] }
-            ]
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Successfully initiated audio extraction",
+    "post": {
+      "summary": "Extract stems from an audio file or URL",
+      "description": "Process an audio file to extract specified stems (vocals, instrumental, or other components) with optional preprocessing. Supports file upload or URL with webhook callback.",
+      "requestBody": {
+        "required": true,
         "content": {
-          "application/json": {
+          "multipart/form-data": {
             "schema": {
               "type": "object",
               "properties": {
-                "success": { "type": "boolean" },
-                "task_id": { "type": "string" },
-                "conversion_id": { "type": "string" },
-                "eta": { "type": "integer" }
+                "audio_url": {
+                  "type": "string",
+                  "description": "The URL of the audio file to process.",
+                  "example": "https://www.youtube.com/watch?v=jGflUbPQfW8"
+                },
+                "audio_file": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Audio file to upload and process."
+                },
+                "stems": {
+                  "type": "string",
+                  "default": "[]",
+                  "description": "JSON string list of required output stems. Available options: vocals, instrumental, male_vocal, female_vocal, lead_vocal, back_vocal, bass, drums, guitar, piano, keys, strings, winds, rhythm_guitar, solo_guitar, acoustic_guitar, electric_guitar, kick_drum, snare_drum, toms, hi_hat, ride, crash.",
+                  "example": "[\"vocals\", \"drums\"]"
+                },
+                "preprocessing_options": {
+                  "type": "string",
+                  "default": "[]",
+                  "description": "JSON string list of preprocessing steps. Available options: Denoise, Deecho, Dereverb.",
+                  "example": "[\"Denoise\", \"Dereverb\"]"
+                },
+                "webhook_url": {
+                  "type": "string",
+                  "description": "Callback URL for async processing.",
+                  "example": "http://webhook.musicgpt.com"
+                }
               },
-              "example": {
-                "success": true,
-                "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
-                "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
-                "eta": 11
+              "anyOf": [
+                { "required": ["audio_url"] },
+                { "required": ["audio_file"] }
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successfully initiated audio extraction",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean" },
+                  "task_id": { "type": "string" },
+                  "conversion_id": { "type": "string" },
+                  "eta": { 
+                    "type": "integer",
+                    "description": "Time in seconds to completion. -1 if unknown"
+                  },
+                  "credit_estimate": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Estimated credit cost"
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
+                  "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
+                  "eta": 11,
+                  "credit_estimate": 2.5
+                }
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Internal Server Error" }
+                }
               }
             }
           }
         }
       },
-      "422": {
-        "description": "Validation Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
-              }
-            }
-          }
+      "security": [
+        {
+          "ApiKeyAuth": []
         }
-      },
-      "500": {
-        "description": "Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Internal Server Error" }
-              }
-            }
-          }
+      ],
+      "x-codeSamples": [
+        {
+          "lang": "Python",
+          "source": "import requests\nimport json\n\nurl = \"https://api.musicgpt.com/api/public/v1/Extraction\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\nfiles = {\n    \"audio_file\": open(\"path_to_audio.mp3\", \"rb\")\n}\ndata = {\n    \"audio_url\": \"\",\n    \"stems\": json.dumps([\"vocals\", \"drums\"]),\n    \"preprocessing_options\": json.dumps([\"Denoise\"]),\n    \"webhook_url\": \"http://webhook.musicgpt.com\"\n}\n\nresponse = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
+        },
+        {
+          "lang": "PHP",
+          "source": "$curl = curl_init();\n\n$stems = json_encode(['vocals', 'drums']);\n$preprocessing = json_encode(['Denoise']);\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => 'https://api.musicgpt.com/api/public/v1/Extraction',\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_POST => true,\n    CURLOPT_POSTFIELDS => [\n        'audio_url' => '',\n        'stems' => $stems,\n        'preprocessing_options' => $preprocessing,\n        'webhook_url' => 'http://webhook.musicgpt.com',\n        'audio_file' => new CURLFile('path_to_audio.mp3')\n    ],\n    CURLOPT_HTTPHEADER => [\n        'Authorization: <API_KEY>',\n        'Accept: application/json'\n    ]\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;"
+        },
+        {
+          "lang": "Go",
+          "source": "package main\n\nimport (\n    \"bytes\"\n    \"encoding/json\"\n    \"fmt\"\n    \"io\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n)\n\nfunc main() {\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n\n    file, _ := os.Open(\"path_to_audio.mp3\")\n    part, _ := writer.CreateFormFile(\"audio_file\", \"path_to_audio.mp3\")\n    io.Copy(part, file)\n    \n    stems, _ := json.Marshal([]string{\"vocals\", \"drums\"})\n    preprocessing, _ := json.Marshal([]string{\"Denoise\"})\n    \n    writer.WriteField(\"stems\", string(stems))\n    writer.WriteField(\"preprocessing_options\", string(preprocessing))\n    writer.WriteField(\"webhook_url\", \"http://webhook.musicgpt.com\")\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", \"https://api.musicgpt.com/api/public/v1/Extraction\", body)\n    req.Header.Add(\"Authorization\", \"<API_KEY>\")\n    req.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    responseBody, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(responseBody))\n}"
+        },
+        {
+          "lang": "Java",
+          "source": "import okhttp3.*;\nimport org.json.JSONArray;\nimport java.io.File;\nimport java.io.IOException;\n\npublic class MusicgptExtraction {\n    public static void main(String[] args) throws IOException {\n        OkHttpClient client = new OkHttpClient();\n\n        MediaType mediaType = MediaType.parse(\"audio/mpeg\");\n        File file = new File(\"path_to_audio.mp3\");\n\n        JSONArray stems = new JSONArray();\n        stems.put(\"vocals\");\n        stems.put(\"drums\");\n        \n        JSONArray preprocessing = new JSONArray();\n        preprocessing.put(\"Denoise\");\n\n        RequestBody fileBody = RequestBody.create(file, mediaType);\n        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)\n            .addFormDataPart(\"audio_file\", file.getName(), fileBody)\n            .addFormDataPart(\"stems\", stems.toString())\n            .addFormDataPart(\"preprocessing_options\", preprocessing.toString())\n            .addFormDataPart(\"webhook_url\", \"http://webhook.musicgpt.com\")\n            .build();\n\n        Request request = new Request.Builder()\n            .url(\"https://api.musicgpt.com/api/public/v1/Extraction\")\n            .post(requestBody)\n            .addHeader(\"Authorization\", \"<API_KEY>\")\n            .addHeader(\"Accept\", \"application/json\")\n            .build();\n\n        Response response = client.newCall(request).execute();\n        System.out.println(response.body().string());\n    }\n}"
         }
-      }
-    },
-    "security": [
-      {
-        "ApiKeyAuth": []
-      }
-    ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/Extraction\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\nfiles = {\n    \"audio_file\": open(\"path_to_audio.mp3\", \"rb\")\n}\ndata = {\n    \"audio_url\": \"\",\n    \"webhook_url\": \"http://webhook.musicgpt.com\"\n}\n\nresponse = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "$curl = curl_init();\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => 'https://api.musicgpt.com/api/public/v1/Extraction',\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_POST => true,\n    CURLOPT_POSTFIELDS => [\n        'audio_url' => '',\n        'webhook_url' => 'http://webhook.musicgpt.com',\n        'audio_file' => new CURLFile('path_to_audio.mp3')\n    ],\n    CURLOPT_HTTPHEADER => [\n        'Authorization: <API_KEY>',\n        'Accept: application/json'\n    ]\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n    \"bytes\"\n    \"fmt\"\n    \"io\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n)\n\nfunc main() {\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n\n    file, _ := os.Open(\"path_to_audio.mp3\")\n    part, _ := writer.CreateFormFile(\"audio_file\", \"path_to_audio.mp3\")\n    io.Copy(part, file)\n    writer.WriteField(\"webhook_url\", \"http://webhook.musicgpt.com\")\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", \"https://api.musicgpt.com/api/public/v1/Extraction\", body)\n    req.Header.Add(\"Authorization\", \"<API_KEY>\")\n    req.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    responseBody, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(responseBody))\n}"
-      },
-      {
-        "lang": "Java",
-        "source": "import okhttp3.*;\nimport java.io.File;\nimport java.io.IOException;\n\npublic class MusicgptExtraction {\n    public static void main(String[] args) throws IOException {\n        OkHttpClient client = new OkHttpClient();\n\n        MediaType mediaType = MediaType.parse(\"audio/mpeg\");\n        File file = new File(\"path_to_audio.mp3\");\n\n        RequestBody fileBody = RequestBody.create(file, mediaType);\n        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)\n            .addFormDataPart(\"audio_file\", file.getName(), fileBody)\n            .addFormDataPart(\"webhook_url\", \"http://webhook.musicgpt.com\")\n            .build();\n\n        Request request = new Request.Builder()\n            .url(\"https://api.musicgpt.com/api/public/v1/Extraction\")\n            .post(requestBody)\n            .addHeader(\"Authorization\", \"<API_KEY>\")\n            .addHeader(\"Accept\", \"application/json\")\n            .build();\n\n        Response response = client.newCall(request).execute();\n        System.out.println(response.body().string());\n    }\n}"
-      }
-    ]
-  }
-},
-"/stems_separation": {
-  "post": {
-    "summary": "Separate stems data from an audio file or URL",
-    "description": "Initiate an stems separation task using a file upload or a URL with optional webhook callback.",
-    "requestBody": {
-      "required": true,
-      "content": {
-        "multipart/form-data": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "audio_url": {
-                "type": "string",
-                "description": "The URL of the audio file to separate stems from.",
-                "example": "https://www.youtube.com/watch?v=jGflUbPQfW8"
-              },
-              "audio_file": {
-                "type": "string",
-                "format": "binary",
-                "description": "Audio file to upload and process."
-              },
-              "webhook_url": {
-                "type": "string",
-                "description": "Callback URL for async processing.",
-                "example": "http://webhook.musicgpt.com"
-              }
-            },
-            "anyOf": [
-              { "required": ["audio_url"] },
-              { "required": ["audio_file"] }
-            ]
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": {
-        "description": "Successfully initiated stems separation",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean" },
-                "task_id": { "type": "string" },
-                "conversion_id": { "type": "string" },
-                "eta": { "type": "integer" }
-              },
-              "example": {
-                "success": true,
-                "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
-                "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
-                "eta": 11
-              }
-            }
-          }
-        }
-      },
-      "422": {
-        "description": "Validation Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Either audio_url or audio_file must be provided." }
-              }
-            }
-          }
-        }
-      },
-      "500": {
-        "description": "Server Error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Internal Server Error" }
-              }
-            }
-          }
-        }
-      }
-    },
-    "security": [
-      {
-        "ApiKeyAuth": []
-      }
-    ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/stems_separation\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\"\n}\n\nfiles = {\n    \"audio_file\": open(\"path_to_audio.mp3\", \"rb\")\n}\ndata = {\n    \"audio_url\": \"\",\n    \"webhook_url\": \"http://webhook.musicgpt.com\"\n}\n\nresponse = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "$curl = curl_init();\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => 'https://api.musicgpt.com/api/public/v1/stems_separation',\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_POST => true,\n    CURLOPT_POSTFIELDS => [\n        'audio_url' => '',\n        'webhook_url' => 'http://webhook.musicgpt.com',\n        'audio_file' => new CURLFile('path_to_audio.mp3')\n    ],\n    CURLOPT_HTTPHEADER => [\n        'Authorization: <API_KEY>',\n        'Accept: application/json'\n    ]\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n    \"bytes\"\n    \"fmt\"\n    \"io\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n)\n\nfunc main() {\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n\n    file, _ := os.Open(\"path_to_audio.mp3\")\n    part, _ := writer.CreateFormFile(\"audio_file\", \"path_to_audio.mp3\")\n    io.Copy(part, file)\n    writer.WriteField(\"webhook_url\", \"http://webhook.musicgpt.com\")\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", \"https://api.musicgpt.com/api/public/v1/stems_separation\", body)\n    req.Header.Add(\"Authorization\", \"<API_KEY>\")\n    req.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    responseBody, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(responseBody))\n}"
-      },
-      {
-        "lang": "Java",
-        "source": "import okhttp3.*;\nimport java.io.File;\nimport java.io.IOException;\n\npublic class MusicgptStemSeparation {\n    public static void main(String[] args) throws IOException {\n        OkHttpClient client = new OkHttpClient();\n\n        MediaType mediaType = MediaType.parse(\"audio/mpeg\");\n        File file = new File(\"path_to_audio.mp3\");\n\n        RequestBody fileBody = RequestBody.create(file, mediaType);\n        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)\n            .addFormDataPart(\"audio_file\", file.getName(), fileBody)\n            .addFormDataPart(\"webhook_url\", \"http://webhook.musicgpt.com\")\n            .build();\n\n        Request request = new Request.Builder()\n            .url(\"https://api.musicgpt.com/api/public/v1/stems_separation\")\n            .post(requestBody)\n            .addHeader(\"Authorization\", \"<API_KEY>\")\n            .addHeader(\"Accept\", \"application/json\")\n            .build();\n\n        Response response = client.newCall(request).execute();\n        System.out.println(response.body().string());\n    }\n}"
-      }
-    ]
-  }
-},
-  "/deecho": {
+      ]
+    }
+  },
+"/deecho": {
     "post": {
       "summary": "Remove echo from an audio file or URL",
       "description": "Initiate an echo removal task using either an audio URL or file upload with optional webhook callback.",
@@ -1772,7 +1681,7 @@
               ]
             }
           },
-            "/sound_generator": {
+"/sound_generator": {
               "post": {
                 "summary": "Generate Sound Based on Given Prompt",
                 "description": "Creates an audio file based on a textual prompt. The generation process is asynchronous and returns a task ID for tracking.",
@@ -1896,7 +1805,7 @@
                 ]
               }
             },
-              "/audio_mastering": {
+"/audio_mastering": {
                 "post": {
                   "summary": "Master an audio file using a reference track",
                   "description": "Processes an audio file to match the mastering characteristics of a reference track.",
@@ -1912,46 +1821,37 @@
                               "description": "URL path of the input audio file to be mastered",
                               "example": "https://example.com/input_audio.mp3"
                             },
+                            "audio_file": {
+                            "type": "string",
+                            "format": "binary",
+                            "description": "Audio file to upload and process directly."
+                          },
                             "reference_audio_path": {
                               "type": "string",
                               "description": "URL path of the reference audio file to match",
                               "example": "https://example.com/reference_track.wav"
                             },
-                            "conversion_id": {
-                              "type": "string",
-                              "description": "Unique identifier for this conversion request",
-                              "example": "conv123"
-                            },
+                          "reference_audio_file": {
+                            "type": "string",
+                            "format": "binary",
+                            "description": "Reference Audio file to upload and process directly."
+                          },
                             "output_extension": {
                               "type": "string",
                               "description": "Desired output format",
                               "enum": ["mp3", "wav", "flac", "ogg", "aac", "webm"],
                               "example": "wav"
                             },
-                            "audio_duration": {
-                              "type": "number",
-                              "format": "float",
-                              "description": "Duration of input audio in seconds",
-                              "example": 180.5
-                            },
                             "webhook_url": {
                               "type": "string",
                               "description": "URL to receive callback notification when processing completes",
                               "example": "http://your-webhook-url.com/callback"
-                            },
-                            "user_id": {
-                              "type": "string",
-                              "description": "User ID from authentication token",
-                              "example": "user123"
                             }
                           },
-                          "required": [
-                            "audio_path",
-                            "reference_audio_path",
-                            "conversion_id",
-                            "audio_duration",
-                            "user_id"
-                          ]
+                        "anyOf": [
+                          { "required": ["audio_file"] },
+                          { "required": ["audio_path"] }
+                        ]
                         }
                       }
                     }
@@ -2079,7 +1979,7 @@
                   ]
                 }
               },
-              "/audio_cutter": {
+  "/audio_cutter": {
   "post": {
     "summary": "Cut an audio file between specified timestamps",
     "description": "Trims an audio file using the specified start and end times.",
@@ -2095,36 +1995,38 @@
                 "description": "URL path of the input audio file to be trimmed",
                 "example": "https://example.com/input_audio.mp3"
               },
-              "conversion_id": {
+              "audio_file": {
                 "type": "string",
-                "description": "Unique identifier for this conversion request",
-                "example": "conv789"
+                "format": "binary",
+                "description": "Audio file to upload and process directly."
               },
               "start_time": {
                 "type": "number",
                 "format": "float",
-                "description": "Start time in seconds",
-                "example": 10.5
+                "description": "Start time in milliseconds",
+                "example": 105000
               },
               "end_time": {
                 "type": "number",
                 "format": "float",
-                "description": "End time in seconds",
-                "example": 45.0
+                "description": "End time in milliseconds",
+                "example": 45000
               },
               "output_extension": {
                 "type": "string",
                 "description": "Desired output format",
                 "enum": ["mp3", "wav", "flac", "ogg", "aac", "webm"],
                 "example": "mp3"
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing results.",
+                "example": "http://your-webhook-url.com/callback"
               }
             },
-            "required": [
-              "audio_path",
-              "conversion_id",
-              "start_time",
-              "end_time",
-              "output_extension"
+            "anyOf": [
+              { "required": ["audio_file"] },
+              { "required": ["audio_path"] }
             ]
           }
         }
@@ -2234,15 +2136,15 @@
   "x-codeSamples": [
     {
       "lang": "Python",
-      "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/audio_cutter\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\",\n    \"Content-Type\": \"application/json\"\n}\n\npayload = {\n    \"audio_path\": \"https://example.com/input_audio.mp3\",\n    \"conversion_id\": \"conv789\",\n    \"start_time\": 10.5,\n    \"end_time\": 45.0,\n    \"output_extension\": \"mp3\"\n}\n\nresponse = requests.post(url, headers=headers, json=payload)\nprint(response.json())"
+      "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/audio_cutter\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"Content-Type\": \"multipart/form-data\"\n}\n\npayload = {\n    \"audio_path\": \"https://example.com/input_audio.mp3\",\n    \"start_time\": 10500,\n    \"end_time\": 45000,\n    \"output_extension\": \"mp3\"\n}\n\nresponse = requests.post(url, headers=headers, json=payload)\nprint(response.json())"
     },
     {
       "lang": "PHP",
-      "source": "<?php\n$url = 'https://api.example.com/api/public/v1/audio_cutter';\n$headers = [\n    'Authorization: <API_KEY>',\n    'accept: application/json',\n    'Content-Type: application/json'\n];\n\n$data = [\n    'audio_path' => 'https://example.com/input_audio.mp3',\n    'conversion_id' => 'conv789',\n    'start_time' => 10.5,\n    'end_time' => 45.0,\n    'output_extension' => 'mp3'\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;"
+      "source": "<?php\n$url = 'https://api.example.com/api/public/v1/audio_cutter';\n$headers = [\n    'Authorization: <API_KEY>',\n    'Content-Type: multipart/form-data'\n];\n\n$data = [\n    'audio_path' => 'https://example.com/input_audio.mp3',\n      'start_time' => 10500,\n    'end_time' => 10500,\n    'output_extension' => 'mp3'\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;"
     },
     {
       "lang": "Go",
-      "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/audio_cutter\"\n\ttoken := \"<API_KEY>\"\n\n\tpayload := []byte(`{\n\t\t\"audio_path\": \"https://example.com/input_audio.mp3\",\n\t\t\"conversion_id\": \"conv789\",\n\t\t\"start_time\": 10.5,\n\t\t\"end_time\": 45.0,\n\t\t\"output_extension\": \"mp3\"\n\t}`)\n\n\treq, _ := http.NewRequest(\"POST\", url, bytes.NewBuffer(payload))\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\treq.Header.Add(\"Content-Type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
+      "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/audio_cutter\"\n\ttoken := \"<API_KEY>\"\n\n\tpayload := []byte(`{\n\t\t\"audio_path\": \"https://example.com/input_audio.mp3\",\n\t\t\"start_time\": 10500,\n\t\t\"end_time\": 10500,\n\t\t\"output_extension\": \"mp3\"\n\t}`)\n\n\treq, _ := http.NewRequest(\"POST\", url, bytes.NewBuffer(payload))\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\treq.Header.Add(\"Content-Type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
     },
     {
       "lang": "Java",
@@ -2259,7 +2161,7 @@
     "requestBody": {
       "required": true,
       "content": {
-        "application/json": {
+        "multipart/form-data": {
           "schema": {
             "type": "object",
             "properties": {
@@ -2268,10 +2170,10 @@
                 "description": "URL path of the input audio file to change speed",
                 "example": "https://example.com/input_audio.mp3"
               },
-              "conversion_id": {
+              "audio_file": {
                 "type": "string",
-                "description": "Unique identifier for this conversion request",
-                "example": "conv999"
+                "format": "binary",
+                "description": "Audio file to upload and process directly."
               },
               "speed_change_factor": {
                 "type": "number",
@@ -2285,12 +2187,19 @@
                 "description": "Desired output format",
                 "enum": ["mp3", "wav", "flac", "ogg", "aac", "webm"],
                 "example": "mp3"
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing results.",
+                "example": "http://your-webhook-url.com/callback"
               }
             },
             "required": [
-              "audio_path",
-              "conversion_id",
               "speed_change_factor"
+            ],
+            "anyOf": [
+              { "required": ["audio_file"] },
+              { "required": ["audio_path"] }
             ]
           }
         }
@@ -2400,15 +2309,15 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/audio_speed_changer\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"accept\": \"application/json\",\n    \"Content-Type\": \"application/json\"\n}\n\npayload = {\n    \"audio_path\": \"https://example.com/input_audio.mp3\",\n    \"conversion_id\": \"conv999\",\n    \"speed_change_factor\": 1.5,\n    \"output_extension\": \"mp3\"\n}\n\nresponse = requests.post(url, headers=headers, json=payload)\nprint(response.json())"
+        "source": "import requests\n\nurl = \"https://api.example.com/api/public/v1/audio_speed_changer\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n     \"Content-Type\": \"multipart/form-data\"\n}\n\npayload = {\n    \"audio_path\": \"https://example.com/input_audio.mp3\",\n    \"speed_change_factor\": 1.5,\n    \"output_extension\": \"mp3\"\n}\n\nresponse = requests.post(url, headers=headers, json=payload)\nprint(response.json())"
       },
       {
         "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.example.com/api/public/v1/audio_speed_changer';\n$headers = [\n    'Authorization: <API_KEY>',\n    'accept: application/json',\n    'Content-Type: application/json'\n];\n\n$data = [\n    'audio_path' => 'https://example.com/input_audio.mp3',\n    'conversion_id' => 'conv999',\n    'speed_change_factor' => 1.5,\n    'output_extension' => 'mp3'\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;"
+        "source": "<?php\n$url = 'https://api.example.com/api/public/v1/audio_speed_changer';\n$headers = [\n    'Authorization: <API_KEY>',\n   'Content-Type: multipart/form-data'\n];\n\n$data = [\n    'audio_path' => 'https://example.com/input_audio.mp3',\n       'speed_change_factor' => 1.5,\n    'output_extension' => 'mp3'\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;"
       },
       {
         "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/audio_speed_changer\"\n\ttoken := \"<API_KEY>\"\n\n\tpayload := []byte(`{\n\t\t\"audio_path\": \"https://example.com/input_audio.mp3\",\n\t\t\"conversion_id\": \"conv999\",\n\t\t\"speed_change_factor\": 1.5,\n\t\t\"output_extension\": \"mp3\"\n\t}`)\n\n\treq, _ := http.NewRequest(\"POST\", url, bytes.NewBuffer(payload))\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\treq.Header.Add(\"Content-Type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
+        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n)\n\nfunc main() {\n\turl := \"https://api.example.com/api/public/v1/audio_speed_changer\"\n\ttoken := \"<API_KEY>\"\n\n\tpayload := []byte(`{\n\t\t\"audio_path\": \"https://example.com/input_audio.mp3\",\n\t\t\"speed_change_factor\": 1.5,\n\t\t\"output_extension\": \"mp3\"\n\t}`)\n\n\treq, _ := http.NewRequest(\"POST\", url, bytes.NewBuffer(payload))\n\treq.Header.Add(\"Authorization\", token)\n\treq.Header.Add(\"accept\", \"application/json\")\n\treq.Header.Add(\"Content-Type\", \"application/json\")\n\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
       },
       {
         "lang": "Java",
@@ -2423,16 +2332,21 @@
     "description": "Processes an audio file and converts it into a MIDI file. Optionally, it can also generate a sonified .wav file and a CSV of note events. This request is handled asynchronously.",
     "requestBody": {
       "required": true,
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
             "properties": {
-              "audio_path": {
-                "type": "string",
-                "description": "The S3 path of the input audio file to convert",
-                "example": "https://example.com/audio_file.wav"
-              },
+                "audio_path": {
+                  "type": "string",
+                  "description": "URL of the audio file to convert to midi.",
+                  "example": "https://example.com/audio.mp3"
+                },
+                "audio_file": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Audio file to upload and process directly."
+                },
               "sonify_midi": {
                 "type": "boolean",
                 "default": true,
@@ -2449,7 +2363,10 @@
                 "description": "URL to receive callback when the MIDI conversion is complete"
               }
             },
-            "required": ["audio_path"]
+            "anyOf": [
+              { "required": ["audio_file"] },
+              { "required": ["audio_path"] }
+            ]
           }
         }
       }
@@ -2522,7 +2439,7 @@
     ]
   }
 },
-"/remix": {
+"/Remix": {
   "post": {
     "summary": "Create a remix using an input audio file and a prompt",
     "description": "This endpoint processes an input audio file or audio path along with a textual prompt to generate a remix. The remix type is specified using the `mode` parameter. The task is queued and responds with task ID, ETA, credit estimate, and status message.",
@@ -2674,7 +2591,7 @@
               },
               "target_sr": {
                 "type": "integer",
-                "description": "Target sample rate in Hz (optional)",
+                "description": "Target sample rate in Hz (optional)- can be any of [8000, 16000, 22050, 24000, 32000, 44100, 48000, 96000, 192000]",
                 "example": 44100
               },
               "target_bit_depth": {

@@ -30,9 +30,9 @@ This is the primary endpoint for initiating music generation requests.
 Listen to a real sample output:
 
 Prompt: a song about greenery, nature and forest.
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/covert1.mp3">Your browser does not support the audio playback.</audio>
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/2872d9a6-4abe-4a8f-a04f-5540c4ef0a1a.mp3">Your browser does not support the audio playback.</audio>
 
-<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/covert1.mp3" target="_blank">Download Audio</a>
+<a href="https://lalals.s3.amazonaws.com/conversions/2872d9a6-4abe-4a8f-a04f-5540c4ef0a1a.wav" target="_blank">Download Audio</a>
 
 ---
 
@@ -77,7 +77,6 @@ import requests
 
 url = "https://api.musicgpt.com/api/public/v1/MusicAI"
 headers = {
-    "accept": "application/json",
     "Authorization": "<api_key>",
     "Content-Type": "application/json"
 }
@@ -100,12 +99,13 @@ print(response.json())
 ### ✅ Success (200 OK)
 ```json
 {
-  "success": true,
-  "message": "Message published to queue",
-  "task_id": "4fc2cdba-005d-4d14-a208-5fb02a2809da",
-  "conversion_id_1": "05092d5c-f8b1-4c96-a4a3-45bc00de6268",
-  "conversion_id_2": "52fcd3b6-3925-41ed-b4c6-aee17a29e40b",
-  "eta": 154
+"success": true,
+"message": "Message published to queue",
+"task_id": "8e058b85-6c22-41cc-a6ed-1e91ed73e34b",
+"conversion_id_1": "2872d9a6-4abe-4a8f-a04f-5540c4ef0a1a",
+"conversion_id_2": "dda98922-d5e9-4fc9-accd-4fc1f0729234",
+"eta": 76,
+"credit_estimate": 0.99
 }
 ```
 
@@ -117,16 +117,18 @@ When the generation is complete, you'll receive the following at your webhook UR
 
 ```json
 {
-  "success": true,
-  "task_id": "fa4f1423-46ab-4d2c-b0a2-e872d67a069d",
-  "conversion_id": "0241b88a-79d1-4cea-aee1-575bd39a71ac",
-  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/projects/0241b88a-79d1-4cea-aee1-575bd39a71ac.wav",
-  "conversion_cost": 0.06621379591836735,
-  "title": "Under the Floodlights",
-  "lyrics": "[Verse 1]...",
-  "music_style": "Pop",
-  "prompt": "song about a football match between Man City and Arsenal"
-}
+  "success": true, 
+  "conversion_type": "Music AI", 
+  "task_id": "8e058b85-6c22-41cc-a6ed-1e91ed73e34b", 
+  "conversion_id": "2872d9a6-4abe-4a8f-a04f-5540c4ef0a1a", 
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/2872d9a6-4abe-4a8f-a04f-5540c4ef0a1a.mp3", 
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/2872d9a6-4abe-4a8f-a04f-5540c4ef0a1a.wav", 
+  "conversion_duration": 213.99510204081633, 
+  "is_flagged": false, 
+  "reason": "", 
+  "lyrics": "[Verse 1]\nI walked this path a thousand times\nWhen my heart was whole\nThese branches held our promises\nBut now they're letting go\n[Chorus]\nEvery damn pine needle points me back to you\nEvery fallen leaf reminds me of the truth\nAnd I can't escape these woods we used to know\n'Cause every damn pine needle points me back to you\n[Verse 2]\nThe moss still grows where we first kissed\nBehind that crooked tree\nI tear it up with shaking hands\nBut it won't set me free\nThese fucking branches mock my pain\nWith every breeze that blows\n[Chorus]\nEvery damn pine needle points me back to you\nEvery fallen leaf reminds me of the truth\nAnd I can't escape these woods we used to know\n'Cause every damn pine needle points me back to you\n[Post-chorus]\n(Points me back, points me back)\n(Every step leads back to you)\n[Bridge]\nMaybe one day I'll walk here\nAnd feel nothing at all\nJust trees being trees\nJust wind being wind\nJust me being me again\n[Verse 3]\nThe sunlight filters through the green\nLike it always did before\nBut nothing feels the same since you\nWon't walk here anymore\n[Chorus]\nEvery damn pine needle points me back to you\nEvery fallen leaf reminds me of the truth\nAnd I can't escape these woods we used to know\n'Cause every damn pine needle points me back to you\n[Outro]\n(Points me back to you)\n(Points me back to you)", 
+  "lyrics_timestamped": "[{\"index\": 0, \"text\": \"[Verse 1]\", \"start\": 13374, \"end\": 13374}, {\"index\": 1, \"text\": \"I walked this path a thousand times\", \"start\": 13374, \"end\": 17089}, {\"index\": 2, \"text\": \"When my heart was whole\", \"start\": 17089, \"end\": 20062}, {\"index\": 3, \"text\": \"These branches held our promises\", \"start\": 20062, \"end\": 23777}, {\"index\": 4, \"text\": \"But now they're letting go\", \"start\": 23777, \"end\": 26006}, {\"index\": 6, \"text\": \"[Chorus]\", \"start\": 26006, \"end\": 26749}, {\"index\": 7, \"text\": \"Every damn pine needle points me back to you\", \"start\": 27492, \"end\": 31207}, {\"index\": 8, \"text\": \"Every fallen leaf reminds me of the truth\", \"start\": 34179, \"end\": 38638}, {\"index\": 9, \"text\": \"And I can't escape these woods we used to know\", \"start\": 38638, \"end\": 45325}, {\"index\": 10, \"text\": \"'Cause every damn pine needle points me back to you\", \"start\": 45325, \"end\": 52012}, {\"index\": 12, \"text\": \"[Verse 2]\", \"start\": 52012, \"end\": 54241}, {\"index\": 13, \"text\": \"The moss still grows where we first kissed\", \"start\": 54241, \"end\": 57957}, {\"index\": 14, \"text\": \"Behind that crooked tree\", \"start\": 58700, \"end\": 60186}, {\"index\": 15, \"text\": \"I tear it up with shaking hands\", \"start\": 61672, \"end\": 63901}, {\"index\": 16, \"text\": \"But it won't set me free\", \"start\": 64644, \"end\": 68359}, {\"index\": 17, \"text\": \"These fucking branches mock my pain\", \"start\": 68359, \"end\": 72074}, {\"index\": 18, \"text\": \"With every breeze that blows\", \"start\": 72074, \"end\": 74303}, {\"index\": 20, \"text\": \"[Chorus]\", \"start\": 74303, \"end\": 75046}, {\"index\": 21, \"text\": \"Every damn pine needle points me back to you\", \"start\": 75046, \"end\": 81734}, {\"index\": 22, \"text\": \"Every fallen leaf reminds me of the truth\", \"start\": 81734, \"end\": 86192}, {\"index\": 23, \"text\": \"And I can't escape these woods we used to know\", \"start\": 86935, \"end\": 94365}, {\"index\": 24, \"text\": \"'Cause every damn pine needle points me back to you\", \"start\": 94365, \"end\": 99567}, {\"index\": 26, \"text\": \"[Post-chorus]\", \"start\": 100310, \"end\": 102539}, {\"index\": 27, \"text\": \"(Points me back, points me back)\", \"start\": 102539, \"end\": 118143}, {\"index\": 28, \"text\": \"(Every step leads back to you)\", \"start\": 118143, \"end\": 122601}, {\"index\": 30, \"text\": \"[Bridge]\", \"start\": 122601, \"end\": 124087}, {\"index\": 31, \"text\": \"Maybe one day I'll walk here\", \"start\": 124087, \"end\": 127802}, {\"index\": 32, \"text\": \"And feel nothing at all\", \"start\": 130031, \"end\": 133746}, {\"index\": 33, \"text\": \"Just trees being trees\", \"start\": 134489, \"end\": 140434}, {\"index\": 34, \"text\": \"Just wind being wind\", \"start\": 143406, \"end\": 145635}, {\"index\": 35, \"text\": \"Just me being me again\", \"start\": 147121, \"end\": 150093}, {\"index\": 37, \"text\": \"[Verse 3]\", \"start\": 150836, \"end\": 152322}, {\"index\": 38, \"text\": \"The sunlight filters through the green\", \"start\": 152322, \"end\": 156038}, {\"index\": 39, \"text\": \"Like it always did before\", \"start\": 156038, \"end\": 157524}, {\"index\": 40, \"text\": \"But nothing feels the same since you\", \"start\": 159010, \"end\": 161982}, {\"index\": 41, \"text\": \"Won't walk here anymore\", \"start\": 162725, \"end\": 164954}, {\"index\": 43, \"text\": \"[Chorus]\", \"start\": 164954, \"end\": 165697}, {\"index\": 44, \"text\": \"Every damn pine needle points me back to you\", \"start\": 165697, \"end\": 170155}, {\"index\": 45, \"text\": \"Every fallen leaf reminds me of the truth\", \"start\": 172384, \"end\": 179072}, {\"index\": 46, \"text\": \"And I can't escape these woods we used to know\", \"start\": 179072, \"end\": 183530}, {\"index\": 47, \"text\": \"'Cause every damn pine needle points me back to you\", \"start\": 185759, \"end\": 190217}, {\"index\": 49, \"text\": \"[Outro]\", \"start\": 190960, \"end\": 194676}, {\"index\": 50, \"text\": \"(Points me back to you)\", \"start\": 194676, \"end\": 199134}, {\"index\": 51, \"text\": \"(Points me back to you)\", \"start\": 199134, \"end\": 206564}]", 
+  "title": "Contradiction"}
 ```
 
 > 🎧 Note: You will receive **two separate webhook responses**, each with a unique `conversion_id` for the two generated versions.

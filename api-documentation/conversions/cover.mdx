@@ -23,17 +23,16 @@ This is the primary endpoint for initiating cover song conversion tasks.
 
 Listen to a real sample output:
 
-Input audio path: 
-<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/ApiDocumentationFiles/input_audio_sample_api_docs.m4a">Your browser does not support the audio playback.</audio>
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/projects/acff300f-1c96-498d-99fe-929b985c5c55.mp3">Your browser does not support the audio playback.</audio>
 
 Output:
-<a href="https://musicgpt.s3.us-east-1.amazonaws.com/conversions/cover_sample.mp3" target="_blank">Download Audio</a>
+<a href="https://lalals.s3.amazonaws.com/projects/acff300f-1c96-498d-99fe-929b985c5c55.wav" target="_blank">Download Audio</a>
 
 ---
 
 ## 🧪 Try it Yourself
 
-Visit the [Cover Endpoint Explorer](/api-documentation/endpoint/Cover) to test it live. Upload your audio, select a voice model, and hear the transformation.
+Visit the [Cover Endpoint Explorer](/api-documentation/endpoint/cover) to test it live. Upload your audio, select a voice model, and hear the transformation.
 
 ---
 
@@ -98,10 +97,13 @@ print(response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "b329c0df-b2eb-4914-b707-4d7dce53577e",
-  "conversion_id": "16708396-da86-4a9e-9b90-66f774cc2382",
-  "eta": 33
+  "success":true,
+  "task_id":"3d137437-4911-4669-b639-9e5701107c25",
+  "conversion_id":"b764b4f6-a842-42dd-a55b-818eb8251dc7",
+  "eta":71,
+  "credit_estimate":1.27,
+  "message":"Message published to queue","status":"IN_QUEUE",
+  "status": "IN_QUEUE"
 }
 ```
 
@@ -122,12 +124,14 @@ When the cover conversion completes, the webhook receives:
 
 ```json
 {
-  "success": true,
-  "task_id": "762b304d-00b8-401b-b62a-99c5f972dffb",
-  "conversion_id": "fa318903-41af-460b-9ab4-86d2c77bea46",
-  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/projects/fa318903-41af-460b-9ab4-86d2c77bea46.wav",
-  "conversion_cost": 0.0327,
-  "conversion_duration": 113.57
+  "success": true, 
+  "conversion_type": "Cover", 
+  "task_id": "0ec93bdd-6132-40db-a873-676dc314919c", 
+  "conversion_id": "acff300f-1c96-498d-99fe-929b985c5c55", 
+  "audio_url": "https://lalals.s3.amazonaws.com/projects/acff300f-1c96-498d-99fe-929b985c5c55.mp3", 
+  "audio_url_wav": "https://lalals.s3.amazonaws.com/projects/acff300f-1c96-498d-99fe-929b985c5c55.wav", 
+  "conversion_cost": "0.88", 
+  "conversion_duration": 272.44
 }
 ```
 

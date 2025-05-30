@@ -17,6 +17,23 @@ This endpoint removes noise from an uploaded or linked audio file. A `webhook_ur
 
 ---
 
+## ▶️ Sample Output
+
+Listen to a real sample output:
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.wav" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [Denoise Endpoint Explorer](/api-documentation/endpoint/denoise) to try your own text samples.
+
+> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
+
+---
+
 ## 🔢 Request Parameters
 
 | Parameter        | Type         | Required | Description                                                                 |
@@ -78,15 +95,37 @@ print(response.status_code, response.json())
 
 ```json
 {
-  "success": true,
-  "task_id": "denoise_task",
-  "conversion_id": "denoise_conv",
-  "eta": -1,
-  "credit_estimate": 85.0,
-  "message": "Successfully published to queue"
+  "success":true,
+  "task_id":"01e88c6d-5006-4ad9-b7c4-80360ca37860",
+  "conversion_id":"c3f08613-998d-4ef9-80a9-9c05891e5237",
+  "eta":71,
+  "credit_estimate":0.48,
+  "message":"",
+  "status":"IN_QUEUE"
 }
 ```
+---
 
+## 📥 Webhook Response
+
+### ✅ Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Denoise", 
+  "task_id": "01e88c6d-5006-4ad9-b7c4-80360ca37860", 
+  "conversion_id": "c3f08613-998d-4ef9-80a9-9c05891e5237", 
+  "audio_path": "files/2e7c373c-aef9-4dda-8e70-2ff50ad18169.wav", 
+  "no_noise": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.mp3", 
+  "no_noise_wav": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.wav", 
+  "noise": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_noise.mp3", 
+  "noise_wav": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_noise.wav", 
+  "message": "de_noising conversion Completed", 
+  "conversion_duration": 136.82721088435375, 
+  "conversion_cost": "0.48"
+}
+```
 ---
 
 ## ❌ Common Errors

@@ -28,7 +28,6 @@ Below is a detailed breakdown of the rate limits for various API endpoints and b
 
 To ensure smooth and uninterrupted usage of the API, follow these guidelines:
 
-- **Batch Requests**: For endpoints like **GetConversionById**, consider batching multiple requests together instead of making individual calls. This reduces the overall number of API calls.
 - **Backoff Mechanism**: Implement a backoff mechanism in your app to automatically wait before retrying failed requests. This can help avoid hitting the rate limits too often.
 - **Monitor Usage**: Keep track of your API usage and ensure that you stay within the limits. Many clients can implement alerts to notify them when their usage approaches the rate limits.
 - **Throttling**: In case your application exceeds the limit, the API may throttle the requests. It is essential to handle these throttled responses gracefully and retry after some time.
