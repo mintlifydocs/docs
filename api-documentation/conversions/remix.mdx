@@ -31,6 +31,20 @@ This endpoint processes an input audio file along with a textual prompt to gener
 > 💡 **Note:** You must provide either `audio_file` or `audio_path` — at least one is required.
 
 ---
+## ▶️ Sample Output
+
+Listen to a real sample output:
+
+Prompt: a song about greenery, nature and forest.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav" target="_blank">Download Audio</a>
+
+---
+
+## 🧪 Try it Yourself
+
+Visit the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to play around — set your payload, hit send, and listen to the generated results live.
 
 ## 📤 Sample Request
 
@@ -86,9 +100,9 @@ print(response.status_code, response.json())
 {
   "success":true,
   "message":"Remix request submitted successfully",
-  "task_id":"85deefa5-3bb8-4dc6-933e-6a81c80c4c0d",
-  "conversion_id_1":"c1d31cd5-f1fd-4182-b6bd-7647d96965c1",
-  "conversion_id_2":"14abd6fb-3b5e-4220-9798-ce2728523732",
+  "task_id":"dff33bac-6844-4cda-83b8-75078ed916b1",
+  "conversion_id_1":"2104a105-2572-4412-b6fb-f67b0382582a",
+  "conversion_id_2":"16f80faa-5e71-4b3d-9291-61776c4eb97f",
   "eta":184,
   "status":"IN_QUEUE",
   "credit_estimate":0.99
@@ -110,17 +124,22 @@ When the remix process completes, the webhook receives:
 
 ```json
 {
-  "success": true,
-  "conversion_type": "Remix",
-  "task_id": "8a73983c-96f4-4fd2-966c-96644e57139a",
-  "conversion_id": "7cf8e607-7237-48d6-8d1c-6e518e58abdf",
-  "audio_path": "files/1f465668-781f-4b5e-b3f1-0220c7d3ee15.wav",
-  "remix_audio_url": "https://musicgpt.s3.amazonaws.com/conversions/8a73983c-96f4-4fd2-966c-96644e57139a_remix.mp3",
-  "message": "Remix conversion Completed",
-  "conversion_duration": 311.14,
-  "conversion_cost": 3.12
+  "success": true, 
+  "conversion_type": "Remix", 
+  "task_id": "dff33bac-6844-4cda-83b8-75078ed916b1", 
+  "conversion_id": "2104a105-2572-4412-b6fb-f67b0382582a", 
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3", 
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav", 
+  "conversion_duration": 162.44680272108843, 
+  "is_flagged": false, 
+  "reason": "", 
+  "lyrics": "[Verse 1]\nI've been staring at the edge of the water\nLong as I can remember\nNever really knowing why\nI wish I could be the perfect daughter\nbut I come back to the water no matter how hard I try\n[Verse 2]\nevery turn I take every trail I track,\nevery path I make, every road leads back\nto the place I know, where I cannot go,\nwhere I long to be.\n[Chorus]\nSee the line where the sky meets the sea, it calls me\nme and no one knows how far it goes\nif the wind in my sail on the sea stays behind me\none day i'll know\nIf I go there's just no telling how far I'll go\n[Verse 3]\nI know everybody on this island\nseems so happy on this island everything is by design\ni know everybody on this island has a role\non this island so maybe i can roll with mine\ni can lead with pride i can make us strong\ni'll be satisfied if i play along\nbut the voice inside sings a different song\nwhat is wrong with me?\n[Chorus]\nSee the light as it shines on the sea\nIt's blinding\nBut no one knows\nHow deep it goes\nAnd it seems like it's calling out to me\nSo come find me\nAnd let me know\nWhat's beyond that line\nWill I cross that line\n[Outro]\nThe line where the sky on the sea stays behind me\nOne day I will know\nhow far I'll go\nOh!", 
+  "lyrics_timestamped": "[{\"index\": 0, \"text\": \"[Verse 1]\", \"start\": 3200, \"end\": 3200}, {\"index\": 1, \"text\": \"I've been staring at the edge of the water\", \"start\": 3200, \"end\": 7040}, {\"index\": 2, \"text\": \"Long as I can remember\", \"start\": 7680, \"end\": 10240}, {\"index\": 3, \"text\": \"Never really knowing why\", \"start\": 10880, \"end\": 12800}, {\"index\": 4, \"text\": \"I wish I could be the perfect daughter\", \"start\": 15360, \"end\": 19840}, {\"index\": 5, \"text\": \"but I come back to the water no matter how hard I try\", \"start\": 19840, \"end\": 24960}, {\"index\": 7, \"text\": \"[Verse 2]\", \"start\": 24960, \"end\": 26880}, {\"index\": 8, \"text\": \"every turn I take every trail I track,\", \"start\": 26880, \"end\": 30080}, {\"index\": 9, \"text\": \"every path I make, every road leads back\", \"start\": 30720, \"end\": 32640}, {\"index\": 10, \"text\": \"to the place I know, where I cannot go,\", \"start\": 33280, \"end\": 35200}, {\"index\": 11, \"text\": \"where I long to be.\", \"start\": 35840, \"end\": 37120}, {\"index\": 13, \"text\": \"[Chorus]\", \"start\": 37760, \"end\": 39040}, {\"index\": 14, \"text\": \"See the line where the sky meets the sea, it calls me\", \"start\": 39040, \"end\": 42880}, {\"index\": 15, \"text\": \"me and no one knows how far it goes\", \"start\": 43520, \"end\": 48000}, {\"index\": 16, \"text\": \"if the wind in my sail on the sea stays behind me\", \"start\": 50560, \"end\": 55040}, {\"index\": 17, \"text\": \"one day i'll know\", \"start\": 55040, \"end\": 56960}, {\"index\": 18, \"text\": \"If I go there's just no telling how far I'll go\", \"start\": 58880, \"end\": 61440}, {\"index\": 20, \"text\": \"[Verse 3]\", \"start\": 62720, \"end\": 62720}, {\"index\": 21, \"text\": \"I know everybody on this island\", \"start\": 62720, \"end\": 65280}, {\"index\": 22, \"text\": \"seems so happy on this island everything is by design\", \"start\": 65920, \"end\": 72960}, {\"index\": 23, \"text\": \"i know everybody on this island has a role\", \"start\": 72960, \"end\": 78080}, {\"index\": 24, \"text\": \"on this island so maybe i can roll with mine\", \"start\": 78720, \"end\": 84480}, {\"index\": 25, \"text\": \"i can lead with pride i can make us strong\", \"start\": 84480, \"end\": 87040}, {\"index\": 26, \"text\": \"i'll be satisfied if i play along\", \"start\": 87680, \"end\": 90240}, {\"index\": 27, \"text\": \"but the voice inside sings a different song\", \"start\": 90240, \"end\": 93440}, {\"index\": 28, \"text\": \"what is wrong with me?\", \"start\": 93440, \"end\": 95360}, {\"index\": 30, \"text\": \"[Chorus]\", \"start\": 95360, \"end\": 98560}, {\"index\": 31, \"text\": \"See the light as it shines on the sea\", \"start\": 98560, \"end\": 101120}, {\"index\": 32, \"text\": \"It's blinding\", \"start\": 101120, \"end\": 102400}, {\"index\": 33, \"text\": \"But no one knows\", \"start\": 103680, \"end\": 104960}, {\"index\": 34, \"text\": \"How deep it goes\", \"start\": 106880, \"end\": 110080}, {\"index\": 35, \"text\": \"And it seems like it's calling out to me\", \"start\": 110080, \"end\": 112640}, {\"index\": 36, \"text\": \"So come find me\", \"start\": 112640, \"end\": 115200}, {\"index\": 37, \"text\": \"And let me know\", \"start\": 115200, \"end\": 117120}, {\"index\": 38, \"text\": \"What's beyond that line\", \"start\": 117120, \"end\": 128639}, {\"index\": 39, \"text\": \"Will I cross that line\", \"start\": 128639, \"end\": 131840}, {\"index\": 41, \"text\": \"[Outro]\", \"start\": 131840, \"end\": 133120}, {\"index\": 42, \"text\": \"The line where the sky on the sea stays behind me\", \"start\": 133120, \"end\": 136960}, {\"index\": 43, \"text\": \"One day I will know\", \"start\": 138240, \"end\": 138880}, {\"index\": 44, \"text\": \"how far I'll go\", \"start\": 138880, \"end\": 142080}, {\"index\": 45, \"text\": \"Oh!\", \"start\": 142720, \"end\": 142720}]", 
+  "title": "Boundless"
 }
 ```
+> 🎧 Note: You will receive **two separate webhook responses**, each with a unique `conversion_id` for the two generated versions.
+
 
 The response provides a downloadable or streamable remix audio file.
 
