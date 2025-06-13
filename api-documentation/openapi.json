@@ -2024,6 +2024,9 @@
                 "example": "http://your-webhook-url.com/callback"
               }
             },
+            "required": [
+              "start_time", "end_time"
+            ],
             "anyOf": [
               { "required": ["audio_file"] },
               { "required": ["audio_path"] }
