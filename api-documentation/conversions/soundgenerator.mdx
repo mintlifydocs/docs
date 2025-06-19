@@ -1,0 +1,121 @@
+---
+title: Sound Generator
+openapi: 'POST /sound_generator'
+---
+
+Create custom sounds with AI using just a simple prompt.
+
+**Sound Generator** lets you synthesize high-quality sound effects and audio textures directly from text prompts. Perfect for developers, game designers, filmmakers, and creative technologists who need original sounds on demand.
+
+- 🎛 Generate realistic or abstract sounds
+- 🧠 Fine-tuned AI audio creation
+- 🔁 Instant feedback or asynchronous delivery via webhook
+
+Sound Generator is designed for flexibility, speed, and professional-grade quality.
+
+---
+
+## Endpoint
+
+```http
+POST /sound_generator
+```
+
+Use this endpoint to generate sounds based on a text description.
+
+---
+
+## Sample Output
+
+Listen to an actual sample:
+
+Prompt: sound of waves crashing at the sea shore.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav" target="_blank">Download Audio</a>
+
+---
+
+## Try it Yourself
+
+Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/SoundGenerator) to try live prompt-based sound creation.
+
+> 🚀 Experiment with different descriptions — from realistic sounds (like "city street at night") to fantastical ones ("alien spacecraft landing")!
+
+---
+
+## 🛠️ Request Parameters
+
+| Parameter        | Type    | Required | Description                                             |
+|------------------|---------|----------|---------------------------------------------------------|
+| `prompt`         | String  | Yes      | A natural language description of the sound you want    |
+| `webhook_url`    | String  | Optional | Webhook URL to receive a callback with the audio result |
+| `user_id`        | String  | Optional | Optional user ID for tracking purposes                  |
+
+---
+
+## Sample Request
+
+### Python
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/SoundGenerator"
+headers = {
+    "Authorization": "<api_key>"
+}
+payload = {
+    "prompt": "sound of an ancient temple door creaking open",
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "audio_length" : 20
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+```
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+```json
+{
+  "success":true,
+  "task_id":"0af8567f-6156-4bb2-9adc-99b0c8792700",
+  "conversion_id":"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8",
+  "eta":84,
+  "credit_estimate":0.99,
+  "message":"",
+  "status":"IN_QUEUE"
+}
+```
+
+---
+
+## Webhook Response
+
+Once the sound is ready, your webhook will receive:
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Sound Creator", 
+  "task_id": "0af8567f-6156-4bb2-9adc-99b0c8792700", 
+  "conversion_id": "9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8", 
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3", 
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav", 
+  "conversion_duration": 2.089795918367347, 
+  "message": "Audio Generation Completed Successfully", 
+  "conversion_paths": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": "https://lalals.s3.amazonaws.com/https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3"}, 
+  "conversion_paths_wav": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": "https://lalals.s3.amazonaws.com/https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav"}, 
+  "conversion_durations": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": 2.089795918367347}
+}
+```
+
+>  Note: If your webhook is set, you’ll get the sound automatically once ready. Otherwise, you can fetch it manually using the `conversion_id`.
+
+---
+
+## Payload and Request Formation
+

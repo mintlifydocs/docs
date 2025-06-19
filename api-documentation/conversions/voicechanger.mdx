@@ -1,0 +1,144 @@
+---
+title: Voice Changer
+openapi: 'POST /VoiceChanger'
+---
+
+Convert the voice from an audio file or URL to a different voice using AI voice models.
+
+The **VoiceChanger** endpoint provides real-time voice transformation by modifying the pitch, removing background noise, and converting the voice using a selected model. Ideal for creative content, dubbing, or personalized audio experiences.
+
+---
+
+## Endpoint
+
+```http
+POST /VoiceChanger
+```
+
+This is the primary endpoint for initiating voice conversion tasks.
+
+
+---
+
+## Sample Output
+
+Listen to a real sample output:
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.mp3">Your browser does not support the audio playback.</audio>
+
+Output File:
+<a href="https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.wav" target="_blank">Download Audio</a>
+
+---
+
+## Try it Yourself
+
+Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/voicetovoice) to test it live. Upload a sample, pick a voice, and experience real-time voice transformation.
+
+---
+
+## Request Parameters
+
+| Parameter           | Type        | Required | Description                                                                 |
+|--------------------|-------------|----------|-----------------------------------------------------------------------------|
+| `audio_url`        | `String`    | Optional | URL of the audio file to convert. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`       | `UploadFile`| Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `voice_id`         | `String`    | ✅ Yes   | Voice model to convert the audio into.                                      |
+| `remove_background`| `Integer`   | Optional | Set to `1` to remove background noise. Default is `0`.                      |
+| `pitch`            | `Integer`   | Optional | Adjust pitch between -12 and 12 semitones. Default is `0`.                  |
+| `webhook_url`      | `String`    | Optional | Callback URL for async response.                                            |
+
+> 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
+
+---
+
+## Sample Request
+
+### cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/VoiceChanger" \
+-H "accept: multipart/form-data" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
+-F "voice_id=Drake" \
+-F "remove_background=0" \
+-F "pitch=0" \
+-F "webhook_url=http://webhook.musicgpt.com"
+```
+
+### Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/VoiceChanger"
+headers = {
+    "accept": "multipart/form-data",
+    "Authorization": "<api_key>"
+}
+
+input_audio_file = open("{path_to_your_audio_file}", "rb")
+payload = {
+    "audio_url": "",
+    "voice_id": "Drake",
+    "pitch": 0,
+    "remove_background": 0,
+    "webhook_url": "http://abc.requestcatcher.com/test",
+}
+
+response = requests.post(url, headers=headers, data=payload, files={"audio_file": input_audio_file})
+print(response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+
+```json
+{
+  "success":true,
+  "task_id": "fdcca59e-9788-43fc-9ee6-e9983064c432",  
+  "conversion_id":"3b8dd3e8-104a-4a2f-86ba-3ed722f5190a",
+  "eta":16,
+  "credit_estimate":1.07,
+  "message":"",
+  "status":"IN_QUEUE"
+}
+```
+
+---
+## Webhook Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_type": "Voice Conversion", 
+  "task_id": "fdcca59e-9788-43fc-9ee6-e9983064c432", 
+  "conversion_id": "67092f68-045d-4e3c-8006-532f144dd610", 
+  "audio_url": "https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.mp3", 
+  "audio_url_wav": "https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.wav", 
+  "conversion_cost": "0.78", 
+  "conversion_duration": 272.44
+}
+```
+---
+
+## Common Errors
+
+- **400 Bad Request**: Invalid or missing input file.
+- **402 Payment Required**: Your credit balance is insufficient.
+- **422 Unprocessable Entity**: No `audio_url` or `audio_file` provided.
+- **500 Internal Server Error**: Something went wrong on our end.
+
+
+You can download or stream the result directly from the `audio_url`.
+
+---
+
+## Payload and Request Formation

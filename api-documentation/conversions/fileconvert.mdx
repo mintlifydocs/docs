@@ -1,0 +1,158 @@
+---
+title: File Conversion  
+openapi: 'POST /file_convert'  
+
+---
+
+Convert audio files to different formats with optional webhook support for asynchronous updates.
+
+---
+
+## Endpoint
+
+```http
+POST /file_convert
+```
+
+This endpoint processes an uploaded or linked audio file and converts it to a specified output format. You may also define optional parameters like sample rate and bit depth.
+
+---
+
+## Request Parameters
+
+| Parameter           | Type         | Required | Description                                                                 |
+|---------------------|--------------|----------|-----------------------------------------------------------------------------|
+| `audio_url`         | `String`     | Optional | The URL of an audio file to convert. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`        | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `target_format`     | `String`     | Yes      | Desired output format. Supported: `mp3`, `wav`, `flac`, `ogg`, `aac`, `webm`. |
+| `target_sr`         | `Integer`    | Optional | Target sample rate in Hz. Defaults to original if not specified.            |
+| `target_bit_depth`  | `Integer`    | Optional | Target bit depth. Options: `16`, `24`, `32`. Defaults to `16`.              |
+| `webhook_url`       | `String`     | Optional | Callback URL to receive the result once conversion is complete.             |
+
+---
+## Sample Output
+
+Listen to a real sample output:
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.wav" target="_blank">Download Audio</a>
+
+---
+
+## Try it Yourself
+
+Visit the [File Conversion Endpoint Explorer](/api-documentation/endpoint/fileconvert) to try your own text samples.
+
+> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
+
+---
+
+## Sample Request
+
+### cURL
+
+```bash
+curl -X POST \
+  -F "audio_file=@input.mp3" \
+  -F "target_format=wav" \
+  -F "target_sr=44100" \
+  -F "webhook_url=https://yourdomain.com/webhook" \
+  https://api.musicgpt.com/api/public/v1/convert
+```
+
+### Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/file_convert"
+headers = {
+    "Authorization": "<<<api key>>>"
+}
+
+# Option 1: URL
+payload = {
+    "audio_url": "https://example.com/audio.mp3",
+    "target_format": "wav",
+    "target_sr": 44100,
+    "webhook_url": "https://your-webhook-url.com/callback"
+}
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
+
+# Option 2: File Upload
+# payload = {
+#     "target_format": "flac",
+#     "target_bit_depth": 24,
+#     "webhook_url": "https://your-webhook-url.com/callback"
+# }
+# with open("audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+# print(response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+
+```json
+{
+  "success":true,
+  "task_id":"7024eac0-02e2-4811-96e3-7031f007f97f",
+  "conversion_id":"a1286a84-d886-47d9-a717-77af15894cb9",
+  "eta":-1,
+  "credit_estimate":19.833,
+  "message":"",
+  "status":"IN_QUEUE"
+}
+```
+---
+
+## Webhook Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": true, 
+  "conversion_id": "a1286a84-d886-47d9-a717-77af15894cb9", 
+  "output_file_path": "https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.mp3", 
+  "conversion_type": "File Conversion", 
+  "task_id": "7024eac0-02e2-4811-96e3-7031f007f97f"
+}
+```
+---
+
+## Common Errors
+
+- **400 Bad Request**: Invalid request. Possibly due to missing parameters or unsupported formats.
+- **500 Internal Server Error**: Server encountered an error during processing.
+
+---
+
+## Webhook Response
+
+Once the file conversion is completed, the webhook receives:
+
+```json
+{
+  "success": true,
+  "conversion_id": "teststagetestapril26",
+  "output_file_path": "https://musicgpt.s3.amazonaws.com/conversions/123abc-denoise_no_noise.mp3",
+  "conversion_type": "File Conversion"
+}
+```
+
+---
+
+## Output Fields
+
+- `output_file_path`: Direct URL to download the converted audio file.
+- `conversion_type`: Always `File Conversion` for this endpoint.
+- `conversion_id`: A unique ID to track the request status.
+
