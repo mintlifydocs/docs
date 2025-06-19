@@ -13,7 +13,7 @@ Change the speed of your audio files without affecting quality.
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /audio_speed_changer
@@ -23,14 +23,14 @@ Use this endpoint to adjust the speed of an audio file.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Listen to the speed-changed audio:
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/FileConversions/b0ac9d46-64d7-4843-af48-a0b6effe3666.wav">Your browser does not support audio playback.</audio>
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Audio Speed Changer Endpoint Explorer](/api-documentation/endpoint/audio_speed_changer) to upload audio files and adjust their playback speed.
 
@@ -38,7 +38,7 @@ Visit the [Audio Speed Changer Endpoint Explorer](/api-documentation/endpoint/au
 
 ---
 
-## 🛠️ Request Parameters
+## Request Parameters
 
 | Parameter              | Type    | Required | Description                                                                 |
 |------------------------|---------|----------|-----------------------------------------------------------------------------|
@@ -51,33 +51,40 @@ Visit the [Audio Speed Changer Endpoint Explorer](/api-documentation/endpoint/au
 
 ---
 
-## 📥 Sample Request
+## Sample Request
 
-### 🐍 Python
+### Python
 ```python
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_speed_changer"
-headers = {
-    "Authorization": "<api_key>",
-    "Content-Type": "application/json"
-}
-payload = {
-    "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
-    "speed_change_factor": 1.5,
-    "output_extension": "mp3",
-    "webhook_url": "https://abcd.requestcatcher.com/",
-}
+headers = {"Authorization": "<API_KEY>"}
 
-response = requests.post(url, json=payload, headers=headers)
+# Option 1: Use audio URL
+payload = {
+    "audio_url": "https://example.com/input_audio.mp3",
+    "speed_change_factor": 1.5,
+    "output_extension": "mp3"
+}
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
+
+# Option 2: Upload local audio file
+payload = {
+    "speed_change_factor": 1.25,
+    "output_extension": "wav"
+}
+with open("input_audio.mp3", "rb") as f:
+    files = {"audio_file": f}
+    response = requests.post(url, headers=headers, data=payload, files=files)
 print(response.json())
 ```
 
 ---
 
-## 📤 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 ```json
 {
   "success":true,
@@ -90,7 +97,7 @@ print(response.json())
 }
 ```
 ---
-## 📞 Webhook Response
+## Webhook Response
 
 When transcription completes, your webhook will receive:
 
@@ -109,3 +116,4 @@ When transcription completes, your webhook will receive:
 
 ---
 
+## Payload and Request Formation

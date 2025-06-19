@@ -8,7 +8,7 @@ Convert audio files to different formats with optional webhook support for async
 
 ---
 
-## 🎵 Endpoint
+## Endpoint
 
 ```http
 POST /file_convert
@@ -18,7 +18,7 @@ This endpoint processes an uploaded or linked audio file and converts it to a sp
 
 ---
 
-## 🔢 Request Parameters
+## Request Parameters
 
 | Parameter           | Type         | Required | Description                                                                 |
 |---------------------|--------------|----------|-----------------------------------------------------------------------------|
@@ -30,7 +30,7 @@ This endpoint processes an uploaded or linked audio file and converts it to a sp
 | `webhook_url`       | `String`     | Optional | Callback URL to receive the result once conversion is complete.             |
 
 ---
-## ▶️ Sample Output
+## Sample Output
 
 Listen to a real sample output:
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.us-east-1.amazonaws.com/FileConversions/059ab1ef-c92d-4be4-b2f3-4fe57d26ae87.mp3">Your browser does not support the audio playback.</audio>
@@ -39,7 +39,7 @@ Listen to a real sample output:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [File Conversion Endpoint Explorer](/api-documentation/endpoint/fileconvert) to try your own text samples.
 
@@ -47,9 +47,9 @@ Visit the [File Conversion Endpoint Explorer](/api-documentation/endpoint/fileco
 
 ---
 
-## 📤 Sample Request
+## Sample Request
 
-### 👚 cURL
+### cURL
 
 ```bash
 curl -X POST \
@@ -60,43 +60,45 @@ curl -X POST \
   https://api.musicgpt.com/api/public/v1/convert
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/convert"
-
+url = "https://api.musicgpt.com/api/public/v1/file_convert"
 headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
+    "Authorization": "<<<api key>>>"
 }
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
-
+# Option 1: URL
 payload = {
-    "audio_url": "",
+    "audio_url": "https://example.com/audio.mp3",
     "target_format": "wav",
     "target_sr": 44100,
-    "target_bit_depth": 24,
-    "webhook_url": "https://yourdomain.com/webhook"
+    "webhook_url": "https://your-webhook-url.com/callback"
 }
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
 
-response = requests.post(url=url,
-                         headers=headers,
-                         data=payload,
-                         files={"audio_file": input_audio_file})
-
-print(response.status_code, response.json())
+# Option 2: File Upload
+# payload = {
+#     "target_format": "flac",
+#     "target_bit_depth": 24,
+#     "webhook_url": "https://your-webhook-url.com/callback"
+# }
+# with open("audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+# print(response.json())
 ```
 
 > 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -111,9 +113,9 @@ print(response.status_code, response.json())
 ```
 ---
 
-## 📥 Webhook Response
+## Webhook Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -126,21 +128,21 @@ print(response.status_code, response.json())
 ```
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 - **400 Bad Request**: Invalid request. Possibly due to missing parameters or unsupported formats.
 - **500 Internal Server Error**: Server encountered an error during processing.
 
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 Once the file conversion is completed, the webhook receives:
 
 ```json
 {
   "success": true,
-  "conversion_id": "shaswatstagetestapril26",
+  "conversion_id": "teststagetestapril26",
   "output_file_path": "https://musicgpt.s3.amazonaws.com/conversions/123abc-denoise_no_noise.mp3",
   "conversion_type": "File Conversion"
 }
@@ -148,7 +150,7 @@ Once the file conversion is completed, the webhook receives:
 
 ---
 
-## 📂 Output Fields
+## Output Fields
 
 - `output_file_path`: Direct URL to download the converted audio file.
 - `conversion_type`: Always `File Conversion` for this endpoint.

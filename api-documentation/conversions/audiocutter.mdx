@@ -15,7 +15,7 @@ Audio Cutter ensures your trimmed audio sounds clean and professional.
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /audio_cutter
@@ -25,7 +25,7 @@ Use this endpoint to trim a section from an existing audio file.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Listen to the trimmed audio:
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/FileConversions/8993b364-9141-4de7-ab38-5a4178618f0e.mp3">Your browser does not support audio playback.</audio>
@@ -34,7 +34,7 @@ Listen to the trimmed audio:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Audio Cutter Endpoint Explorer](/api-documentation/endpoint/audio_cutter) to cut and download trimmed audio segments instantly.
 
@@ -42,7 +42,7 @@ Visit the [Audio Cutter Endpoint Explorer](/api-documentation/endpoint/audio_cut
 
 ---
 
-## 🛠️ Request Parameters
+## Request Parameters
 
 | Parameter            | Type    | Required | Description                                                   |
 |----------------------|---------|----------|---------------------------------------------------------------|
@@ -54,33 +54,42 @@ Visit the [Audio Cutter Endpoint Explorer](/api-documentation/endpoint/audio_cut
 
 ---
 
-## 📥 Sample Request
+## Sample Request
 
-### 🐍 Python
+### Python
 ```python
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_cutter"
-headers = {
-    "Authorization": "<api_key>",
-    "Content-Type": "application/json"
-}
+headers = {"Authorization": "<API_KEY>"}
+
+# Option 1: Using audio URL
 payload = {
-    "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
-    "start_time": 10.5,
-    "end_time": 45.0,
+    "audio_url": "https://example.com/input_audio.mp3",
+    "start_time": 10500,
+    "end_time": 45000,
     "output_extension": "mp3"
 }
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
 
-response = requests.post(url, json=payload, headers=headers)
+# Option 2: Upload local audio file
+payload = {
+    "start_time": 5000,
+    "end_time": 20000,
+    "output_extension": "wav"
+}
+with open("input_audio.mp3", "rb") as f:
+    files = {"audio_file": f}
+    response = requests.post(url, headers=headers, data=payload, files=files)
 print(response.json())
 ```
 
 ---
 
-## 📤 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 ```json
 {
   "success":true,
@@ -94,7 +103,7 @@ print(response.json())
 ```
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 When audio cutter conversion completes, your webhook will receive:
 
@@ -113,3 +122,4 @@ When audio cutter conversion completes, your webhook will receive:
 
 ---
 
+## Payload and Request Formation

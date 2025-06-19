@@ -8,7 +8,7 @@ Extract key and BPM (beats per minute) from an input audio file with optional we
 
 ---
 
-## 🎷 Endpoint
+## Endpoint
 
 ```http
 POST /extract_key_bpm
@@ -18,7 +18,7 @@ This endpoint analyzes an audio file to determine its musical key and BPM. You c
 
 ---
 
-## 🔢 Request Parameters
+## Request Parameters
 
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
@@ -30,9 +30,9 @@ This endpoint analyzes an audio file to determine its musical key and BPM. You c
 
 ---
 
-## 📤 Sample Request
+## Sample Request
 
-### 👚 cURL
+### cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/KeyBpmExtract" \
@@ -42,40 +42,41 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/KeyBpmExtract" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/KeyBpmExtract"
-
+url = "https://api.musicgpt.com/api/public/v1/extract_key_bpm"
 headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
+    "Authorization": "<<<api key>>>"
 }
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
-
+# Option 1: URL
 payload = {
-    "audio_url": "",
-    "webhook_url": "http://abcd.requestcatcher.com/test"
+    "audio_url": "https://example.com/audio.m4a",
+    "webhook_url": ""
 }
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
 
-response = requests.post(url=url,
-                         headers=headers,
-                         data=payload,
-                         files={"audio_file": input_audio_file})
-
-print(response.status_code, response.json())
+# Option 2: File Upload
+# payload = {
+#     "webhook_url": "https://www.test.requestcatcher.com/test"
+# }
+# with open("audio.m4a", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+# print(response.json())
 ```
 
 > 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -91,14 +92,14 @@ print(response.status_code, response.json())
 
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 - **422 Unprocessable Entity**: Both `audio_url` and `audio_file` cannot be `None`.
 - **500 Internal Server Error**: A server error occurred during processing.
 
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 Once key and BPM extraction is completed, the webhook receives:
 
@@ -115,10 +116,9 @@ Once key and BPM extraction is completed, the webhook receives:
   "conversion_type": "Key BPM Extraction"
 }
 ```
-
 ---
 
-## 📂 Output Fields
+## Output Fields
 
 - `key_changes`: A mapping of time ranges to identified keys.
 - `dominant_key`: The most prominent key throughout the audio.
@@ -126,3 +126,6 @@ Once key and BPM extraction is completed, the webhook receives:
 - `conversion_path`: Path to the original input audio file.
 - `conversion_path_wav`: Path to the `.wav` version of the input file.
 
+---
+
+## Payload and Request Formation

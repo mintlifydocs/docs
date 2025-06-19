@@ -1,14 +1,11 @@
 ---
-
 title: Extraction
 openapi: 'POST /Extraction'
----------------------------
-
+---
 Extract vocals, instrumentals, or other stems from an audio file or URL, with optional preprocessing. This endpoint supports file uploads or remote URLs and allows webhook callbacks for async updates.
 
 ---
-
-## 🎧 Endpoint
+## Endpoint
 
 ```http
 POST /Extraction
@@ -18,22 +15,81 @@ Use this endpoint to extract stems like vocals, drums, guitar, or more from an a
 
 ---
 
-## 🔢 Request Parameters
+## Request Parameters
 
 | Parameter               | Type         | Required | Description                                                                                 |
 | ----------------------- | ------------ | -------- | ------------------------------------------------------------------------------------------- |
 | `audio_url`             | `string`     | Optional | URL of the audio file to extract from. Either `audio_url` or `audio_file` must be provided. |
 | `audio_file`            | `UploadFile` | Optional | Audio file to upload and process. Either `audio_url` or `audio_file` must be provided.      |
-| `stems`                 | `string`     | Optional | JSON string list of required stems. e.g., `["vocals", "drums"]`. Full list below.           |
-| `preprocessing_options` | `string`     | Optional | JSON string list of preprocessing options. e.g., `["Denoise"]`. Full list below.            |
+| `stems`                 | `string`     | Optional | JSON string list of required stems. e.g., `["vocals", "drums"]`. See all options below.     |
+| `preprocessing_options` | `string`     | Optional | JSON string list of preprocessing options. e.g., `["Denoise"]`. See all options below.      |
 | `webhook_url`           | `string`     | Optional | Callback URL to receive async processing results.                                           |
 
-> ✨ **Available Stems:** `vocals`, `instrumental`, `male_vocal`, `female_vocal`, `lead_vocal`, `back_vocal`, `bass`, `drums`, `guitar`, `piano`, `keys`, `strings`, `winds`, `rhythm_guitar`, `solo_guitar`, `acoustic_guitar`, `electric_guitar`, `kick_drum`, `snare_drum`, `toms`, `hi_hat`, `ride`, `crash`
+---
 
-> ⚙️ **Preprocessing Options:** `Denoise`, `Deecho`, `Dereverb`
+## Available Stems
+
+The following audio stems can be extracted. They are grouped into categories based on instrument type or function:
+
+### Vocals
+
+- `vocals` — All vocal content (combined)
+- `male_vocal` — Male vocals only
+- `female_vocal` — Female vocals only
+- `lead_vocal` — Lead singer’s voice
+- `back_vocal` — Backing vocals
+
+### Guitar
+
+- `guitar` — All guitar sounds
+- `acoustic_guitar` — Acoustic guitar
+- `electric_guitar` — Electric guitar
+- `rhythm_guitar` — Rhythm guitar parts
+- `solo_guitar` — Solo guitar parts
+
+### Drums
+
+- `drums` — All drum elements
+- `kick_drum` — Kick or bass drum
+- `snare_drum` — Snare drum
+- `toms` — Tom drums
+- `hi_hat` — Hi-hat cymbals
+- `ride` — Ride cymbal
+- `crash` — Crash cymbal
+
+### Keys and Piano
+
+- `piano` — Piano only
+- `keys` — Keyboard instruments (includes synths, organs, etc.)
+
+### Strings and Winds
+
+- `strings` — String instruments (e.g., violin, cello)
+- `winds` — Wind instruments (e.g., saxophone, flute)
+
+### Other Instruments
+
+- `bass` — Bassline instruments
+- `instrumental` — All non-vocal content (used to get instrumental version)
+
+### Full Band (Composite)
+
+- `drums`, `bass`, `piano`, `guitar` — Common full-band instrumentation
+
+> **Note:** If the `stems` parameter is omitted or an empty list is supplied, this full band composite (`["drums", "bass", "piano", "guitar"]`) is used as the default.
 
 ---
-## ▶️ Sample Output
+
+## Preprocessing Options
+
+These preprocessing steps can be applied to the input audio before stem extraction:
+
+- `Denoise` — Reduces ambient or background noise
+- `Deecho` — Removes echo and early reflections
+- `Dereverb` — Reduces late reverberation from recordings
+
+---
+## Sample Output
 
 Sample Output : Vocals
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.mp3">Your browser does not support the audio playback.</audio>
@@ -47,9 +103,9 @@ Sample Output : instrumentals
 <a href="https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.wav" target="_blank">Download Audio</a>
 
 ---
-## 📤 Sample Request
+## Sample Request
 
-### 🦚 cURL
+### cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
@@ -61,7 +117,7 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
@@ -77,6 +133,7 @@ files = {
     "audio_file": open("path_to_audio.mp3", "rb")
 }
 data = {
+    "audio_url": "",
     "stems": json.dumps(["vocals", "drums"]),
     "preprocessing_options": json.dumps(["Denoise"]),
     "webhook_url": "http://webhook.musicgpt.com"
@@ -90,9 +147,9 @@ print(response.json())
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -108,9 +165,9 @@ print(response.json())
 
 ---
 
-## 📥 Webhook Response
+## Webhook Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -131,32 +188,13 @@ print(response.json())
 
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 * **422 Unprocessable Entity**: When neither `audio_url` nor `audio_file` is provided.
 * **500 Internal Server Error**: A server-side error occurred.
 
----
-
-## 🗰️ Webhook Response
-
-If a `webhook_url` is provided, it receives this payload on completion:
-
-```json
-{
-  "success": true,
-  "task_id": "62725d68-01e8-4c87-8fb0-298aa81c529c",
-  "conversion_id": "46b358c9-b22f-49d1-a68d-17901a6a549b",
-  "audio_path": "https://aws.signed.url",
-  "vocal": "https://aws.signed.url/vocal",
-  "instrumental": "https://aws.signed.url/instrumental",
-  "back_vocal": "https://aws.signed.url/back_vocal",
-  "conversion_cost": 5.0,
-  "conversion_duration": 120.5
-}
-```
-
 Download or stream individual stems from their respective URLs.
 
+---
 
 ## Payload and Request Formation

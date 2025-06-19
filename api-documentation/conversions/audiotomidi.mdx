@@ -10,7 +10,7 @@ Ideal for music production, remixing, and advanced audio content creation.
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /audio_to_midi
@@ -20,7 +20,7 @@ This is the primary endpoint for initiating audio-to-MIDI conversion tasks.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Generated MIDI and optional outputs from a sample audio file:
 
@@ -30,7 +30,7 @@ Generated MIDI and optional outputs from a sample audio file:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Audio to MIDI Endpoint Explorer](/api-documentation/endpoint/audio_to_midi) to test it live. Upload an audio file, and get back the MIDI version!
 
@@ -49,12 +49,12 @@ Visit the [Audio to MIDI Endpoint Explorer](/api-documentation/endpoint/audio_to
 
 ---
 
-## 📤 Sample Request
+## Sample Request
 
-### 🐚 cURL
+### cURL
 
 ```bash
-curl -X POST "https://api.example.com/api/public/v1/audio_to_midi" \
+curl -X POST "https://api.musicgpt.com/api/public/v1/audio_to_midi" \
 -H "accept: application/json" \
 -H "Authorization: <api_key>" \
 -d '{
@@ -65,25 +65,33 @@ curl -X POST "https://api.example.com/api/public/v1/audio_to_midi" \
 }'
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
 
-url = "https://api.example.com/api/public/v1/audio_to_midi"
-headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
-}
+url = "https://api.musicgpt.com/api/public/v1/audio_to_midi"
+headers = {"Authorization": "<<<api key>>>"}
 
+# Option 1: Use audio URL
 payload = {
-    "audio_path": "s3://your-bucket/input_audio.wav",
+    "audio_url": "https://example.com/audio_file.wav",
     "sonify_midi": True,
     "save_note_events": True,
-    "webhook_url": "https://yourdomain.com/webhook"
+    "webhook_url": "https://your-webhook-url.com/callback"
 }
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
 
-response = requests.post(url, headers=headers, json=payload)
+# Option 2: Upload local audio file
+payload = {
+    "sonify_midi": True,
+    "save_note_events": True,
+    "webhook_url": "https://your-webhook-url.com/callback"
+}
+with open("audio.wav", "rb") as f:
+    files = {"audio_file": f}
+    response = requests.post(url, headers=headers, data=payload, files=files)
 print(response.json())
 ```
 
@@ -91,9 +99,9 @@ print(response.json())
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -105,7 +113,7 @@ print(response.json())
 
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 - **400 Bad Request**: Invalid `audio_path` or missing required parameters.
 - **404 Not Found**: Provided audio file not found in S3.
@@ -114,7 +122,7 @@ print(response.json())
 
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 When the conversion process completes, if a `webhook_url` was provided, the system sends a POST request:
 
@@ -136,6 +144,3 @@ You can download your generated files using the provided URLs.
 ---
 
 ## Payload and Request Formation
-
-Make sure the JSON payload is well-formed and all mandatory fields are included when sending the request.
-

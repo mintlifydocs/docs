@@ -2,12 +2,9 @@
 title: Deecho
 openapi: 'POST /deecho'
 ---
-
 Remove echo from input audio with optional webhook support for async updates.
 
----
-
-## 🎧 Endpoint
+## Endpoint
 
 ```http
 POST /deecho
@@ -17,18 +14,17 @@ This endpoint processes an audio file to reduce or eliminate echo effects. You c
 
 ---
 
-## 🔢 Request Parameters
+## Request Parameters
 
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
 | `audio_url`      | `String`     | Optional | The URL of an audio file to remove echo from. Either `audio_url` or `audio_file` must be provided. |
 | `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
 | `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
-
 > 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
 
 ---
-## ▶️ Sample Output
+## Sample Output
 
 Listen to a real sample output:
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/938a071a-a5f5-40df-8eeb-972edcff26c4_noecho.mp3">Your browser does not support the audio playback.</audio>
@@ -37,7 +33,7 @@ Listen to a real sample output:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Deecho Endpoint Explorer](/api-documentation/endpoint/deecho) to try your own text samples.
 
@@ -45,9 +41,9 @@ Visit the [Deecho Endpoint Explorer](/api-documentation/endpoint/deecho) to try 
 
 ---
 
-## 📤 Sample Request
+## Sample Request
 
-### 👚 cURL
+### cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/Deecho" \
@@ -57,40 +53,41 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Deecho" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/Deecho"
-
+url = "https://api.musicgpt.com/api/public/v1/deecho"
 headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
+    "Authorization": "<<<api key>>>"
 }
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
-
+# Option 1: URL
 payload = {
-    "audio_url": "",
-    "webhook_url": "http://abcd.requestcatcher.com/test"
+    "audio_url": "https://example.com/audio.m4a",
+    "webhook_url": ""
 }
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
 
-response = requests.post(url=url,
-                         headers=headers,
-                         data=payload,
-                         files={"audio_file": input_audio_file})
-
-print(response.status_code, response.json())
+# Option 2: File Upload
+# payload = {
+#     "webhook_url": "https://www.test.requestcatcher.com/test"
+# }
+# with open("audio.m4a", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+# print(response.json())
 ```
 
 > 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -105,9 +102,9 @@ print(response.status_code, response.json())
 ```
 
 ---
-## 📥 Webhook Response
+## Webhook Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -128,48 +125,11 @@ print(response.status_code, response.json())
 
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 - **422 Unprocessable Entity**: Both `audio_url` and `audio_file` cannot be `None`.
 - **500 Internal Server Error**: An error occurred on the server.
 
 ---
 
-## 📞 Webhook Response
-
-When the echo removal process completes, the webhook receives:
-
-```json
-{
-  "success": true,
-  "conversion_type": "Deecho",
-  "task_id": "8a73983c-96f4-4fd2-966c-96644e57139a",
-  "conversion_id": "7cf8e607-7237-48d6-8d1c-6e518e58abdf",
-  "audio_path": "files/1f465668-781f-4b5e-b3f1-0220c7d3ee15.wav",
-  "no_echo": "https://musicgpt.s3.amazonaws.com/conversions/8a73983c-96f4-4fd2-966c-96644e57139a_noecho.mp3",
-  "no_echo_wav": "https://musicgpt.s3.amazonaws.com/conversions/8a73983c-96f4-4fd2-966c-96644e57139a_noecho.wav",
-  "echo": "https://musicgpt.s3.amazonaws.com/conversions/8a73983c-96f4-4fd2-966c-96644e57139a_echo.mp3",
-  "echo_wav": "https://musicgpt.s3.amazonaws.com/conversions/8a73983c-96f4-4fd2-966c-96644e57139a_echo.wav",
-  "message": "de_echo conversion Completed",
-  "conversion_duration": 311.14,
-  "conversion_cost": 3.12
-}
-```
-
-You can download or stream both the processed (no echo) and extracted echo layers in `.mp3` and `.wav` formats.
-
----
-
-
-## ▶️ Sample Output
-
-Listen to a real sample output:
-
-##### Input Audio : <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/FileConversions/shaswatstagetestapril26.mp3">Your browser does not support the audio playback.</audio>
-
-##### Output :
-- `echo` <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.amazonaws.com/conversions/93643cc4-acc7-401b-bcbf-dfe1fd972e22_drums.mp3">Your browser does not support the audio playback.</audio>
-
-- `no_echo`  <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.amazonaws.com/conversions/93643cc4-acc7-401b-bcbf-dfe1fd972e22_piano.mp3">Your browser does not support the audio playback.</audio>
-
----
+## Payload and Request Formation

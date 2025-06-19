@@ -15,7 +15,7 @@ Sound Generator is designed for flexibility, speed, and professional-grade quali
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /sound_generator
@@ -25,7 +25,7 @@ Use this endpoint to generate sounds based on a text description.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Listen to an actual sample:
 
@@ -36,7 +36,7 @@ Prompt: sound of waves crashing at the sea shore.
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/SoundGenerator) to try live prompt-based sound creation.
 
@@ -54,20 +54,20 @@ Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/SoundG
 
 ---
 
-## 📥 Sample Request
+## Sample Request
 
-### 🐍 Python
+### Python
 ```python
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/SoundGenerator"
 headers = {
-    "Authorization": "<api_key>",
-    "Content-Type": "application/json"
+    "Authorization": "<api_key>"
 }
 payload = {
     "prompt": "sound of an ancient temple door creaking open",
-    "webhook_url": "https://abcd.requestcatcher.com/"
+    "webhook_url": "https://abcd.requestcatcher.com/",
+    "audio_length" : 20
 }
 
 response = requests.post(url, json=payload, headers=headers)
@@ -76,9 +76,9 @@ print(response.json())
 
 ---
 
-## 📤 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 ```json
 {
   "success":true,
@@ -93,7 +93,7 @@ print(response.json())
 
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 Once the sound is ready, your webhook will receive:
 
@@ -113,15 +113,9 @@ Once the sound is ready, your webhook will receive:
 }
 ```
 
-> 🎷 Note: If your webhook is set, you’ll get the sound automatically once ready. Otherwise, you can fetch it manually using the `conversion_id`.
+>  Note: If your webhook is set, you’ll get the sound automatically once ready. Otherwise, you can fetch it manually using the `conversion_id`.
 
 ---
 
-## ⚙️ Payload and Request Formation
-
-- **Minimal Input**: Only `prompt` is mandatory.
-- **Optional Automation**: Add `webhook_url` for hands-free result delivery.
-- **User Tracking**: Attach `user_id` if you want to monitor per-user activities or analytics.
-
----
+## Payload and Request Formation
 

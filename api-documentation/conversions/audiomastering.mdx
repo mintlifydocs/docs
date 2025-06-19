@@ -13,7 +13,7 @@ Master your audio files professionally using a reference track.
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /audio_mastering
@@ -23,7 +23,7 @@ Use this endpoint to master an audio file based on a reference track.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Listen to the mastered audio:
 
@@ -31,15 +31,15 @@ Listen to the mastered audio:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Audio Mastering Endpoint Explorer](/api-documentation/endpoint/audio_mastering) to upload an audio and reference track for instant mastering.
 
-> 🎛️ Tip: Use a professionally mastered song as your reference for best results!
+> Tip: Use a professionally mastered song as your reference for best results!
 
 ---
 
-## 🛠️ Request Parameters
+## Request Parameters
 
 | Parameter              | Type    | Required | Description                                                                 |
 |------------------------|---------|----------|-----------------------------------------------------------------------------|
@@ -53,37 +53,44 @@ Visit the [Audio Mastering Endpoint Explorer](/api-documentation/endpoint/audio_
 
 ---
 
-## 📥 Sample Request
+## Sample Request
 
-### 🐍 Python
+### Python
 ```python
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_mastering"
-headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>",
-    "Content-Type": "application/json"
-}
-payload = {
-    "audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-audio.mp3",
-    "conversion_id": "user_master_12345",
-    "reference_audio_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/reference-track.mp3",
-    "output_extension": "mp3",
-    "audio_duration": 180.5,
-    "webhook_url": "https://abcd.requestcatcher.com/",
-    "user_id": "user_67890"
-}
+headers = {"Authorization": "<<<api key>>>"}
 
-response = requests.post(url, json=payload, headers=headers)
+# Option 1: Using URLs
+payload = {
+    "audio_url": "https://example.com/input_audio.mp3",
+    "reference_audio_url": "https://example.com/reference_track.wav",
+    "output_extension": "wav",
+    "webhook_url": "http://your-webhook-url.com/callback"
+}
+response = requests.post(url, headers=headers, data=payload)
 print(response.json())
+
+# Option 2: Upload files
+# with open("input.mp3", "rb") as input_file, open("ref.wav", "rb") as ref_file:
+#     files = {
+#         "audio_file": input_file,
+#         "reference_audio_file": ref_file
+#     }
+#     data = {
+#         "output_extension": "wav",
+#         "webhook_url": "http://your-webhook-url.com/callback"
+#     }
+#     response = requests.post(url, headers=headers, files=files, data=data)
+#     print(response.json())
 ```
 
 ---
 
-## 📤 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 ```json
 {
   "success": true,
@@ -97,7 +104,7 @@ print(response.json())
 
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 If a `webhook_url` is provided, you will receive the following once processing completes:
 
@@ -115,3 +122,4 @@ If a `webhook_url` is provided, you will receive the following once processing c
 
 ---
 
+## Payload and Request Formation

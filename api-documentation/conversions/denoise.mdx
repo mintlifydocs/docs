@@ -7,7 +7,7 @@ Remove background noise from an input audio file with optional webhook callback 
 
 ---
 
-## 🎧 Endpoint
+## Endpoint
 
 ```http
 POST /denoise
@@ -17,7 +17,7 @@ This endpoint removes noise from an uploaded or linked audio file. A `webhook_ur
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Listen to a real sample output:
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.mp3">Your browser does not support the audio playback.</audio>
@@ -26,7 +26,7 @@ Listen to a real sample output:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Denoise Endpoint Explorer](/api-documentation/endpoint/denoise) to try your own text samples.
 
@@ -34,21 +34,20 @@ Visit the [Denoise Endpoint Explorer](/api-documentation/endpoint/denoise) to tr
 
 ---
 
-## 🔢 Request Parameters
+## Request Parameters
 
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
 | `audio_url`      | `String`     | Optional | The URL of an audio file to clean. Either `audio_url` or `audio_file` must be provided. |
 | `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
 | `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
-Denoise
 > 💡 **Note:** Either `audio_url` or `audio_file` must be provided — one is required.
 
 ---
 
-## 📤 Sample Request
+## Sample Request
 
-### 👚 cURL
+### cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/Denoise" \
@@ -58,40 +57,42 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Denoise" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/Denoise"
-
+url = "https://api.musicgpt.com/api/public/v1/deecho"
 headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
+    "Authorization": "<<<api key>>>"
 }
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
-
+# Option 1: URL
 payload = {
-    "audio_url": "",
-    "webhook_url": "http://abcd.requestcatcher.com/test"
+    "audio_url": "https://youtube.com/example",
+    "webhook_url": ""
 }
+response = requests.post(url, headers=headers, data=payload)
+print(response.json())
 
-response = requests.post(url=url,
-                         headers=headers,
-                         data=payload,
-                         files={"audio_file": input_audio_file})
+# Option 2: File Upload
+# payload = {
+#     "webhook_url": "https://www.test.requestcatcher.com/test"
+# }
+# with open("audio.m4a", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+# print(response.json())
 
-print(response.status_code, response.json())
 ```
 
 > 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -106,9 +107,9 @@ print(response.status_code, response.json())
 ```
 ---
 
-## 📥 Webhook Response
+## Webhook Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -128,47 +129,11 @@ print(response.status_code, response.json())
 ```
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 - **422 Unprocessable Entity**: Both `audio_url` and `audio_file` cannot be `None`.
 - **500 Internal Server Error**: A server error occurred during processing.
 
 ---
 
-## 📞 Webhook Response
-
-Once noise removal is completed, the webhook receives:
-
-```json
-{
-  "success": true,
-  "conversion_type": "Denoise",
-  "task_id": "123abc-denoise",
-  "conversion_id": "456xyz-denoise",
-  "audio_path": "files/audio_original.wav",
-  "no_noise": "https://musicgpt.s3.amazonaws.com/conversions/123abc-denoise_no_noise.mp3",
-  "no_noise_wav": "https://musicgpt.s3.amazonaws.com/conversions/123abc-denoise_no_noise.wav",
-  "noise": "https://musicgpt.s3.amazonaws.com/conversions/123abc-denoise_noise.mp3",
-  "noise_wav": "https://musicgpt.s3.amazonaws.com/conversions/123abc-denoise_noise.wav",
-  "message": "denoise conversion Completed",
-  "conversion_duration": 275.48,
-  "conversion_cost": 2.75
-}
-```
-
-You can stream or download the cleaned audio and isolated noise in both `.mp3` and `.wav` formats.
-
----
-
-## ▶️ Sample Output
-
-Listen to a real sample output:
-
-##### Input Audio : <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.us-east-1.amazonaws.com/FileConversions/shaswatstagetestapril26.mp3">Your browser does not support the audio playback.</audio>
-
-##### Output :
-- `echo` <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.amazonaws.com/conversions/93643cc4-acc7-401b-bcbf-dfe1fd972e22_drums.mp3">Your browser does not support the audio playback.</audio>
-
-- `no_echo`  <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://musicgpt.s3.amazonaws.com/conversions/93643cc4-acc7-401b-bcbf-dfe1fd972e22_piano.mp3">Your browser does not support the audio playback.</audio>
-
----
+## Payload and Request Formation

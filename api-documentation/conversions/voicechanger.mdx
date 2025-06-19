@@ -9,7 +9,7 @@ The **VoiceChanger** endpoint provides real-time voice transformation by modifyi
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /VoiceChanger
@@ -20,24 +20,23 @@ This is the primary endpoint for initiating voice conversion tasks.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Listen to a real sample output:
-
-Prompt: a song about greenery, nature and forest.
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.mp3">Your browser does not support the audio playback.</audio>
 
+Output File:
 <a href="https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.wav" target="_blank">Download Audio</a>
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/voicetovoice) to test it live. Upload a sample, pick a voice, and experience real-time voice transformation.
 
 ---
 
-## 🛠️ Request Parameters
+## Request Parameters
 
 | Parameter           | Type        | Required | Description                                                                 |
 |--------------------|-------------|----------|-----------------------------------------------------------------------------|
@@ -52,9 +51,9 @@ Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/voicetovo
 
 ---
 
-## 📤 Sample Request
+## Sample Request
 
-### 🐚 cURL
+### cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/VoiceChanger" \
@@ -67,7 +66,7 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/VoiceChanger" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
@@ -95,9 +94,9 @@ print(response.json())
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -112,9 +111,9 @@ print(response.json())
 ```
 
 ---
-## 📥 Webhook Response
+## Webhook Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -128,33 +127,15 @@ print(response.json())
   "conversion_duration": 272.44
 }
 ```
-
 ---
 
-## ❌ Common Errors
+## Common Errors
 
 - **400 Bad Request**: Invalid or missing input file.
 - **402 Payment Required**: Your credit balance is insufficient.
 - **422 Unprocessable Entity**: No `audio_url` or `audio_file` provided.
 - **500 Internal Server Error**: Something went wrong on our end.
 
----
-
-## 📞 Webhook Response
-
-When the voice conversion completes, the webhook receives:
-
-```json
-{
-  "success": true,
-  "task_id": "84038e1e-3687-4f7a-9c55-692754b125ee",
-  "conversion_id": "e3631817-165d-4f17-a7e2-7008d200ff3e",
-  "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/converted_audio.wav",
-  "conversion_cost": 0.031,
-  "voice_id": "Drake",
-  "pitch": 0
-}
-```
 
 You can download or stream the result directly from the `audio_url`.
 

@@ -15,7 +15,7 @@ Audio Transcribe ensures reliable, professional-grade transcripts for your audio
 
 ---
 
-## 📡 Endpoint
+## Endpoint
 
 ```http
 POST /audio_transcribe
@@ -25,7 +25,7 @@ Use this endpoint to transcribe audio recordings into text.
 
 ---
 
-## ▶️ Sample Output
+## Sample Output
 
 Transcript Output of Charlie Puth and Wiz Khalifa's See You Again:
 
@@ -33,7 +33,7 @@ Transcript Output of Charlie Puth and Wiz Khalifa's See You Again:
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [Audio Transcribe Endpoint Explorer](/api-documentation/endpoint/audio_transcribe) to upload audio files and get instant transcripts.
 
@@ -41,7 +41,7 @@ Visit the [Audio Transcribe Endpoint Explorer](/api-documentation/endpoint/audio
 
 ---
 
-## 🛠️ Request Parameters
+## Request Parameters
 
 | Parameter        | Type    | Required | Description                                                  |
 |------------------|---------|----------|--------------------------------------------------------------|
@@ -52,34 +52,44 @@ Visit the [Audio Transcribe Endpoint Explorer](/api-documentation/endpoint/audio
 
 ---
 
-## 📥 Sample Request
+## Sample Request
 
-### 🐍 Python
+### Python
 ```python
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_transcribe"
-headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>",
-    "Content-Type": "application/json"
-}
-payload = {
-    "audio_url": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-speech.mp3",
-    "language": "en",
-    "webhook_url": "https://abcd.requestcatcher.com/",
-    "user_id": "user_67890"
-}
+headers = {"Authorization": "<<<api key>>>"}
 
-response = requests.post(url, json=payload, headers=headers)
+# Option 1: URL
+payload = {
+    "audio_url": "https://example.com/audio.mp3",
+    "language": "en",
+    "translate": True,
+    "transcription_format": "srt",
+    "word_timestamps": True
+}
+response = requests.post(url, headers=headers, data=payload)
 print(response.json())
+
+# Option 2: File Upload
+# payload = {
+#     "language": "en",
+#     "translate": False,
+#     "transcription_format": "plain_text",
+#     "word_timestamps": True
+# }
+# with open("audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+# print(response.json())
 ```
 
 ---
 
-## 📤 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 ```json
 {
     "success":true,
@@ -94,7 +104,7 @@ print(response.json())
 
 ---
 
-## 📞 Webhook Response
+## Webhook Response
 
 When transcription completes, your webhook will receive:
 
@@ -114,3 +124,5 @@ When transcription completes, your webhook will receive:
 > 🔊 If no webhook is provided, you can fetch the transcript manually later using the `conversion_id`.
 
 ---
+
+## Payload and Request Formation

@@ -43,14 +43,14 @@
             "group": "Features",
             "pages": [
               "api-documentation/conversions/musicai",
-              "api-documentation/conversions/voicechanger",
               "api-documentation/conversions/cover",
               "api-documentation/conversions/texttospeech",
+              "api-documentation/conversions/soundgenerator",
               "api-documentation/conversions/extraction",
+              "api-documentation/conversions/voicechanger",
               "api-documentation/conversions/denoise",
               "api-documentation/conversions/deecho",
               "api-documentation/conversions/dereverb",
-              "api-documentation/conversions/soundgenerator",
               "api-documentation/conversions/fileconvert",
               "api-documentation/conversions/audiotranscription",
               "api-documentation/conversions/extractkeybpm",
@@ -118,14 +118,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Musicgpt",
+        "label": "MusicGPT",
         "href": "https://musicgpt.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "API Key",
-      "href": "https://musicgpt.com/api"
+      "href": "https://musicgpt.com/api-dashboard"
     }
   }
 }

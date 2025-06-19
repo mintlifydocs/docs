@@ -7,7 +7,7 @@ Create a remix using an input audio file and a prompt.
 
 ---
 
-## 🎵 Endpoint
+## Endpoint
 
 ```http
 POST /Remix
@@ -17,7 +17,7 @@ This endpoint processes an input audio file along with a textual prompt to gener
 
 ---
 
-## 🔢 Request Parameters
+## Request Parameters
 
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
@@ -31,7 +31,7 @@ This endpoint processes an input audio file along with a textual prompt to gener
 > 💡 **Note:** You must provide either `audio_file` or `audio_path` — at least one is required.
 
 ---
-## ▶️ Sample Output
+## Sample Output
 
 Listen to a real sample output:
 
@@ -42,13 +42,13 @@ Prompt: a song about greenery, nature and forest.
 
 ---
 
-## 🧪 Try it Yourself
+## Try it Yourself
 
 Visit the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to play around — set your payload, hit send, and listen to the generated results live.
 
-## 📤 Sample Request
+## Sample Request
 
-### 👕 cURL
+### cURL
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/Remix" \
@@ -60,41 +60,39 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Remix" \
 -F "webhook_url=http://webhook.musicgpt.com"
 ```
 
-### 🐍 Python
+### Python
 
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/Remix"
+url = "https://api.musicgpt.com/api/public/v1/remix"
+headers = {"Authorization": "<API_KEY>"}
+data = {
+  "mode": "REMIX",
+  "prompt": "Generate a soothing ambient soundscape.",
+  "lyrics": "",
+  "webhook_url": ""}
 
-headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
-}
+# Option 1: URL
+files = {}
+data["audio_path"] = "https://www.youtube.com/watch?v=example123"
+response = requests.post(url, headers=headers, data=data, files=files)
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
+# Option 2: File Upload
+# with open("audio.m4a", "rb") as f:
+#    files = {"audio_file": f}
+# response = requests.post(url, headers=headers, data=data, files=files)
 
-payload = {
-    "prompt": "Create an upbeat pop remix",
-    "mode": "REMIX",
-    "webhook_url": "http://abcd.requestcatcher.com/test"
-}
-
-response = requests.post(url=url,
-                         headers=headers,
-                         data=payload,
-                         files={"audio_file": input_audio_file})
-
-print(response.status_code, response.json())
+# print(response.json())
 ```
 
 > 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
-## 📥 Sample Response
+## Sample Response
 
-### ✅ Success (200 OK)
+### Success (200 OK)
 
 ```json
 {
@@ -109,16 +107,9 @@ print(response.status_code, response.json())
 }
 ```
 
----
+--- 
 
-## ❌ Common Errors
-
-- **422 Unprocessable Entity**: Missing required fields like `prompt`, or neither `audio_file` nor `audio_path` provided.
-- **500 Internal Server Error**: An unexpected error occurred during processing.
-
----
-
-## 📞 Webhook Response
+## Webhook Response
 
 When the remix process completes, the webhook receives:
 
@@ -138,8 +129,26 @@ When the remix process completes, the webhook receives:
   "title": "Boundless"
 }
 ```
-> 🎧 Note: You will receive **two separate webhook responses**, each with a unique `conversion_id` for the two generated versions.
 
+## Webhook Delivery
+
+Once the generation is complete, **webhooks** will be triggered to deliver the following:
+
+#### Standard Requests (non-instrumental):
+* 2 (webhooks) x Remix details (one per version)
+* 2 (webhooks) x Lyrics with timestamp data
+* 1 (webhook ) x Album cover image
+
+> Webhook responses include detailed metadata including task_id, conversion_id, audio files (conversion_path), lyrics etc.
+
+---
+
+## Common Errors
+
+- **422 Unprocessable Entity**: Missing required fields like `prompt`, or neither `audio_file` nor `audio_path` provided.
+- **500 Internal Server Error**: An unexpected error occurred during processing.
+
+---
 
 The response provides a downloadable or streamable remix audio file.
 
