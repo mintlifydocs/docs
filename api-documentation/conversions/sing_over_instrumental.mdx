@@ -1,0 +1,158 @@
+---
+title: 'Sing Over Instrumental'
+openapi: 'POST /sing_over_instrumental'
+---
+
+Generate a sung vocal performance over an instrumental audio track using a style prompt and lyrics.
+
+---
+
+## Endpoint
+
+```http
+POST /sing_over_instrumental
+```
+
+This endpoint enables you to overlay vocals onto an instrumental audio using a textual description of the singing style and provided lyrics. Input can be either a file upload or a URL. You can optionally specify the vocal gender and a webhook URL for asynchronous processing.
+
+---
+
+## Request Parameters
+
+| Parameter     | Type         | Required | Description                                                                         |
+| ------------- | ------------ | -------- | ----------------------------------------------------------------------------------- |
+| `audio_file`  | `UploadFile` | Optional | Upload the instrumental audio file. Required if `audio_url` is not provided.        |
+| `audio_url`   | `String`     | Optional | URL or youtube link to the instrumental audio. Required if `audio_file` is not provided. |
+| `prompt`      | `String`     | Required | Text describing the desired singing style. Example: "Sing in soft jazz style"       |
+| `lyrics`      | `String`     | Required | The lyrics to be sung over the instrumental. Max 2000 characters.                   |
+| `gender`      | `String`     | Optional | Voice style. Options: `male`, `female`, `neutral`.                                  |
+| `webhook_url` | `String`     | Optional | Callback URL to receive processing results.                                         |
+
+> 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
+
+---
+
+
+## Sample Output
+
+Listen to a real output:
+
+Prompt: sing over instrumental in classical slow vibe - audio input : Moana How Far We will Go.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav" target="_blank">Download Audio</a>
+
+---
+---
+
+## Try it Yourself
+
+Use the [Sing Over Insturmental Endpoint Explorer](/api-documentation/endpoint/sing_over_instrumental) to test this endpoint live with your own inputs.
+
+---
+
+## Sample Request
+
+### cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/sing_over_instrumental" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://youtube.com/audio.mp3" \
+-F "prompt=Sing like Adele in a soulful tone" \
+-F "lyrics=Never mind I'll find someone like you..." \
+-F "gender=female" \
+-F "webhook_url=https://yourdomain.com/webhook"
+```
+
+### Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/sing_over_instrumental"
+headers = {"Authorization": "<API_KEY>"}
+data = {
+  "prompt": "Sing like Adele in a soulful tone",
+  "lyrics": "Never mind I'll find someone like you...",
+  "gender": "female",
+  "webhook_url": "https://yourdomain.com/webhook"
+}
+
+# Option 1: Use audio_url
+data["audio_url"] = "https://youtube.com/audio.mp3"
+response = requests.post(url, headers=headers, data=data)
+
+# Option 2: File upload
+# with open("audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+# print(response.json())
+```
+
+> 🔐 Be sure to replace the placeholders like `<api_key>` and file paths with real values.
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Sing Over Instrumental request submitted successfully",
+  "task_id": "task-abcde12345",
+  "conversion_id_1": "over-instrumental-1",
+  "conversion_id_2": "over-instrumental-2",
+  "eta": 45,
+  "credit_estimate": 50
+}
+```
+
+---
+
+## Webhook Response
+
+When the process completes, the provided `webhook_url` (if any) will receive a JSON POST with:
+
+```json
+{
+  "success": true,
+  "conversion_type": "sing_over_instrumental",
+  "task_id": "task-abcde12345",
+  "conversion_id": "over-instrumental-1",
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/over-instrumental-1.mp3",
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/over-instrumental-1.wav",
+  "conversion_duration": 175.34,
+  "is_flagged": false,
+  "lyrics": "Never mind I'll find someone like you...",
+  "title": "Emotional Overlay"
+}
+```
+---
+
+
+## Webhook Delivery
+
+Once the generation is complete, **webhooks** will be triggered to deliver the following:
+
+#### Standard Requests (non-instrumental):
+* 2 (webhooks) x Remix conversion details (one per version)
+* 2 (webhooks) x Lyrics with timestamp data
+
+> Webhook responses include detailed metadata including task_id, conversion_id, audio files (conversion_path), lyrics etc.
+
+
+---
+
+## Common Errors
+
+* **422 Unprocessable Entity**: Missing required fields like `prompt` or `lyrics`, or no audio input provided.
+* **500 Internal Server Error**: Unexpected error during processing.
+
+---
+
+Use this endpoint to effortlessly bring your lyrics to life with expressive vocals over any instrumental.

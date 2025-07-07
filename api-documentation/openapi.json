@@ -2412,8 +2412,8 @@
 },
 "/Remix": {
   "post": {
-    "summary": "Create a remix using an input audio file and a prompt",
-    "description": "Processes an input audio file or audio path along with a textual prompt to generate a remix. The remix type is specified using the `mode` parameter. The task is queued and responds with task ID, ETA, credit estimate, and status message.",
+    "summary": "Remix Audio Using Prompt and Optional Lyrics",
+    "description": "This endpoint allows users to remix an input audio file or URL using a descriptive prompt, optional lyrics, and a gender selection for vocal tone.\n\n⚠️ **Deprecation Notice**:\n- Only the `REMIX` functionality is supported via this route.\n- Other modes (`INPAINT`, `OVER_INSTRUMENTAL`, etc.) are **non-functional** and removed.\n- Use specialized endpoints like `/inpaint`, `/extend`, or `/sing_over_instrumental` for other tasks. Also fields such as replace_start_at, replace_end_at, extend_after, audio_path are also deprecated.",
     "requestBody": {
       "required": true,
       "content": {
@@ -2421,44 +2421,46 @@
           "schema": {
             "type": "object",
             "properties": {
-              "mode": {
-                "type": "string",
-                "description": "The type of remix to perform.",
-                "enum": ["REMIX", "INPAINT", "OVER_INSTRUMENTAL"],
-                "example": "REMIX"
-              },
               "audio_file": {
                 "type": "string",
                 "format": "binary",
-                "description": "Audio file to upload and use for remixing."
-              },
-              "audio_path": {
-                "type": "string",
-                "description": "Deprecated: Use `audio_url` instead.",
-                "example": "https://www.youtube.com/watch?v=example123"
+                "description": "Uploaded audio file to be remixed."
               },
               "audio_url": {
                 "type": "string",
-                "description": "Audio URL or YouTube link used to generate the audio.",
+                "description": "URL or S3 path to the input audio.",
+                "example": "https://mybucket.s3.amazonaws.com/song.mp3"
+              },
+              "audio_path": {
+                "type": "string",
+                "description": "🔴 Deprecated: Use `audio_url` instead.",
+                "deprecated": true,
                 "example": "https://www.youtube.com/watch?v=example123"
               },
               "prompt": {
                 "type": "string",
-                "description": "The text prompt that guides the remix or sound generation.",
-                "example": "Generate a soothing ambient soundscape."
+                "description": "Describes how the audio should be transformed.",
+                "example": "Make it sound like Lo-fi with chill beats"
               },
               "lyrics": {
                 "type": "string",
-                "description": "Optional lyrics to guide the generation.",
-                "example": "Floating in a sea of dreams"
+                "description": "Optional lyrics to guide vocal generation.",
+                "example": "It's a brand new day",
+                "maxLength": 2000
+              },
+              "gender": {
+                "type": "string",
+                "description": "Voice style if vocal content is generated.",
+                "enum": ["male", "female", "neutral"],
+                "example": "female"
               },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing results.",
-                "example": "http://your-webhook-url.com/callback"
+                "example": "https://example.com/my-webhook"
               }
             },
-            "required": ["mode", "prompt"],
+            "required": ["prompt"],
             "anyOf": [
               { "required": ["audio_file"] },
               { "required": ["audio_url"] }
@@ -2477,18 +2479,20 @@
               "properties": {
                 "success": { "type": "boolean" },
                 "task_id": { "type": "string" },
-                "conversion_id": { "type": "string" },
-                "eta": { "type": "integer", "description": "Estimated time in seconds (-1 if unknown)" },
+                "conversion_id_1": { "type": "string" },
+                "conversion_id_2": { "type": "string" },
+                "eta": { "type": "integer", "description": "Estimated processing time in seconds" },
                 "credit_estimate": { "type": "number", "format": "float" },
                 "message": { "type": "string" }
               },
               "example": {
                 "success": true,
-                "task_id": "stem123",
-                "conversion_id": "conv456",
-                "eta": -1,
-                "credit_estimate": 100.1,
-                "message": "Successfully published to queue"
+                "message": "Remix request submitted successfully",
+                "task_id": "task-remix-001",
+                "conversion_id_1": "remix-a1b2",
+                "conversion_id_2": "remix-c3d4",
+                "eta": 42,
+                "credit_estimate": 47.5
               }
             }
           }
@@ -2502,7 +2506,7 @@
               "type": "object",
               "properties": {
                 "success": { "type": "boolean", "example": false },
-                "error": { "type": "string", "example": "Either audio_file or audio_path must be provided." }
+                "error": { "type": "string", "example": "Either audio_file or audio_url must be provided." }
               }
             }
           }
@@ -2529,15 +2533,396 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/Remix\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"mode\": \"REMIX\",\n  \"prompt\": \"Generate a soothing ambient soundscape.\",\n  \"lyrics\": \"\",\n  \"webhook_url\": \"\"}\n\n# Option 1: URL\nfiles = {}\ndata[\"audio_path\"] = \"https://www.youtube.com/watch?v=example123\"\nresponse = requests.post(url, headers=headers, data=data, files=files)\n\n# Option 2: File Upload\nwith open(\"audio.m4a\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/Remix';\n$headers = ['Authorization: <API_KEY>'];\n\n// Option 1: URL\n$data = [\n  'mode' => 'REMIX',\n  'prompt' => 'Generate a soothing ambient soundscape.',\n  'audio_path' => 'https://www.youtube.com/watch?v=example123'\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = [\n  'mode' => 'REMIX',\n  'prompt' => 'Generate a soothing ambient soundscape.',\n  'audio_file' => new CURLFile('audio.m4a')\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/Remix\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Make it sound like Lo-fi with chill beats\",\n  \"lyrics\": \"It's a brand new day\",\n  \"gender\": \"female\",\n  \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\nfiles = {}\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data, files=files)\n\n# Option 2: File Upload\nwith open(\"song.mp3\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
       }
     ]
   }
 },
+"/extend": {
+  "post": {
+    "summary": "Extend Audio Using Prompt and Optional Lyrics",
+    "description": "This endpoint allows users to extend an existing audio file or stream by appending new audio content after a specific timestamp. The new audio is generated using a prompt (e.g., describing the desired sound) and optional lyrics.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Uploaded audio file to be extended."
+              },
+              "audio_url": {
+                "type": "string",
+                "description": "URL or S3 path to the input audio.",
+                "example": "https://mybucket.s3.amazonaws.com/song.mp3"
+              },
+              "extend_after": {
+                "type": "number",
+                "format": "float",
+                "description": "Time in seconds after which to start the extension.",
+                "example": 35.0
+              },
+              "prompt": {
+                "type": "string",
+                "description": "Describes how the extended section should sound.",
+                "example": "Add a calming piano outro"
+              },
+              "lyrics": {
+                "type": "string",
+                "description": "Optional lyrics for the extended segment.",
+                "example": "Let the journey fade away",
+                "maxLength": 2000
+              },
+              "gender": {
+                "type": "string",
+                "description": "Voice style if vocal content is generated.",
+                "enum": ["male", "female", "neutral"],
+                "example": "neutral"
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing results.",
+                "example": "https://example.com/webhook"
+              }
+            },
+            "required": ["extend_after"],
+            "anyOf": [
+              { "required": ["audio_file"] },
+              { "required": ["audio_url"] }
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully initiated extend task",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "message": { "type": "string" },
+                "task_id": { "type": "string" },
+                "conversion_id_1": { "type": "string" },
+                "conversion_id_2": { "type": "string" },
+                "eta": { "type": "integer", "description": "Estimated processing time in seconds" },
+                "credit_estimate": { "type": "number", "format": "float" }
+              },
+              "example": {
+                "success": true,
+                "message": "Extend request submitted successfully",
+                "task_id": "task-extend-789",
+                "conversion_id_1": "extend-a1b2",
+                "conversion_id_2": "extend-c3d4",
+                "eta": 38,
+                "credit_estimate": 42.0
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "audio_file or audio_url and extend_after are required." }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      { "ApiKeyAuth": [] }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "Python",
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extend\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"extend_after\": 35.0,\n  \"prompt\": \"Add a calming piano outro\",\n  \"lyrics\": \"Let the journey fade away\",\n  \"gender\": \"neutral\",\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+      }
+    ]
+  }
+},
+"/inpaint": {
+  "post": {
+    "summary": "Inpaint an Audio Segment",
+    "description": "This endpoint allows users to replace a specific time segment of an audio clip using a textual prompt and optional lyrics. The inpainting operation blends new audio content into the selected range, guided by user-defined style and voice preferences.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Uploaded input audio file."
+              },
+              "audio_url": {
+                "type": "string",
+                "description": "URL or S3 path to the input audio.",
+                "example": "https://mybucket.s3.amazonaws.com/song.mp3"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "A description of how the replacement should sound.",
+                "example": "Replace this part with an opera-style vocal."
+              },
+              "replace_start_at": {
+                "type": "number",
+                "format": "float",
+                "description": "Time in seconds to start replacing audio.",
+                "example": 12.5
+              },
+              "replace_end_at": {
+                "type": "number",
+                "format": "float",
+                "description": "Time in seconds to stop replacing audio.",
+                "example": 20.0
+              },
+              "lyrics": {
+                "type": "string",
+                "description": "Lyrics to be used for inpainting.",
+                "example": "This is where my story begins",
+                "maxLength": 2000
+              },
+              "gender": {
+                "type": "string",
+                "description": "Voice style for the inpainted segment.",
+                "enum": ["male", "female", "neutral"],
+                "example": "male"
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL for async processing results.",
+                "example": "https://example.com/webhook"
+              }
+            },
+            "required": ["prompt", "replace_start_at", "replace_end_at"],
+            "anyOf": [
+              { "required": ["audio_file"] },
+              { "required": ["audio_url"] }
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully initiated inpaint task",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "message": { "type": "string" },
+                "task_id": { "type": "string" },
+                "conversion_id_1": { "type": "string" },
+                "conversion_id_2": { "type": "string" },
+                "eta": { "type": "integer", "description": "Estimated processing time in seconds" },
+                "credit_estimate": { "type": "number", "format": "float" }
+              },
+              "example": {
+                "success": true,
+                "message": "Inpaint request submitted successfully",
+                "task_id": "task-xyz-123",
+                "conversion_id_1": "inpaint-abc",
+                "conversion_id_2": "inpaint-def",
+                "eta": 40,
+                "credit_estimate": 45.0
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "audio_file or audio_url and valid replace range are required." }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      { "ApiKeyAuth": [] }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "Python",
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/inpaint\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Add a soft guitar solo here\",\n  \"replace_start_at\": 12.5,\n  \"replace_end_at\": 20.0,\n  \"lyrics\": \"This is where my story begins\",\n  \"gender\": \"male\",\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+      }
+    ]
+  }
+},
+"/sing_over_instrumental": {
+  "post": {
+    "summary": "Sing Over Instrumental Using Prompt and Lyrics",
+    "description": "This endpoint allows users to sing over an instrumental audio track using a text prompt and lyrics. It supports either a file upload or a URL to the input audio and generates a vocal overlay based on the provided lyrics and style.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Uploaded instrumental audio file."
+              },
+              "audio_url": {
+                "type": "string",
+                "description": "URL or S3 path to the input instrumental audio.",
+                "example": "https://bucket.s3.amazonaws.com/audio.mp3"
+              },
+              "prompt": {
+                "type": "string",
+                "description": "Description of the singing style, tone, or genre.",
+                "example": "Sing like Adele in a soulful tone"
+              },
+              "lyrics": {
+                "type": "string",
+                "description": "The lyrics to be sung over the instrumental.",
+                "example": "Never mind I'll find someone like you...",
+                "maxLength": 2000
+              },
+              "gender": {
+                "type": "string",
+                "description": "Voice gender to guide generation.",
+                "enum": ["male", "female", "neutral"],
+                "example": "female"
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "Callback URL to receive status updates or final audio result.",
+                "example": "https://yourdomain.com/webhook"
+              }
+            },
+            "required": ["prompt", "lyrics"],
+            "anyOf": [
+              { "required": ["audio_file"] },
+              { "required": ["audio_url"] }
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successfully initiated sing over instrumental task",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "message": { "type": "string" },
+                "task_id": { "type": "string" },
+                "conversion_id_1": { "type": "string" },
+                "conversion_id_2": { "type": "string" },
+                "eta": { "type": "integer", "description": "Estimated processing time in seconds" },
+                "credit_estimate": { "type": "number", "format": "float" }
+              },
+              "example": {
+                "success": true,
+                "message": "Sing Over Instrumental request submitted successfully",
+                "task_id": "task-abcde12345",
+                "conversion_id_1": "over-instrumental-1",
+                "conversion_id_2": "over-instrumental-2",
+                "eta": 45,
+                "credit_estimate": 50.0
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Validation Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Either audio_file or audio_url must be provided, along with prompt and lyrics." }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      { "ApiKeyAuth": [] }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "Python",
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/sing_over_instrumental\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Sing like Adele in a soulful tone\",\n  \"lyrics\": \"Never mind I'll find someone like you...\",\n  \"gender\": \"female\",\n  \"webhook_url\": \"https://yourdomain.com/webhook\"\n}\n\n# Option 1: Use audio_url\ndata[\"audio_url\"] = \"https://bucket.s3.amazonaws.com/audio.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: Upload file\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+      }
+    ]
+  }
+},
+
 "/file_convert": {
   "post": {
     "summary": "Convert audio file to different format",
@@ -2657,8 +3042,85 @@
       }
     ]
   }
+},
+"/prompt_to_lyrics": {
+  "get": {
+    "summary": "Convert Prompt to Lyrics",
+    "description": "This endpoint takes a natural language prompt (e.g., a theme, vibe, or idea) and generates original lyrics based on it. If the prompt has been used before, a variation may be returned. It also estimates the credit cost of generation.",
+    "parameters": [
+      {
+        "name": "prompt",
+        "in": "query",
+        "required": true,
+        "description": "The theme or idea you'd like lyrics generated for.",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "example": "A hopeful song about starting over"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Lyrics generated successfully",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "task_id": { "type": "string" },
+                "message": { "type": "string" },
+                "lyrics": { "type": "string" },
+                "credit_estimate": { "type": "integer" }
+              },
+              "example": {
+                "success": true,
+                "task_id": "task-lyrics-2345",
+                "message": "Lyrics generated successfully",
+                "lyrics": "Under the silver moonlight we sway...\n...\n",
+                "credit_estimate": 10
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Invalid prompt input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Prompt must be between 1 and 1000 characters." }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error during lyrics generation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": { "type": "string", "example": "Internal Server Error" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      { "ApiKeyAuth": [] }
+    ]
+  }
 }
-  },
+},
   "components": {
     "securitySchemes": {
       "ApiKeyAuth": {
