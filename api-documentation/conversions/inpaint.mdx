@@ -1,0 +1,147 @@
+---
+title: 'Inpaint'
+openapi: 'POST /inpaint'
+---
+
+Replace a specific segment of an audio file using a prompt and optional lyrics.
+
+---
+
+## Endpoint
+
+```http
+POST /inpaint
+```
+
+This endpoint processes an input audio file along with a prompt, timestamp range, and optional lyrics to perform inpainting (replacement) in the specified segment.
+
+---
+
+## Request Parameters
+
+| Parameter          | Type         | Required | Description                                                                                                 |
+| ------------------ | ------------ | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `audio_file`       | `UploadFile` | Optional | Upload the input audio file. Required if `audio_url` is not provided.                                       |
+| `audio_url`        | `String`     | Optional | Public/S3/YouTube URL of the input audio. Required if `audio_file` is not provided.                         |
+| `prompt`           | `String`     | Required | Prompt describing how the replacement should sound. Example: "Replace this part with an opera-style vocal." |
+| `replace_start_at` | `Float`      | Required | Start time (in seconds) of the segment to replace.                                                          |
+| `replace_end_at`   | `Float`      | Required | End time (in seconds) of the segment to replace.                                                            |
+| `lyrics`           | `String`     | Optional | Optional lyrics to use for inpainting.                                                                      |
+| `gender`           | `String`     | Optional | Voice style for vocal generation. One of: `male`, `female`, `neutral`.                                      |
+| `webhook_url`      | `String`     | Optional | Callback URL for async response.                                                                            |
+
+> 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
+
+---
+
+## Sample Output
+
+Listen to a real output:
+
+Prompt: inpaint from 60 to 120 seconds in classical slow vibe - audio input : Moana How Far We will Go.
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav" target="_blank">Download Audio</a>
+
+---
+
+
+## Try it Yourself
+
+Visit the [Inpaint Endpoint Explorer](/api-documentation/endpoint/Inpaint) to test the endpoint — set your payload, hit send, and view the generated results.
+
+---
+
+## Sample Request
+
+### cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/inpaint" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_file=@/path/to/audio.mp3" \
+-F "prompt=Add a soft guitar solo here" \
+-F "replace_start_at=12.5" \
+-F "replace_end_at=20.0" \
+-F "lyrics=This is where my story begins" \
+-F "gender=male" \
+-F "webhook_url=https://example.com/webhook"
+```
+
+### Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/inpaint"
+headers = {"Authorization": "<API_KEY>"}
+data = {
+    "prompt": "Add a soft guitar solo here",
+    "replace_start_at": 12.5,
+    "replace_end_at": 20.0,
+    "lyrics": "This is where my story begins",
+    "gender": "male",
+    "webhook_url": "https://example.com/webhook"
+}
+
+# Option 1: URL
+files = {}
+data["audio_url"] = "https://mybucket.s3.amazonaws.com/track.mp3"
+response = requests.post(url, headers=headers, data=data, files=files)
+
+# Option 2: File Upload
+# with open("audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+print(response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Inpaint request submitted successfully",
+  "task_id": "task-xyz-123",
+  "conversion_id_1": "inpaint-abc",
+  "conversion_id_2": "inpaint-def",
+  "eta": 40,
+  "credit_estimate": 45
+}
+```
+
+---
+
+## Webhook Delivery
+
+Once the generation is complete, **webhooks** will be triggered to deliver the following:
+
+#### Standard Requests (non-instrumental):
+
+* 2 (webhooks) x Remix conversion details (one per version)
+* 2 (webhooks) x Lyrics with timestamp data
+
+> Webhook responses include detailed metadata including task\_id, conversion\_id, audio files (conversion\_path), lyrics etc.
+
+---
+
+## Common Errors
+
+* **422 Unprocessable Entity**: Missing required fields like `prompt`, `replace_start_at`, or `replace_end_at`, or neither `audio_file` nor `audio_url` provided.
+* **500 Internal Server Error**: An unexpected error occurred during processing.
+
+---
+
+The response provides a downloadable or streamable inpainted audio file.
+
+---
+
+## Payload and Request Formation

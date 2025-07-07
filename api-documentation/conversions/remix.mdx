@@ -1,9 +1,10 @@
 ---
 title: Remix
 openapi: 'POST /Remix'
----
+----------------------
 
-Create a remix using an input audio file and a prompt.
+Remix Audio Using Prompt and Optional Lyrics
+This endpoint allows users to remix an input audio file or URL using a descriptive prompt, optional lyrics, and a gender selection for vocal tone.
 
 ---
 
@@ -13,29 +14,30 @@ Create a remix using an input audio file and a prompt.
 POST /Remix
 ```
 
-This endpoint processes an input audio file along with a textual prompt to generate a remix. You can specify a `webhook_url` to receive a callback when processing completes.
-
 ---
 
 ## Request Parameters
 
-| Parameter        | Type         | Required | Description                                                                 |
-|------------------|--------------|----------|-----------------------------------------------------------------------------|
-| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Required if `audio_path` is not provided.   |
-| `audio_path`     | `String`     | Optional | A URL to an audio file (S3 or YouTube). Required if `audio_file` is not provided. |
-| `prompt`         | `String`     | Required | The text prompt guiding the remix generation. Example: "Generate a soothing ambient soundscape." |
-| `lyrics`         | `String`     | Optional | If provided, lyrics will be used to generate the remix.                     |
-| `mode`           | `String`     | Required | Remix mode. Must be one of `REMIX`, `INPAINT`, `OVER_INSTRUMENTAL`.          |
-| `webhook_url`    | `String`     | Optional | Callback URL for async response. Defaults to empty string if not provided.  |
+| Parameter     | Type         | Required     | Description                                                               |
+| ------------- | ------------ | ------------ | ------------------------------------------------------------------------- |
+| `audio_file`  | `UploadFile` | Optional     | Upload the audio file directly. Required if `audio_url` is not provided.  |
+| `audio_url`   | `String`     | Optional     | Public URL or S3 path to audio. Required if `audio_file` is not provided. |
+| `audio_path`  | `String`     | ❌ Deprecated | Use `audio_url` instead.                                                  |
+| `prompt`      | `String`     | ✅ Yes        | Describes how the audio should be transformed.                            |
+| `lyrics`      | `String`     | Optional     | Lyrics to guide remix or vocal generation. Max 2000 characters.           |
+| `gender`      | `String`     | Optional     | Vocal tone. One of: `male`, `female`, `neutral`.                          |
+| `webhook_url` | `String`     | Optional     | Callback URL for async response.                                          |
 
-> 💡 **Note:** You must provide either `audio_file` or `audio_path` — at least one is required.
+> 💡 **Note:** Either `audio_file` or `audio_url` must be provided.
+> Other parameters like `mode`, `replace_start_at`, `extend_after`, etc. have been **deprecated and removed**.
 
 ---
+
 ## Sample Output
 
-Listen to a real sample output:
+Listen to a real output:
 
-Prompt: a song about greenery, nature and forest.
+Prompt: remix in classical slow vibe - audio input : Moana How Far We will Go.
 <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3">Your browser does not support the audio playback.</audio>
 
 <a href="https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav" target="_blank">Download Audio</a>
@@ -44,7 +46,9 @@ Prompt: a song about greenery, nature and forest.
 
 ## Try it Yourself
 
-Visit the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to play around — set your payload, hit send, and listen to the generated results live.
+Use the [Remix Endpoint Explorer](/api-documentation/endpoint/remix) to test this endpoint live.
+
+---
 
 ## Sample Request
 
@@ -55,9 +59,10 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Remix" \
 -H "accept: application/json" \
 -H "Authorization: <api_key>" \
 -F "audio_file=@/path/to/your/audio.mp3" \
--F "prompt=Create an upbeat pop remix" \
--F "mode=REMIX" \
--F "webhook_url=http://webhook.musicgpt.com"
+-F "prompt=Make it sound like Lo-fi with chill beats" \
+-F "lyrics=It's a brand new day" \
+-F "gender=female" \
+-F "webhook_url=https://example.com/my-webhook"
 ```
 
 ### Python
@@ -68,25 +73,23 @@ import requests
 url = "https://api.musicgpt.com/api/public/v1/Remix"
 headers = {"Authorization": "<API_KEY>"}
 data = {
-  "mode": "REMIX",
-  "prompt": "Generate a soothing ambient soundscape.",
-  "lyrics": "",
-  "webhook_url": ""}
+  "prompt": "Make it sound like Lo-fi with chill beats",
+  "lyrics": "It's a brand new day",
+  "gender": "female",
+  "webhook_url": "https://example.com/my-webhook"
+}
 
-# Option 1: URL
-files = {}
-data["audio_path"] = "https://www.youtube.com/watch?v=example123"
-response = requests.post(url, headers=headers, data=data, files=files)
+# Option 1: audio_url
+data["audio_url"] = "https://mybucket.s3.amazonaws.com/song.mp3"
+response = requests.post(url, headers=headers, data=data)
 
-# Option 2: File Upload
-# with open("audio.m4a", "rb") as f:
-#    files = {"audio_file": f}
-# response = requests.post(url, headers=headers, data=data, files=files)
+# Option 2: File upload
+# with open("song.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
 
 # print(response.json())
 ```
-
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
@@ -96,37 +99,33 @@ response = requests.post(url, headers=headers, data=data, files=files)
 
 ```json
 {
-  "success":true,
-  "message":"Remix request submitted successfully",
-  "task_id":"dff33bac-6844-4cda-83b8-75078ed916b1",
-  "conversion_id_1":"2104a105-2572-4412-b6fb-f67b0382582a",
-  "conversion_id_2":"16f80faa-5e71-4b3d-9291-61776c4eb97f",
-  "eta":184,
-  "status":"IN_QUEUE",
-  "credit_estimate":0.99
+  "success": true,
+  "message": "Remix request submitted successfully",
+  "task_id": "task-remix-001",
+  "conversion_id_1": "remix-a1b2",
+  "conversion_id_2": "remix-c3d4",
+  "eta": 42,
+  "credit_estimate": 47.5
 }
 ```
 
---- 
+---
 
 ## Webhook Response
 
-When the remix process completes, the webhook receives:
-
 ```json
 {
-  "success": true, 
-  "conversion_type": "Remix", 
-  "task_id": "dff33bac-6844-4cda-83b8-75078ed916b1", 
-  "conversion_id": "2104a105-2572-4412-b6fb-f67b0382582a", 
-  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3", 
-  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav", 
-  "conversion_duration": 162.44680272108843, 
-  "is_flagged": false, 
-  "reason": "", 
-  "lyrics": "[Verse 1]\nI've been staring at the edge of the water\nLong as I can remember\nNever really knowing why\nI wish I could be the perfect daughter\nbut I come back to the water no matter how hard I try\n[Verse 2]\nevery turn I take every trail I track,\nevery path I make, every road leads back\nto the place I know, where I cannot go,\nwhere I long to be.\n[Chorus]\nSee the line where the sky meets the sea, it calls me\nme and no one knows how far it goes\nif the wind in my sail on the sea stays behind me\none day i'll know\nIf I go there's just no telling how far I'll go\n[Verse 3]\nI know everybody on this island\nseems so happy on this island everything is by design\ni know everybody on this island has a role\non this island so maybe i can roll with mine\ni can lead with pride i can make us strong\ni'll be satisfied if i play along\nbut the voice inside sings a different song\nwhat is wrong with me?\n[Chorus]\nSee the light as it shines on the sea\nIt's blinding\nBut no one knows\nHow deep it goes\nAnd it seems like it's calling out to me\nSo come find me\nAnd let me know\nWhat's beyond that line\nWill I cross that line\n[Outro]\nThe line where the sky on the sea stays behind me\nOne day I will know\nhow far I'll go\nOh!", 
-  "lyrics_timestamped": "[{\"index\": 0, \"text\": \"[Verse 1]\", \"start\": 3200, \"end\": 3200}, {\"index\": 1, \"text\": \"I've been staring at the edge of the water\", \"start\": 3200, \"end\": 7040}, {\"index\": 2, \"text\": \"Long as I can remember\", \"start\": 7680, \"end\": 10240}, {\"index\": 3, \"text\": \"Never really knowing why\", \"start\": 10880, \"end\": 12800}, {\"index\": 4, \"text\": \"I wish I could be the perfect daughter\", \"start\": 15360, \"end\": 19840}, {\"index\": 5, \"text\": \"but I come back to the water no matter how hard I try\", \"start\": 19840, \"end\": 24960}, {\"index\": 7, \"text\": \"[Verse 2]\", \"start\": 24960, \"end\": 26880}, {\"index\": 8, \"text\": \"every turn I take every trail I track,\", \"start\": 26880, \"end\": 30080}, {\"index\": 9, \"text\": \"every path I make, every road leads back\", \"start\": 30720, \"end\": 32640}, {\"index\": 10, \"text\": \"to the place I know, where I cannot go,\", \"start\": 33280, \"end\": 35200}, {\"index\": 11, \"text\": \"where I long to be.\", \"start\": 35840, \"end\": 37120}, {\"index\": 13, \"text\": \"[Chorus]\", \"start\": 37760, \"end\": 39040}, {\"index\": 14, \"text\": \"See the line where the sky meets the sea, it calls me\", \"start\": 39040, \"end\": 42880}, {\"index\": 15, \"text\": \"me and no one knows how far it goes\", \"start\": 43520, \"end\": 48000}, {\"index\": 16, \"text\": \"if the wind in my sail on the sea stays behind me\", \"start\": 50560, \"end\": 55040}, {\"index\": 17, \"text\": \"one day i'll know\", \"start\": 55040, \"end\": 56960}, {\"index\": 18, \"text\": \"If I go there's just no telling how far I'll go\", \"start\": 58880, \"end\": 61440}, {\"index\": 20, \"text\": \"[Verse 3]\", \"start\": 62720, \"end\": 62720}, {\"index\": 21, \"text\": \"I know everybody on this island\", \"start\": 62720, \"end\": 65280}, {\"index\": 22, \"text\": \"seems so happy on this island everything is by design\", \"start\": 65920, \"end\": 72960}, {\"index\": 23, \"text\": \"i know everybody on this island has a role\", \"start\": 72960, \"end\": 78080}, {\"index\": 24, \"text\": \"on this island so maybe i can roll with mine\", \"start\": 78720, \"end\": 84480}, {\"index\": 25, \"text\": \"i can lead with pride i can make us strong\", \"start\": 84480, \"end\": 87040}, {\"index\": 26, \"text\": \"i'll be satisfied if i play along\", \"start\": 87680, \"end\": 90240}, {\"index\": 27, \"text\": \"but the voice inside sings a different song\", \"start\": 90240, \"end\": 93440}, {\"index\": 28, \"text\": \"what is wrong with me?\", \"start\": 93440, \"end\": 95360}, {\"index\": 30, \"text\": \"[Chorus]\", \"start\": 95360, \"end\": 98560}, {\"index\": 31, \"text\": \"See the light as it shines on the sea\", \"start\": 98560, \"end\": 101120}, {\"index\": 32, \"text\": \"It's blinding\", \"start\": 101120, \"end\": 102400}, {\"index\": 33, \"text\": \"But no one knows\", \"start\": 103680, \"end\": 104960}, {\"index\": 34, \"text\": \"How deep it goes\", \"start\": 106880, \"end\": 110080}, {\"index\": 35, \"text\": \"And it seems like it's calling out to me\", \"start\": 110080, \"end\": 112640}, {\"index\": 36, \"text\": \"So come find me\", \"start\": 112640, \"end\": 115200}, {\"index\": 37, \"text\": \"And let me know\", \"start\": 115200, \"end\": 117120}, {\"index\": 38, \"text\": \"What's beyond that line\", \"start\": 117120, \"end\": 128639}, {\"index\": 39, \"text\": \"Will I cross that line\", \"start\": 128639, \"end\": 131840}, {\"index\": 41, \"text\": \"[Outro]\", \"start\": 131840, \"end\": 133120}, {\"index\": 42, \"text\": \"The line where the sky on the sea stays behind me\", \"start\": 133120, \"end\": 136960}, {\"index\": 43, \"text\": \"One day I will know\", \"start\": 138240, \"end\": 138880}, {\"index\": 44, \"text\": \"how far I'll go\", \"start\": 138880, \"end\": 142080}, {\"index\": 45, \"text\": \"Oh!\", \"start\": 142720, \"end\": 142720}]", 
-  "title": "Boundless"
+  "success": true,
+  "conversion_type": "Remix",
+  "task_id": "task-remix-001",
+  "conversion_id": "remix-a1b2",
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.mp3",
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/2104a105-2572-4412-b6fb-f67b0382582a.wav",
+  "conversion_duration": 162.44,
+  "is_flagged": false,
+  "reason": "",
+  "lyrics": "...",
+  "lyrics_timestamped": "..."
 }
 ```
 
@@ -135,9 +134,8 @@ When the remix process completes, the webhook receives:
 Once the generation is complete, **webhooks** will be triggered to deliver the following:
 
 #### Standard Requests (non-instrumental):
-* 2 (webhooks) x Remix details (one per version)
+* 2 (webhooks) x Remix conversion details (one per version)
 * 2 (webhooks) x Lyrics with timestamp data
-* 1 (webhook ) x Album cover image
 
 > Webhook responses include detailed metadata including task_id, conversion_id, audio files (conversion_path), lyrics etc.
 
@@ -145,10 +143,16 @@ Once the generation is complete, **webhooks** will be triggered to deliver the f
 
 ## Common Errors
 
-- **422 Unprocessable Entity**: Missing required fields like `prompt`, or neither `audio_file` nor `audio_path` provided.
-- **500 Internal Server Error**: An unexpected error occurred during processing.
+* **422 Unprocessable Entity**
+  Missing required field `prompt`, or neither `audio_file` nor `audio_url` provided.
+
+* **500 Internal Server Error**
+  An error occurred during processing or task queueing.
 
 ---
 
-The response provides a downloadable or streamable remix audio file.
+The `/Remix` endpoint produces a downloadable or streamable remixed audio file with optional lyrical overlays and style transformations.
 
+---
+
+## Payload and Request Formation

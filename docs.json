@@ -58,7 +58,11 @@
               "api-documentation/conversions/audiocutter",
               "api-documentation/conversions/audiospeedchanger",
               "api-documentation/conversions/audiomastering",
-              "api-documentation/conversions/remix"
+              "api-documentation/conversions/remix",
+              "api-documentation/conversions/extend",
+              "api-documentation/conversions/inpaint",
+              "api-documentation/conversions/sing_over_instrumental",
+              "api-documentation/conversions/lyrics_generator"
             ]
           },
           {
@@ -95,7 +99,11 @@
               "api-documentation/endpoint/audio_cutter",
               "api-documentation/endpoint/audio_speed_changer",
               "api-documentation/endpoint/audio_mastering",
-              "api-documentation/endpoint/remix"
+              "api-documentation/endpoint/remix",
+              "api-documentation/endpoint/extend",
+              "api-documentation/endpoint/inpaint",
+              "api-documentation/endpoint/sing_over_instrumental",
+              "api-documentation/endpoint/lyrics_generator"
             ]
           }
         ]

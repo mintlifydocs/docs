@@ -1,0 +1,161 @@
+---
+title: 'Extend'
+openapi: 'POST /extend'
+---
+
+Extend an existing audio file by generating new content after a specific timestamp.
+
+---
+
+## Endpoint
+
+```http
+POST /extend
+```
+
+This endpoint allows users to extend an existing audio file or stream by appending new audio content after a specific timestamp. The new content is generated using a prompt and optional lyrics.
+
+---
+
+## Request Parameters
+
+| Parameter      | Type         | Required | Description                                                                      |
+| -------------- | ------------ | -------- | -------------------------------------------------------------------------------- |
+| `audio_file`   | `UploadFile` | Optional | Upload the audio file to extend. Required if `audio_url` is not provided.        |
+| `audio_url`    | `String`     | Optional | Public or S3 URL to the input audio. Required if `audio_file` is not provided.   |
+| `extend_after` | `Float`      | Required | Time (in seconds) after which new audio is generated.                            |
+| `prompt`       | `String`     | Optional | Describes the desired extension sound. Example: "Add a melodic flute section"    |
+| `lyrics`       | `String`     | Optional | Optional lyrics for the extended segment. Max 2000 characters.                   |
+| `gender`       | `String`     | Optional | Voice style if vocals are generated. Must be one of `male`, `female`, `neutral`. |
+| `webhook_url`  | `String`     | Optional | Callback URL for async result delivery.                                          |
+
+> 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
+
+---
+
+## Sample Output
+
+Listen to a sample output:
+
+Prompt: Add a calming piano outro. <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/sample-extend-output.mp3">Your browser does not support the audio playback.</audio>
+
+<a href="https://lalals.s3.amazonaws.com/conversions/sample-extend-output.wav" target="_blank">Download Audio</a>
+
+---
+
+## Try it Yourself
+
+Visit the [Extend Endpoint Explorer](/api-documentation/endpoint/extend) to play around — set your payload, hit send, and listen to the generated results live.
+
+---
+
+## Sample Request
+
+### cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/extend" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_file=@/path/to/audio.mp3" \
+-F "extend_after=35.0" \
+-F "prompt=Add a calming piano outro" \
+-F "lyrics=Let the journey fade away" \
+-F "gender=neutral" \
+-F "webhook_url=https://example.com/webhook"
+```
+
+### Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/extend"
+headers = {"Authorization": "<API_KEY>"}
+data = {
+  "prompt": "Add a calming piano outro",
+  "lyrics": "Let the journey fade away",
+  "extend_after": 35.0,
+  "gender": "neutral",
+  "webhook_url": "https://example.com/webhook"
+}
+
+# Option 1: audio_url
+files = {}
+data["audio_url"] = "https://lalals.s3.amazonaws.com/audio/example.mp3"
+response = requests.post(url, headers=headers, data=data, files=files)
+
+# Option 2: File Upload
+# with open("audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+# print(response.json())
+```
+
+> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Extend request submitted successfully",
+  "task_id": "task-extend-789",
+  "conversion_id_1": "extend-a1b2",
+  "conversion_id_2": "extend-c3d4",
+  "eta": 38,
+  "credit_estimate": 42
+}
+```
+
+---
+
+## Webhook Response
+
+When the extension process completes, the webhook receives:
+
+```json
+{
+  "success": true,
+  "conversion_type": "Extend",
+  "task_id": "task-extend-789",
+  "conversion_id": "extend-a1b2",
+  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/extend-a1b2.mp3",
+  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/extend-a1b2.wav",
+  "conversion_duration": 192.12,
+  "is_flagged": false,
+  "reason": "",
+  "lyrics": "Let the journey fade away",
+  "lyrics_timestamped": [],
+  "title": "Outro Symphony"
+}
+```
+
+---
+
+## Webhook Delivery
+
+Once the generation is complete, **webhooks** will be triggered to deliver the following:
+
+#### Standard Requests (non-instrumental):
+
+* 2 (webhooks) x Extend conversion details (one per version)
+* 2 (webhooks) x Lyrics with timestamp data
+
+> Webhook responses include detailed metadata including task\_id, conversion\_id, audio files (conversion\_path), lyrics etc.
+
+---
+
+## Common Errors
+
+* **422 Unprocessable Entity**: Missing required fields like `extend_after`, or neither `audio_file` nor `audio_url` provided.
+* **500 Internal Server Error**: An unexpected error occurred during processing.
+
+---
+
+The response provides a downloadable or streamable extended audio file.
