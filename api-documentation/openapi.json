@@ -23,7 +23,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["MUSIC_AI", "TEXT_TO_SPEECH", "VOICE_CONVERSION", "EXTRACTION", "COVER", "STEMS_SEPARATION", "VOCAL_EXTRACTION", "DENOISING", "DEECHO", "DEREVERB", "SOUND_GENERATOR", "AUDIO_TRANSCRIPTION", "AUDIO_SPEED_CHANGER", "AUDIO_MASTERING", "AUDIO_CUTTER", "REMIX"]                  
+              "enum": ["MUSIC_AI", "TEXT_TO_SPEECH", "VOICE_CONVERSION", "EXTRACTION", "COVER", "STEMS_SEPARATION", "VOCAL_EXTRACTION", "DENOISING", "DEECHO", "DEREVERB", "SOUND_GENERATOR", "AUDIO_TRANSCRIPTION", "AUDIO_SPEED_CHANGER", "AUDIO_MASTERING", "AUDIO_CUTTER", "REMIX","FILE_CONVERT","KEY_BPM_EXTRACTION","AUDIO_TO_MIDI","EXTEND","INPAINT","SING_OVER_INSTRUMENTAL","LYRICS_GENERATOR" ]                  
             },
             "description": "The type of Conversion you want to get your details from.",
             "example": "MUSIC_AI"
@@ -560,6 +560,7 @@
                 "example": "https://example.com/callback"
               }
             },
+            "required": ["voice_id"],
             "anyOf": [
               { "required": ["audio_url"] },
               { "required": ["audio_file"] }
@@ -689,170 +690,157 @@
     ]
   }
 },  
-  "/Cover": {
-    "post": {
-      "summary": "Convert audio to cover song",
-      "description": "Convert an audio file or URL into a cover song using a different voice.",
-      "requestBody": {
-        "required": true,
+"/Cover": {
+  "post": {
+    "summary": "Convert audio to cover song",
+    "description": "Convert an audio file or URL into a cover song using a different voice.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "audio_url": {
+                "type": "string",
+                "description": "URL of an audio file to process. Either audio_url or audio_file must be provided.",
+                "example": "https://example.com/audio.wav"
+              },
+              "audio_file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Audio file to upload and process. Either audio_file or audio_url must be provided."
+              },
+              "voice_id": {
+                "type": "string",
+                "description": "The ID of the voice model to use for voice transformation.",
+                "example": "demo-voice-id"
+              },
+              "pitch": {
+                "type": "integer",
+                "description": "Pitch adjustment for the voice. Range from -12 to 12. Default: 0",
+                "default": 0,
+                "minimum": -12,
+                "maximum": 12
+              },
+              "webhook_url": {
+                "type": "string",
+                "description": "A URL where the result will be sent once processing is completed.",
+                "example": "https://example.com/callback"
+              }
+            },
+            "anyOf": [
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Successful response",
         "content": {
-          "multipart/form-data": {
+          "application/json": {
             "schema": {
               "type": "object",
               "properties": {
-                "audio_url": {
-                  "type": "string",
-                  "description": "URL of an audio file to process. Either audio_url or audio_file must be provided.",
-                  "example": "https://example.com/audio.wav"
-                },
-                "audio_file": {
-                  "type": "string",
-                  "format": "binary",
-                  "description": "Audio file to upload and process. Either audio_file or audio_url must be provided."
-                },
-                "voice_id": {
-                  "type": "string",
-                  "description": "The ID of the voice model to use for voice transformation.",
-                  "example": "demo-voice-id"
-                },
-                "pitch": {
-                  "type": "integer",
-                  "description": "Pitch adjustment for the voice. Range from -12 to 12. Default: 0",
-                  "default": 0,
-                  "minimum": -12,
-                  "maximum": 12
-                },
-                "webhook_url": {
-                  "type": "string",
-                  "description": "A URL where the result will be sent once processing is completed.",
-                  "example": "https://example.com/callback"
-                }
-              },
-              "anyOf": [
-                { "required": ["audio_url"] },
-                { "required": ["audio_file"] }
-              ]
+                "success": { "type": "boolean" },
+                "task_id": { "type": "string" },
+                "conversion_id": { "type": "string" },
+                "eta": { "type": "integer" }
+              }
+            },
+            "example": {
+              "success": true,
+              "task_id": "b329c0df-b2eb-4914-b707-4d7dce53577e",
+              "conversion_id": "16708396-da86-4a9e-9b90-66f774cc2382",
+              "eta": 33
             }
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "Successful response",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": { "type": "boolean" },
-                  "task_id": { "type": "string" },
-                  "conversion_id": { "type": "string" },
-                  "eta": { "type": "integer" }
-                }
-              },
-              "example": {
-                "success": true,
-                "task_id": "b329c0df-b2eb-4914-b707-4d7dce53577e",
-                "conversion_id": "16708396-da86-4a9e-9b90-66f774cc2382",
-                "eta": 33
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
               }
-            }
-          }
-        },
-        "400": {
-          "description": "Bad Request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": { "type": "boolean" },
-                  "error": { "type": "string" }
-                }
-              },
-              "example": {
-                "success": false,
-                "error": "The file could not be downloaded from the provided URL"
-              }
-            }
-          }
-        },
-        "402": {
-          "description": "Payment Required",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": { "type": "boolean" },
-                  "error": { "type": "string" }
-                }
-              },
-              "example": {
-                "success": false,
-                "error": "Insufficient credit balance"
-              }
-            }
-          }
-        },
-        "422": {
-          "description": "Unprocessable Entity",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": { "type": "boolean" },
-                  "error": { "type": "string" }
-                }
-              },
-              "example": {
-                "success": false,
-                "error": "Both audio_url and audio_file cannot be None"
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Internal Server Error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": { "type": "boolean" },
-                  "error": { "type": "string" }
-                }
-              },
-              "example": {
-                "success": false,
-                "error": "Internal Server Error"
-              }
+            },
+            "example": {
+              "success": false,
+              "error": "The file could not be downloaded from the provided URL"
             }
           }
         }
       },
-      "security": [
-        {
-          "ApiKeyAuth": []
+      "402": {
+        "description": "Payment Required",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "Insufficient credit balance"
+            }
+          }
         }
-      ],
-      "x-codeSamples": [
-        {
-          "lang": "Python",
-          "source": "import requests\n\nurl = 'https://api.musicgpt.com/api/public/v1/Cover'\n\npayload = {\n    'audio_url': '<AUDIO_URL>',\n    'voice_id': '<VOICE_ID>',\n    'pitch': '0',\n    'webhook_url': '<WEBHOOK_URL>'\n}\n\n# For file upload:\n# files = {'audio_file': open('file.wav', 'rb')}\n\nheaders = {\n    'Authorization': '<API_KEY>'\n}\n\nresponse = requests.post(url, data=payload, headers=headers)\n# response = requests.post(url, data=payload, files=files, headers=headers)\nprint(response.text)"
-        },
-        {
-          "lang": "PHP",
-          "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/Cover';\n$apiKey = '<API_KEY>';\n\n$data = [\n    'audio_url' => '<AUDIO_URL>',\n    'voice_id' => '<VOICE_ID>',\n    'pitch' => 0,\n    'webhook_url' => '<WEBHOOK_URL>'\n];\n\n// For file upload:\n// $file = new CURLFile('file.wav', 'audio/wav', 'audio_file');\n// $data['audio_file'] = $file;\n\n$headers = ['Authorization: ' . $apiKey];\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_POST, 1);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n?>"
-        },
-        {
-          "lang": "Go",
-          "source": "package main\n\nimport (\n    \"bytes\"\n    \"fmt\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n    \"io\"\n)\n\nfunc main() {\n    url := \"https://api.musicgpt.com/api/public/v1/Cover\"\n    apiKey := \"<API_KEY>\"\n\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n    writer.WriteField(\"audio_url\", \"<AUDIO_URL>\")\n    writer.WriteField(\"voice_id\", \"<VOICE_ID>\")\n    writer.WriteField(\"pitch\", \"0\")\n    writer.WriteField(\"webhook_url\", \"<WEBHOOK_URL>\")\n\n    // file, _ := os.Open(\"file.wav\")\n    // defer file.Close()\n    // part, _ := writer.CreateFormFile(\"audio_file\", \"file.wav\")\n    // io.Copy(part, file)\n\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", url, body)\n    req.Header.Set(\"Authorization\", apiKey)\n    req.Header.Set(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    fmt.Println(resp.Status)\n}"
+      },
+      "422": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "Both audio_url and audio_file cannot be None"
+            }
+          }
         }
-      ]
-    }
-  },
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": { "type": "boolean" },
+                "error": { "type": "string" }
+              }
+            },
+            "example": {
+              "success": false,
+              "error": "Internal Server Error"
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "ApiKeyAuth": []
+      }
+    ]
+  }
+},
+
 "/TextToSpeech": {
   "post": {
     "summary": "Convert text to speech using a specified voice",
@@ -876,12 +864,20 @@
                 "type": "string",
                 "description": "Gender preference for the voice (e.g., \"male\", \"female\")"
               },
+              "sample_audio_url":{
+                "type":"string",
+                "description":"An audio URL containing a voice sample of the target speaker without music or overlapping voices. Recommended over voice_id for better output quality."
+              },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing"
               }
             },
-            "required": ["text", "voice_id"]
+            "required": ["text"],
+            "anyOf": [
+                { "required": ["sample_audio_url"] },
+                { "required": ["voice_id"] }
+              ]
           }
         }
       }
@@ -1814,9 +1810,10 @@
               }
             },
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url","reference_audio_url"] },
+              { "required": ["audio_file","reference_audio_file"] }   
             ]
+          
           }
         }
       }
@@ -1992,8 +1989,8 @@
             },
             "required": ["start_time", "end_time"],
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
             ]
           }
         }
@@ -2167,8 +2164,8 @@
             },
             "required": ["speed_change_factor"],
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
             ]
           }
         }
@@ -2338,8 +2335,8 @@
               }
             },
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
             ]
           }
         }
@@ -2461,9 +2458,9 @@
               }
             },
             "required": ["prompt"],
-            "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+            "anyOf": [              
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
             ]
           }
         }
@@ -2590,8 +2587,9 @@
             },
             "required": ["extend_after"],
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
+              
             ]
           }
         }
@@ -2724,8 +2722,8 @@
             },
             "required": ["prompt", "replace_start_at", "replace_end_at"],
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
             ]
           }
         }
@@ -2846,8 +2844,8 @@
             },
             "required": ["prompt", "lyrics"],
             "anyOf": [
-              { "required": ["audio_file"] },
-              { "required": ["audio_url"] }
+              { "required": ["audio_url"] },
+              { "required": ["audio_file"] }
             ]
           }
         }
