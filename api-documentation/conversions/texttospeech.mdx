@@ -45,9 +45,13 @@ Visit the [TextToSpeech Endpoint Explorer](/api-documentation/endpoint/TextToSpe
 | Parameter      | Type    | Required | Description                                      |
 |----------------|---------|----------|--------------------------------------------------|
 | `text`         | String  | Yes      | The text content to convert to speech            |
-| `voice_id`     | String  | Yes      | Voice model to apply for synthesis               |
+| `voice_id`     | String  | Optional      | Voice model to apply for synthesis. Either `voice_id` or `sample_audio_url` must be provided               |
+| `sample_audio_url`  | String  | Optional       | URL of Voice you want. Either `voice_id` or `sample_audio_url` must be provided   |
 | `gender`       | String  | Yes      | Gender of the voice ("male", "female")           |
 | `webhook_url`  | String  | No       | URL to receive a callback with generated audio   |
+
+> Note: You must provide either `voice_id` or `audio_url` — not both as `None`.
+
 
 ---
 
@@ -69,7 +73,7 @@ headers = {
 data = {
     'text': "The character Sherlock Holmes first appeared in print in 1887's A Study in Scarlet...",
     'voice_id': 'Drake',
-    'gender': 'male',
+    'gender': 'string',
     'webhook_url': 'http://abc.requestcatcher.com/test'
 }
 
