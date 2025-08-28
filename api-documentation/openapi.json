@@ -391,7 +391,7 @@
                 "properties": {
                   "prompt": {
                     "type": "string",
-                    "description": "A natural language prompt for music generation"
+                    "description": "A natural language prompt for music generation. Keep it under 280 characters for guaranteed results, but detailed—the clearer and more descriptive it is, the better the outcome."
                   },
                   "music_style": {
                     "type": "string",
@@ -844,7 +844,7 @@
 "/TextToSpeech": {
   "post": {
     "summary": "Convert text to speech using a specified voice",
-    "description": "Synthesize speech from text with voice and gender customization, plus optional webhook callback.",
+    "description": "Synthesize speech from text with voice and gender customization, plus optional webhook callback.  \nGive priority to the sample audio first, then to the voice ID, and lastly to gender.",
     "requestBody": {
       "required": true,
       "content": {
@@ -2410,7 +2410,7 @@
 "/Remix": {
   "post": {
     "summary": "Remix Audio Using Prompt and Optional Lyrics",
-    "description": "This endpoint allows users to remix an input audio file or URL using a descriptive prompt, optional lyrics, and a gender selection for vocal tone.\n\n⚠️ **Deprecation Notice**:\n- Only the `REMIX` functionality is supported via this route.\n- Other modes (`INPAINT`, `OVER_INSTRUMENTAL`, etc.) are **non-functional** and removed.\n- Use specialized endpoints like `/inpaint`, `/extend`, or `/sing_over_instrumental` for other tasks. Also fields such as replace_start_at, replace_end_at, extend_after, audio_path are also deprecated.",
+    "description": "This endpoint allows users to remix an input audio file or URL using a descriptive prompt, optional lyrics, and a gender selection for vocal tone.  \n>ℹ️Experimental Feature: We do not guarantee continuous reliability and a bug-free experience as this feature is in beta.\n\n⚠️ **Deprecation Notice**:\n- Only the `REMIX` functionality is supported via this route.\n- Other modes (`INPAINT`, `OVER_INSTRUMENTAL`, etc.) are **non-functional** and removed.\n- Use specialized endpoints like `/inpaint`, `/extend`, or `/sing_over_instrumental` for other tasks. Also fields such as replace_start_at, replace_end_at, extend_after, audio_path are also deprecated.",
     "requestBody": {
       "required": true,
       "content": {
@@ -2538,7 +2538,7 @@
 "/extend": {
   "post": {
     "summary": "Extend Audio Using Prompt and Optional Lyrics",
-    "description": "This endpoint allows users to extend an existing audio file or stream by appending new audio content after a specific timestamp. The new audio is generated using a prompt (e.g., describing the desired sound) and optional lyrics.",
+    "description": "This endpoint allows users to extend an existing audio file or stream by appending new audio content after a specific timestamp. The new audio is generated using a prompt (e.g., describing the desired sound) and optional lyrics.  \n>ℹ️Experimental Feature: We do not guarantee continuous reliability and a bug-free experience as this feature is in beta.",
     "requestBody": {
       "required": true,
       "content": {
@@ -2667,7 +2667,7 @@
 "/inpaint": {
   "post": {
     "summary": "Inpaint an Audio Segment",
-    "description": "This endpoint allows users to replace a specific time segment of an audio clip using a textual prompt and optional lyrics. The inpainting operation blends new audio content into the selected range, guided by user-defined style and voice preferences.",
+    "description": "This endpoint allows users to replace a specific time segment of an audio clip using a textual prompt and optional lyrics. The inpainting operation blends new audio content into the selected range, guided by user-defined style and voice preferences.  \nTo use Inpaint, upload a song and provide its full lyrics. Edit only the section in the lyrics you want to change, but keep the rest unchanged. Your edits must match the exact timestamp you select (e.g., if you pick 0:11–0:19, only update lyrics in that range).  \n>ℹ️Experimental Feature: We do not guarantee continuous reliability and a bug-free experience as this feature is in beta.",
     "requestBody": {
       "required": true,
       "content": {
@@ -2801,7 +2801,7 @@
 "/sing_over_instrumental": {
   "post": {
     "summary": "Sing Over Instrumental Using Prompt and Lyrics",
-    "description": "This endpoint allows users to sing over an instrumental audio track using a text prompt and lyrics. It supports either a file upload or a URL to the input audio and generates a vocal overlay based on the provided lyrics and style.",
+    "description": "This endpoint allows users to sing over an instrumental audio track using a text prompt and lyrics. It supports either a file upload or a URL to the input audio and generates a vocal overlay based on the provided lyrics and style.  \n>ℹ️Experimental Feature: We do not guarantee continuous reliability and a bug-free experience as this feature is in beta.",
     "requestBody": {
       "required": true,
       "content": {

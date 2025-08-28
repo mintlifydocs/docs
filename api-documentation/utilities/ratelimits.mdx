@@ -1,46 +1,152 @@
----
-title: Rate Limits
----
+<style>{`
+  :root {
+    --gray-border: #bbb;
+    --gray-bg: #f9f9f9;
+    --header-bg: #e0e0e0;
+    --text-color: #000;
+    --cell-bg: #fff;
+    --row-bg-odd: #f7f7f7;
+    --row-bg-even: #fff;
+    --row-hover-bg: #eaeaea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --gray-border: #555;
+      --gray-bg: #222;
+      --header-bg: #333;
+      --text-color: #fff;
+      --cell-bg: #2a2a2a;
+      --row-bg-odd: #2c2c2c;
+      --row-bg-even: #1f1f1f;
+      --row-hover-bg: #3a3a3a;
+    }
+  }
 
-Rate limiting is essential to ensure fair use of the API and to prevent abuse. The API enforces rate limits to ensure that resources are distributed equitably and to maintain system stability.
+  .table-wrapper {
+    max-width: 900px;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    background-color: var(--gray-bg);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--header-bg);
+    color: var(--text-color);
+    padding: 0.75rem;
+    border: 1.5px solid var(--gray-border);
+    text-align: left;
+    z-index: 1;
+  }
+  tbody td {
+    background-color: var(--cell-bg);
+    color: var(--text-color);
+    padding: 0.75rem;
+    border: 1.5px solid var(--gray-border);
+    vertical-align: top;
+    white-space: pre-line;
+  }
+  tbody tr:nth-child(odd) td {
+    background-color: var(--row-bg-odd);
+  }
+  tbody tr:nth-child(even) td {
+    background-color: var(--row-bg-even);
+  }
+  tbody tr:hover td {
+    background-color: var(--row-hover-bg);
+  }
+`}</style>
 
-Below is a detailed breakdown of the rate limits for various API endpoints and best practices for avoiding issues related to exceeding the limits.
+<div className="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Features</th>
+        <th>Free Plan Rate Limit</th>
+        <th>PLUS Plan Rate Limit</th>
+        <th>PRO Plan Rate Limit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Audio Generations</td>
+        <td>
+          [Music AI](/api-documentation/conversions/musicai)<br/>
+          [INPAINT](/api-documentation/conversions/inpaint)<br/>
+          [REMIX](/api-documentation/conversions/remix)<br/>
+          [EXTEND](/api-documentation/conversions/extend)<br/>
+          [SING_OVER_INSTRUMENTAL](/api-documentation/conversions/sing_over_instrumental)
+        </td>
+        <td>1 parallel request</td>
+        <td>5 parallel requests</td>
+        <td>10 parallel requests</td>
+      </tr>
+      <tr>
+        <td>Audio Utilities</td>
+        <td>
+          [FILE_CONVERT](/api-documentation/conversions/fileconvert)<br/>
+          [AUDIO_TO_MIDI](/api-documentation/conversions/audiotomidi)<br/>
+          [AUDIO_CUTTER](/api-documentation/conversions/audiocutter)<br/>
+          [AUDIO_SPEED_CHANGER](/api-documentation/conversions/audiospeedchanger)<br/>
+          [AUDIO_MASTERING](/api-documentation/conversions/audiomastering)<br/>
+          [KEY_BPM_EXTRACTION](/api-documentation/conversions/keybpmextraction)
+        </td>
+        <td>2 parallel</td>
+        <td>5 parallel</td>
+        <td>10 parallel</td>
+      </tr>
+      <tr>
+        <td>Audio Enhancements</td>
+        <td>
+          [TEXT_TO_SPEECH](/api-documentation/conversions/texttospeech)<br/>
+          [VOICE_CONVERSION](/api-documentation/conversions/voiceconversion)<br/>
+          [EXTRACTION](/api-documentation/conversions/extraction)<br/>
+          [COVER](/api-documentation/conversions/cover)<br/>
+          [STEMS_SEPARATION](/api-documentation/conversions/stemsseparation)<br/>
+          [VOCAL_EXTRACTION](/api-documentation/conversions/vocalextraction)<br/>
+          [DENOISING](/api-documentation/conversions/denoising)<br/>
+          [DEECHO](/api-documentation/conversions/deecho)<br/>
+          [DEREVERB](/api-documentation/conversions/dereverb)<br/>
+          [SOUND_GENERATOR](/api-documentation/conversions/soundgenerator)<br/>
+          [AUDIO_TRANSCRIPTION](/api-documentation/conversions/audiotranscription)<br/>
+          [LYRICS_GENERATOR](/api-documentation/conversions/lyricsgenerator)
+        </td>
+        <td>2 parallel</td>
+        <td>5 parallel</td>
+        <td>10 parallel</td>
+      </tr>
+      <tr>
+        <td>Get by ID</td>
+        <td>[Get by ID](/api-documentation/endpoint/getById)</td>
+        <td>200 API calls</td>
+        <td>200 API calls</td>
+        <td>200 API calls</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
----
 
-## ⏱️ Rate Limits by Endpoint
-
-### 🎼 **MusicAI**
-- **Limit**: Maximum **10 parallel** audio creation requests at a time.
-- **What This Means**: You can send up to 10 concurrent requests for music generation. If you need more requests, you will have to wait for some to complete before sending additional ones.
-
-### 🔄 **Other Conversions**
-- **Limit**: Maximum **60 conversions per minute**.
-- **What This Means**: You are allowed to process up to 60 audio conversions (like extracting vocals, converting formats, etc.) every minute. After that, further requests will be throttled until the next minute.
-
-### 📥 **GetConversionById**
-- **Limit**: Maximum **200 API calls per minute**.
-- **What This Means**: You can retrieve conversion details (like status, audio URLs, etc.) up to 200 times per minute. Exceeding this limit will result in throttling.
-
----
-
-## 💡 Best Practices to Avoid Exceeding Rate Limits
-
-To ensure smooth and uninterrupted usage of the API, follow these guidelines:
-
-- **Backoff Mechanism**: Implement a backoff mechanism in your app to automatically wait before retrying failed requests. This can help avoid hitting the rate limits too often.
-- **Monitor Usage**: Keep track of your API usage and ensure that you stay within the limits. Many clients can implement alerts to notify them when their usage approaches the rate limits.
-- **Throttling**: In case your application exceeds the limit, the API may throttle the requests. It is essential to handle these throttled responses gracefully and retry after some time.
-
----
-
-## 🛑 What Happens When You Exceed Rate Limits?
-
-When the rate limits are exceeded, the API will return a **429 Too Many Requests** error. This indicates that you have hit the limit for that specific endpoint.
-
-**Example Response:**
-```json
-{
-  "error": "Rate Limit Exceeded",
-  "message": "You have exceeded the maximum number of requests allowed. Please try again later."
-}
+<div style={{ maxWidth: '900px', margin: '1rem auto', fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+  <h3>Rate Limit</h3>
+  <ul>
+    <li>
+      <strong>Limit:</strong> Maximum <strong>10 parallel</strong> audio creation requests.
+      <br />
+      <strong>What This Means:</strong> You can send up to 10 concurrent requests total across all features combined. If you reach this limit, you must wait for some requests to complete before sending additional requests.<br />Requests to other categories are not affected by this limit and can be sent independently.
+    </li>
+  </ul>
+</div>
