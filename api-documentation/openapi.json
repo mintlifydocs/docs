@@ -729,6 +729,7 @@
                 "example": "https://example.com/callback"
               }
             },
+            "required": ["voice_id"] ,
             "anyOf": [
               { "required": ["audio_url"] },
               { "required": ["audio_file"] }
@@ -1772,11 +1773,6 @@
                 "description": "URL of the input audio to be processed.",
                 "example": "https://example.com/input_audio.mp3"
               },
-              "audio_path": {
-                "type": "string",
-                "description": "Input audio URL path (deprecated: use `audio_url` instead).",
-                "example": "https://example.com/input_audio.mp3"
-              },
               "audio_file": {
                 "type": "string",
                 "format": "binary",
@@ -1785,11 +1781,6 @@
               "reference_audio_url": {
                 "type": "string",
                 "description": "URL of the reference audio file to match.",
-                "example": "https://example.com/reference_track.wav"
-              },
-              "reference_audio_path": {
-                "type": "string",
-                "description": "Reference audio URL path (deprecated: use `reference_audio_url` instead).",
                 "example": "https://example.com/reference_track.wav"
               },
               "reference_audio_file": {
@@ -1951,11 +1942,6 @@
               "audio_url": {
                 "type": "string",
                 "description": "URL of the input audio to be trimmed.",
-                "example": "https://example.com/input_audio.mp3"
-              },
-              "audio_path": {
-                "type": "string",
-                "description": "Deprecated: use `audio_url` instead.",
                 "example": "https://example.com/input_audio.mp3"
               },
               "audio_file": {
@@ -2133,11 +2119,6 @@
                 "description": "URL of the input audio to change speed.",
                 "example": "https://example.com/input_audio.mp3"
               },
-              "audio_path": {
-                "type": "string",
-                "description": "Deprecated: use `audio_url` instead.",
-                "example": "https://example.com/input_audio.mp3"
-              },
               "audio_file": {
                 "type": "string",
                 "format": "binary",
@@ -2308,11 +2289,6 @@
                 "description": "URL of the audio file to convert to MIDI.",
                 "example": "https://example.com/audio.mp3"
               },
-              "audio_path": {
-                "type": "string",
-                "description": "Deprecated: Use `audio_url` instead.",
-                "example": "https://example.com/audio.mp3"
-              },
               "audio_file": {
                 "type": "string",
                 "format": "binary",
@@ -2410,7 +2386,7 @@
 "/Remix": {
   "post": {
     "summary": "Remix Audio Using Prompt and Optional Lyrics",
-    "description": "This endpoint allows users to remix an input audio file or URL using a descriptive prompt, optional lyrics, and a gender selection for vocal tone.  \n>ℹ️Experimental Feature: We do not guarantee continuous reliability and a bug-free experience as this feature is in beta.\n\n⚠️ **Deprecation Notice**:\n- Only the `REMIX` functionality is supported via this route.\n- Other modes (`INPAINT`, `OVER_INSTRUMENTAL`, etc.) are **non-functional** and removed.\n- Use specialized endpoints like `/inpaint`, `/extend`, or `/sing_over_instrumental` for other tasks. Also fields such as replace_start_at, replace_end_at, extend_after, audio_path are also deprecated.",
+    "description": "This endpoint allows users to remix an input audio file or URL using a descriptive prompt, optional lyrics, and a gender selection for vocal tone.  \n>ℹ️Experimental Feature: We do not guarantee continuous reliability and a bug-free experience as this feature is in beta.",
     "requestBody": {
       "required": true,
       "content": {
@@ -2427,12 +2403,6 @@
                 "type": "string",
                 "description": "URL or S3 path to the input audio.",
                 "example": "https://mybucket.s3.amazonaws.com/song.mp3"
-              },
-              "audio_path": {
-                "type": "string",
-                "description": "🔴 Deprecated: Use `audio_url` instead.",
-                "deprecated": true,
-                "example": "https://www.youtube.com/watch?v=example123"
               },
               "prompt": {
                 "type": "string",
@@ -2807,6 +2777,7 @@
       "content": {
         "multipart/form-data": {
           "schema": {
+
             "type": "object",
             "properties": {
               "audio_file": {
@@ -2822,7 +2793,7 @@
               "prompt": {
                 "type": "string",
                 "description": "Description of the singing style, tone, or genre.",
-                "example": "Sing like Adele in a soulful tone"
+                "example": "Sing emotional vocals over a soft piano instrumental."
               },
               "lyrics": {
                 "type": "string",

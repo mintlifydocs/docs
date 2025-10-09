@@ -31,15 +31,20 @@ This endpoint allows users to extend an existing audio file or stream by appendi
 
 > 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
 
+> **content-type:** multipart/form-data
+
+
 ---
 
 ## Sample Output
 
-Listen to a sample output:
+Listen to the extended audio. 
 
-Prompt: Add a calming piano outro. <audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/sample-extend-output.mp3">Your browser does not support the audio playback.</audio>
+Prompt: loud drums sound - audio input : Rose and Bruno Mars - APT 
+extend after: 6
+<audio controls="1" controlslist="nodownload nofullscreen noremoteplayback" src="https://lalals.s3.amazonaws.com/conversions/standard/a48b9cf8-5cf0-4b55-8f50-d10007ff930b.mp3">Your browser does not support audio playback.</audio>
 
-<a href="https://lalals.s3.amazonaws.com/conversions/sample-extend-output.wav" target="_blank">Download Audio</a>
+<a href="https://lalals.s3.amazonaws.com/conversions/standard/a48b9cf8-5cf0-4b55-8f50-d10007ff930b.mp3" target="_blank">Download Audio</a>
 
 ---
 
