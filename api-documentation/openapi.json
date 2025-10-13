@@ -2886,7 +2886,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/sing_over_instrumental\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Sing like Adele in a soulful tone\",\n  \"lyrics\": \"Never mind I'll find someone like you...\",\n  \"gender\": \"female\",\n  \"webhook_url\": \"https://yourdomain.com/webhook\"\n}\n\n# Option 1: Use audio_url\ndata[\"audio_url\"] = \"https://bucket.s3.amazonaws.com/audio.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: Upload file\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/sing_over_instrumental\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Sing emotional vocals over a soft piano instrumental.\",\n  \"lyrics\": \"Never mind I'll find someone like you...\",\n  \"gender\": \"female\",\n  \"webhook_url\": \"https://yourdomain.com/webhook\"\n}\n\n# Option 1: Use audio_url\ndata[\"audio_url\"] = \"https://bucket.s3.amazonaws.com/audio.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: Upload file\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
       }
     ]
   }
