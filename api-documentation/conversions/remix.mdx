@@ -22,14 +22,15 @@ POST /Remix
 | ------------- | ------------ | ------------ | ------------------------------------------------------------------------- |
 | `audio_file`  | `UploadFile` | Optional     | Upload the audio file directly. Required if `audio_url` is not provided.  |
 | `audio_url`   | `String`     | Optional     | Public URL or S3 path to audio. Required if `audio_file` is not provided. |
-| `audio_path`  | `String`     | ❌ Deprecated | Use `audio_url` instead.                                                  |
 | `prompt`      | `String`     | ✅ Yes        | Describes how the audio should be transformed.                            |
 | `lyrics`      | `String`     | Optional     | Lyrics to guide remix or vocal generation. Max 2000 characters.           |
 | `gender`      | `String`     | Optional     | Vocal tone. One of: `male`, `female`, `neutral`.                          |
 | `webhook_url` | `String`     | Optional     | Callback URL for async response.                                          |
 
-> 💡 **Note:** Either `audio_file` or `audio_url` must be provided.
-> Other parameters like `mode`, `replace_start_at`, `extend_after`, etc. have been **deprecated and removed**.
+>💡**Note:** Either `audio_file` or `audio_url` must be provided.
+
+> **content-type:** multipart/form-data
+
 
 ---
 

@@ -30,6 +30,9 @@ This endpoint enables you to overlay vocals onto an instrumental audio using a t
 
 > 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
 
+> **content-type:** multipart/form-data
+
+
 ---
 
 
@@ -74,7 +77,7 @@ import requests
 url = "https://api.musicgpt.com/api/public/v1/sing_over_instrumental"
 headers = {"Authorization": "<API_KEY>"}
 data = {
-  "prompt": "Sing like Adele in a soulful tone",
+  "prompt": "Sing emotional vocals over a soft piano instrumental",
   "lyrics": "Never mind I'll find someone like you...",
   "gender": "female",
   "webhook_url": "https://yourdomain.com/webhook"
