@@ -45,7 +45,10 @@ Visit the [Audio to MIDI Endpoint Explorer](/api-documentation/endpoint/audio_to
 | `save_note_events`| `Boolean` | Optional | `true`   | If `true`, saves predicted note events as a `.csv` file.                     |
 | `webhook_url`     | `String`  | Optional | `""`     | Callback URL for asynchronous result delivery.                               |
 
-> 💡 **Note:** `audio_path` must be a valid and accessible S3 URL.
+>💡**Note:** `audio_path` must be a valid and accessible S3 URL.
+
+> **content-type:** multipart/form-data
+
 
 ---
 
