@@ -1,6 +1,6 @@
 ---
 title: 'Inpaint'
-openapi: 'POST /inpaint'
+openapi: 'POST /v1/inpaint'
 ---
 
 Replace a specific segment of an audio file using a prompt and optional lyrics.
@@ -26,7 +26,8 @@ This endpoint processes an input audio file along with a prompt, timestamp range
 | `prompt`           | `String`     | Required | Prompt describing how the replacement should sound. Example: "Replace this part with an opera-style vocal." |
 | `replace_start_at` | `Float`      | Required | Start time (in seconds) of the segment to replace.                                                          |
 | `replace_end_at`   | `Float`      | Required | End time (in seconds) of the segment to replace.                                                            |
-| `lyrics`           | `String`     | Optional | Optional lyrics to use for inpainting.                                                                      |
+| `lyrics`           | `String`     | Optional | Original lyrics of song.                                                                      |
+| `lyrics_section_to_replace`      | `String`     | Optional     | Lyrics to be used for the replaced portion(optional, max 3000 characters)           |
 | `gender`           | `String`     | Optional | Voice style for vocal generation. One of: `male`, `female`, `neutral`.                                      |
 | `webhook_url`      | `String`     | Optional | Callback URL for async response.                                                                            |
 
@@ -131,6 +132,7 @@ Once the generation is complete, **webhooks** will be triggered to deliver the f
 
 * 2 (webhooks) x Remix conversion details (one per version)
 * 2 (webhooks) x Lyrics with timestamp data
+* 1 Album Cover Image
 
 > Webhook responses include detailed metadata including task\_id, conversion\_id, audio files (conversion\_path), lyrics etc.
 
