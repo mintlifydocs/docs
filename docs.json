@@ -53,6 +53,7 @@
             "pages": [
               "api-documentation/conversions/musicai",
               "api-documentation/conversions/musicaistreaming",
+              "api-documentation/conversions/musicaibatch",
               "api-documentation/conversions/remix",
               "api-documentation/conversions/soundgenerator",
               "api-documentation/conversions/extraction",
@@ -97,6 +98,7 @@
             "pages": [
               "api-documentation/endpoint/MusicAI",
               "api-documentation/endpoint/Musicaistreaming",
+              "api-documentation/endpoint/musicaibatch",
               "api-documentation/endpoint/cover",
               "api-documentation/endpoint/voicetovoice",
               "api-documentation/endpoint/TextToSpeech",
