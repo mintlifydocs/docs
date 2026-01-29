@@ -1,27 +1,11 @@
 ---
-title: Music AI V2
-openapi: 'POST /v2/MusicAI'
+title: Music AI Single Song
+openapi: 'POST /v2/MusicAI/batch'
 ---
 
-**Music AI v2** is currently available only for enterprise users.
+**Music AI Single Song** per generation is currently available only for enterprise users.
 
-### What v2 offers?
 
-<div style={{
-  textAlign: "left",
-  fontWeight: "bold",
-  fontSize: "1rem",
-  fontFamily: "Arial, sans-serif",
-  border: "2px solid #1a9662ff",  
-  padding: "5px",               // spacing inside the box
-  borderRadius: "10px",          // rounded corners
-  display: "inline-block"        // shrink width to content
-}}>
-<p>Live Audio Streaming to the enterprise users. </p>
-<p>Single Song per generation.</p>
-</div>
-
->> To get the response of streaming, go to the endpoint [Get Conversion Details by Id Streaming](/api-documentation/endpoint/getByStreaming).
 
 **Key features:**
 
@@ -30,10 +14,8 @@ openapi: 'POST /v2/MusicAI'
 * Apply voice conversion using a custom voice model
 * Output options: full tracks, instrumental-only, or vocal-only
 * Asynchronous webhook support for seamless integration
-* **View the live streaming of the song**
+* **You can choose the number of songs you want to generate, either 1 or 2.**
 
-
-Each request generates **two versions** of the song with variation, giving you more creative options.
 
 ---
 
@@ -78,6 +60,7 @@ Use the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to test
 | `voice_id`          | String  | Optional | ""      | Apply voice model for vocal rendering           |
 | `output_length`     | float  | Optional | ""  | The requested output audio length of the request           |
 | `webhook_url`       | String  | Optional | ""      | URL to receive generated results via webhook    |
+| `num_outputs`     | int  | Optional | 2  | The number of outputs to generate (1 or 2 only).         |
 
 
 

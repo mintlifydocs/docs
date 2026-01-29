@@ -621,8 +621,161 @@
                     "type": "number",
                     "description" : "The requested output audio length of the request in seconds. This feature is purely experimental."
 
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "URL for callback upon completion"
                   }
                   
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "task_id": {
+                      "type": "string"
+                    },
+                    "conversion_id_1": {
+                      "type": "string"
+                    },
+                    "conversion_id_2": {
+                      "type": "string"
+                    },
+                    "eta": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Message published to queue",
+                  "task_id": "4fc2cdba-005d-4d14-a208-5fb02a2809da",
+                  "conversion_id_1": "05092d5c-f8b1-4c96-a4a3-45bc00de6268",
+                  "conversion_id_2": "52fcd3b6-3925-41ed-b4c6-aee17a29e40b",
+                  "eta": 154
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment Required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Insufficient credit balance"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v2/MusicAI/batch": {
+      "post": {
+        "summary": "Generate Custom Music",
+        "description": "Create music powered by AI using just a prompt, lyrics, or a defined music style.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "description": "A natural language prompt for music generation. Keep it under 280 characters for guaranteed results, but detailed—the clearer and more descriptive it is, the better the outcome."
+                  },
+                  "music_style": {
+                    "type": "string",
+                    "description": "Style of music to generate (e.g., Rock, Pop)"
+                  },
+                  "lyrics": {
+                    "type": "string",
+                    "description": "Custom lyrics for the generated music"
+                  },
+                  "make_instrumental": {
+                    "type": "boolean",
+                    "description": "Whether to make the music instrumental",
+                    "default": false
+                  },
+                  "vocal_only": {
+                    "type": "boolean",
+                    "description": "Whether to generate only vocals of output audio",
+                    "default": false
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "Voice model to convert generated audio"
+                  },
+                  "output_length": {
+                    "type": "number",
+                    "format":"float",
+                    "description" : "The requested output audio length of the request in seconds. This feature is purely experimental."
+                  
+
+                },
+                  "num_outputs": {
+                    "type": "number",
+                    "format":"integer",
+                    "description" : "The number of outputs to generate (1 or 2 only)."
+                  },
+                  "webhook_url": {
+                    "type": "string",
+                    "description": "URL for callback upon completion"
+                  }
                 }
               }
             }
