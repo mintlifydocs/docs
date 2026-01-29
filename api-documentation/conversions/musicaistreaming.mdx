@@ -1,17 +1,36 @@
 ---
-title: Music AI
-openapi: 'POST /v1/MusicAI'
+title: Music AI V2
+openapi: 'POST /v2/MusicAI'
 ---
 
 **Music AI** generates original music compositions from a prompt, lyrics, or musical style. Whether you're a developer, content creator, or musician, this tool provides an easy and flexible way to create music powered by AI.
 
-Key features:
+### What v2 offers?
+
+<div style={{
+  textAlign: "center",
+  fontWeight: "bold",
+  fontSize: "1rem",
+  fontFamily: "Arial, sans-serif",
+  border: "2px solid #1a9662ff",  
+  padding: "10px",               // spacing inside the box
+  borderRadius: "10px",          // rounded corners
+  display: "inline-block"        // shrink width to content
+}}>
+Live Audio Streaming to the enterprise users.
+</div>
+
+>> To get the response of streaming, go to the endpoint [Get Conversion Details by Id Streaming](/api-documentation/endpoint/getByStreaming).
+
+**Key features:**
 
 * Compose custom songs using your own lyrics and chosen music style
 * Generate complete tracks from a single prompt, including lyrics, instrumentation, and melody
 * Apply voice conversion using a custom voice model
 * Output options: full tracks, instrumental-only, or vocal-only
 * Asynchronous webhook support for seamless integration
+* **View the live streaming of the song**
+
 
 Each request generates **two versions** of the song with variation, giving you more creative options.
 
@@ -57,7 +76,6 @@ Use the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to test
 | `vocal_only`        | Boolean | Optional | false   | If true, generate vocals without instruments    |
 | `voice_id`          | String  | Optional | ""      | Apply voice model for vocal rendering           |
 | `output_length`     | float  | Optional | ""  | The requested output audio length of the request           |
-| `webhook_url`       | String  | Optional | ""      | URL to receive generated results via webhook    |
 
 
 

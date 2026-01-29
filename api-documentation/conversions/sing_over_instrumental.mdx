@@ -1,6 +1,6 @@
 ---
 title: 'Sing Over Instrumental'
-openapi: 'POST /sing_over_instrumental'
+openapi: 'POST /v1/sing_over_instrumental'
 ---
 
 Generate a sung vocal performance over an instrumental audio track using a style prompt and lyrics.
@@ -145,6 +145,8 @@ Once the generation is complete, **webhooks** will be triggered to deliver the f
 #### Standard Requests (non-instrumental):
 * 2 (webhooks) x Remix conversion details (one per version)
 * 2 (webhooks) x Lyrics with timestamp data
+* 1 Album Cover Image
+
 
 > Webhook responses include detailed metadata including task_id, conversion_id, audio files (conversion_path), lyrics etc.
 

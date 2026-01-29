@@ -1,6 +1,6 @@
 ---
 title: 'Extend'
-openapi: 'POST /extend'
+openapi: 'POST /v1/extend'
 ---
 
 Extend an existing audio file by generating new content after a specific timestamp.
@@ -25,7 +25,8 @@ This endpoint allows users to extend an existing audio file or stream by appendi
 | `audio_url`    | `String`     | Optional | Public or S3 URL to the input audio. Required if `audio_file` is not provided.   |
 | `extend_after` | `Float`      | Required | Time (in seconds) after which new audio is generated.                            |
 | `prompt`       | `String`     | Optional | Describes the desired extension sound. Example: "Add a melodic flute section"    |
-| `lyrics`       | `String`     | Optional | Optional lyrics for the extended segment. Max 2000 characters.                   |
+| `lyrics`       | `String`     | Optional | Original lyrics of song. Max 2000 characters.                   |
+| `lyrics_section_to_extend`       | `String`     | Optional | Optional lyrics for the extended segment. Max 3000 characters.                   |
 | `gender`       | `String`     | Optional | Voice style if vocals are generated. Must be one of `male`, `female`, `neutral`. |
 | `webhook_url`  | `String`     | Optional | Callback URL for async result delivery.                                          |
 
@@ -151,6 +152,7 @@ Once the generation is complete, **webhooks** will be triggered to deliver the f
 
 * 2 (webhooks) x Extend conversion details (one per version)
 * 2 (webhooks) x Lyrics with timestamp data
+* 1 Album Cover Image
 
 > Webhook responses include detailed metadata including task\_id, conversion\_id, audio files (conversion\_path), lyrics etc.
 

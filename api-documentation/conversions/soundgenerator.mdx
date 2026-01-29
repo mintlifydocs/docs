@@ -1,15 +1,15 @@
 ---
 title: Sound Generator
-openapi: 'POST /sound_generator'
+openapi: 'POST /v1/sound_generator'
 ---
 
 Create custom sounds with AI using just a simple prompt.
 
 **Sound Generator** lets you synthesize high-quality sound effects and audio textures directly from text prompts. Perfect for developers, game designers, filmmakers, and creative technologists who need original sounds on demand.
 
-- 🎛 Generate realistic or abstract sounds
-- 🧠 Fine-tuned AI audio creation
-- 🔁 Instant feedback or asynchronous delivery via webhook
+- Generate realistic or abstract sounds
+- Fine-tuned AI audio creation
+- Instant feedback or asynchronous delivery via webhook
 
 Sound Generator is designed for flexibility, speed, and professional-grade quality.
 
@@ -44,13 +44,13 @@ Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/SoundG
 
 ---
 
-## 🛠️ Request Parameters
+## Request Parameters
 
 | Parameter        | Type    | Required | Description                                             |
 |------------------|---------|----------|---------------------------------------------------------|
 | `prompt`         | String  | Yes      | A natural language description of the sound you want    |
 | `webhook_url`    | String  | Optional | Webhook URL to receive a callback with the audio result |
-| `user_id`        | String  | Optional | Optional user ID for tracking purposes                  |
+| `audio_length`        | int  | Optional | Specify song length (optional)                 |
 
 > **content-type:** application/x-www-form-urlencoded 
 

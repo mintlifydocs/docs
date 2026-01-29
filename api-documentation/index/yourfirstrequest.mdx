@@ -5,23 +5,34 @@ title: The First Time
 Welcome to your **first experience** with the Musicgpt API — where creativity meets technology. Browse the wide range of features available for you through our API. 
 
 ---
+## Integrate in 5 minutes with 5 steps:
+<div style={{ textAlign: "center", fontWeight: "bold" }}>
+  "A single API offering 20+ powerful features"
+</div>
+
+1. [Activate](https://musicgpt.com/api-dashboard) your API Key.
+2. Go to [Documentation](https://docs.musicgpt.com/api-documentation/index/introduction).
+3. Inside features, you can click Try-it button to open a live [playground](https://docs.musicgpt.com/api-documentation/conversions/musicai?playground=open).
+4. You can also use the multi-language code samples provided for each feature to run it locally.
+5. To get result: Set the [**webhook_url**](https://docs.musicgpt.com/api-documentation/index/webhook) to an endpoint on your server or retrieve the result through our helper endpoint [**get conversion by id**](https://docs.musicgpt.com/api-documentation/endpoint/getById) instead.
+
 
 ## Available Features
 
-### 🎵 Music Generation Features
+### Music Generation Features 🎵
 - **AI Music Generator**: Create original music from text prompts
 - **Custom Voice Music Generator**: Generate songs with AI vocals in different voice styles
 - **Cover Song**: Create AI-powered covers of existing songs
 - **Remix**: Transform tracks into new musical styles using AI
 
-### 🗣️ Voice & Speech Features
+### Voice & Speech Features
 - **Text to Speech**: Convert text to natural-sounding speech
 - **Voice Changer**: Modify voices in existing audio to different characteristics
 
-### 🔊 Sound Design
+### Sound Design
 - **Sound Generator**: Create sound effects and audio elements from text prompts
 
-### 🔍 Extraction & Stem Separation
+### Extraction & Stem Separation
 #### Vocal Processing
 - **Vocal Extraction**: Isolate vocals from music tracks
 - **Gender-Based Vocal Extraction**: Separate male and female vocals
@@ -40,7 +51,7 @@ Welcome to your **first experience** with the Musicgpt API — where creativity 
 - **Premium Bass/Drums Split**: High-accuracy rhythm section isolation
 - **Drum Stems Separation**: Separate individual drum components
 
-### 🛠️ Audio Enhancement Features
+### Audio Enhancement Features
 - **Voice Cleaner (Denoise)**: Remove background noise from audio
 - **DeEcho**: Eliminate echo effects
 - **DeReverb**: Reduce unwanted reverb
@@ -49,16 +60,16 @@ Welcome to your **first experience** with the Musicgpt API — where creativity 
 - **Audio Mastering**: Enhance overall sound quality
 - **File Converter**: Convert between audio formats
 
-### 📊 Audio Analysis Features
+### Audio Analysis Features
 - **Key & BPM Detector**: Identify musical key and tempo
 - **Audio Transcription**: Convert speech to text with translation
 - **Audio to MIDI**: Transform audio into MIDI sequences
 
 ---
 
-## 🧪 Your First AI Song
+## Your First AI Song
 
-Let’s generate a **country song about our love for AI-generated music** ❤️🎸
+Let’s generate a **country song about our love for AI-generated music**   
 
 We’ll use the `MUSIC_AI` feature with the following endpoint:
 
@@ -68,7 +79,7 @@ POST https://api.musicgpt.com/api/public/v1/MusicAI
 
 ---
 
-## 📬 Example Request
+## Example Request
 
 ```bash
 curl -X 'POST' \
@@ -85,7 +96,7 @@ curl -X 'POST' \
 > 🧠 Replace `<api_key>` with your actual API Key from your Musicgpt dashboard.
 
 
-## 🖧 Webhook Integration
+## Webhook Integration
 
 To get notified when the music generation is complete, we recommend setting up a webhook. This allows you to receive the URL of the generated song directly.
 > 🔗 Set the `webhook_url` to an endpoint on your server — this is where Musicgpt will notify you once the generation is done.
@@ -118,5 +129,6 @@ To get notified when the music generation is complete, we recommend setting up a
 
 You just generated your **first AI song** using the Musicgpt API. Now go make something amazing ✨
 
-Need more help? Check out other endpoints and guides in the [documentation]("/api-documentation/introduction")!
+Need more help? Check out other endpoints and guides in the [documentation](/api-documentation/index/introduction)!
+
 
