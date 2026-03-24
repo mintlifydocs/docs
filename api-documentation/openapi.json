@@ -469,6 +469,10 @@
                     "description": "Whether to generate only vocals of output audio",
                     "default": false
                   },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gender of the voice model"
+                  },
                   "voice_id": {
                     "type": "string",
                     "description": "Voice model to convert generated audio"
@@ -613,14 +617,15 @@
                     "description": "Whether to generate only vocals of output audio",
                     "default": false
                   },
-                  "voice_id": {
-                    "type": "string",
-                    "description": "Voice model to convert generated audio"
-                  },
+
                   "output_length": {
                     "type": "number",
                     "description" : "The requested output audio length of the request in seconds. This feature is purely experimental."
 
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gender of the voice model"
                   },
                   "webhook_url": {
                     "type": "string",
@@ -763,8 +768,7 @@
                   "output_length": {
                     "type": "number",
                     "format":"float",
-                    "description" : "The requested output audio length of the request in seconds. This feature is purely experimental."
-                  
+                    "description" : "The requested output audio length of the request in seconds. This feature is purely experimental." 
 
                 },
                   "num_outputs": {
@@ -2911,6 +2915,11 @@
                 "enum": ["male", "female", "neutral"],
                 "example": "neutral"
               },
+              "num_outputs": {
+                      "type": "number",
+                      "format":"integer",
+                      "description" : "The number of outputs to generate (1 or 2 only):default is 2."
+              },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing results.",
@@ -2991,7 +3000,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extend\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"extend_after\": 35.0,\n  \"prompt\": \"Add a calming piano outro\",\n  \"lyrics\": \"Let the journey fade away\",\n  \"gender\": \"neutral\",\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extend\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"extend_after\": 35.0,\n  \"prompt\": \"Add a calming piano outro\",\n  \"lyrics\": \"Let the journey fade away\",\n  \"gender\": \"neutral\", \n  \"lyrics_section_to_extend\": \"New lyrics\",\n  \"num_outputs\": 1,\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
       }
     ]
   }
@@ -3050,6 +3059,11 @@
                 "description": "Voice style for the inpainted segment.",
                 "enum": ["male", "female", "neutral"],
                 "example": "male"
+              },
+              "num_outputs": {
+                      "type": "number",
+                      "format":"integer",
+                      "description" : "The number of outputs to generate (1 or 2 only):default is 2."
               },
               "webhook_url": {
                 "type": "string",
@@ -3130,7 +3144,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/inpaint\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Add a soft guitar solo here\",\n  \"replace_start_at\": 12.5,\n  \"replace_end_at\": 20.0,\n  \"lyrics\": \"This is where my story begins\",\n \"lyrics_section_to_replace\": \"New lyrics\",\n  \"gender\": \"male\",\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/inpaint\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Add a soft guitar solo here\",\n  \"replace_start_at\": 12.5,\n  \"replace_end_at\": 20.0,\n  \"lyrics\": \"This is where my story begins\",\n  \"lyrics_section_to_replace\": \"New lyrics\",\n  \"gender\": \"male\",\n  \"num_outputs\": 1,\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
       }
     ]
   }
@@ -3455,7 +3469,152 @@
       { "ApiKeyAuth": [] }
     ]
   }
-}
+},
+"/v1/image_to_song": {
+    "post": {
+      "summary": "Generate a Song from an Image",
+      "description": "Generate a song from an image by analyzing it and creating music based on visual content. The process can optionally include custom lyrics, voice conversion, and various musical parameters.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "image_file": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "Image file to upload and analyze. Supported formats: JPEG, PNG, GIF, BMP, WEBP."
+                },
+                "image_url": {
+                  "type": "string",
+                  "description": "URL of the image to analyze. Either this or image_file must be provided.",
+                  "example": "https://mybucket.s3.amazonaws.com/image.png"
+                },
+                "prompt": {
+                  "type": "string",
+                  "description": "Additional prompt to guide the song generation from the image.",
+                  "maxLength": 300,
+                  "example": "Generate a relaxing acoustic track inspired by this scene."
+                },
+                "lyrics": {
+                  "type": "string",
+                  "description": "Custom lyrics to include in the generated audio.",
+                  "maxLength": 3000,
+                  "example": "Let the colors of the sunset fill your heart."
+                },
+                "negative_tags": {
+                  "type": "string",
+                  "description": "Tags or themes to avoid in the song.",
+                  "example": "no heavy metal, avoid loud drums"
+                },
+                "make_instrumental": {
+                  "type": "boolean",
+                  "description": "Generate instrumental output only. Lyrics will be ignored.",
+                  "default": false
+                },
+                "vocal_only": {
+                  "type": "boolean",
+                  "description": "Generate vocal-only output.",
+                  "default": false
+                },
+                "key": {
+                  "type": "string",
+                  "description": "Musical key for the song.",
+                  "example": "C major"
+                },
+                "bpm": {
+                  "type": "integer",
+                  "description": "Beats per minute for the song tempo. Defaults to 0 (auto-selected).",
+                  "default": 0
+                },
+                "webhook_url": {
+                  "type": "string",
+                  "description": "Optional callback URL for async processing results.",
+                  "example": "https://example.com/webhook"
+                },
+                "voice_id": {
+                  "type": "string",
+                  "description": "Voice ID for converting the generated audio. Cannot be used with vocal_only mode."
+                }
+              },
+              "anyOf": [
+                { "required": ["image_file"] },
+                { "required": ["image_url"] }
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successfully initiated image-to-song task",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean" },
+                  "message": { "type": "string" },
+                  "task_id": { "type": "string" },
+                  "conversion_id_1": { "type": "string" },
+                  "conversion_id_2": { "type": "string" },
+                  "eta": { "type": "integer", "description": "Estimated processing time in seconds" },
+                  "credit_estimate": { "type": "number", "format": "float" }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Message Published To Queue",
+                  "task_id": "task_12345",
+                  "conversion_id_1": "conv_12345",
+                  "conversion_id_2": "conv_54321",
+                  "eta": 300,
+                  "credit_estimate": 150.5
+                }
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error / Unprocessable Content",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "image_file or image_url is required." }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal Server Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": { "type": "boolean", "example": false },
+                  "error": { "type": "string", "example": "Internal Server Error" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "security": [
+        { "ApiKeyAuth": [] }
+      ],
+      "x-codeSamples": [
+        {
+          "lang": "Python",
+          "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/image_to_song\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n    \"image_url\": \"https://mybucket.s3.amazonaws.com/image.png\",\n    \"prompt\": \"Generate a relaxing acoustic track inspired by this scene.\",\n    \"lyrics\": \"Let the colors of the sunset fill your heart.\",\n    \"make_instrumental\": False,\n    \"vocal_only\": False,\n    \"key\": \"C major\",\n    \"bpm\": 120,\n    \"webhook_url\": \"https://example.com/webhook\",\n    \"voice_id\": \"voice_123\"\n}\n\n# Option 1: Using image URL\nresponse = requests.post(url, headers=headers, data=data)\nprint(response.json())\n\n# Option 2: Uploading a local image file\n# with open(\"image.png\", \"rb\") as f:\n#     files = {\"image_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n#     print(response.json())"
+        }
+      ]
+    }
+  }
 },
   "components": {
     "securitySchemes": {
