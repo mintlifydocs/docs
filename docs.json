@@ -73,7 +73,8 @@
               "api-documentation/conversions/extractkeybpm",
               "api-documentation/conversions/fileconvert",
               "api-documentation/conversions/audiomastering",
-              "api-documentation/conversions/dereverb"
+              "api-documentation/conversions/dereverb",
+              "api-documentation/conversions/imagetosong"
             ]
           },
           {
@@ -118,7 +119,8 @@
               "api-documentation/endpoint/extend",
               "api-documentation/endpoint/inpaint",
               "api-documentation/endpoint/sing_over_instrumental",
-              "api-documentation/endpoint/lyrics_generator"
+              "api-documentation/endpoint/lyrics_generator",
+              "api-documentation/endpoint/imagetosong"
             ]
           }
         ]
