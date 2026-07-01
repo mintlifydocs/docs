@@ -1,15 +1,76 @@
+
+
+
+
 <div style={{
-  textAlign: "center",
-  fontWeight: "bold",
-  fontSize: "1.5rem",
-  fontFamily: "Arial, sans-serif",
-  border: "2px solid #1a9662ff",  
-  padding: "15px",               // spacing inside the box
-  borderRadius: "10px",          // rounded corners
-  display: "inline-block"        // shrink width to content
+  position: "relative",
+  borderRadius: "14px",
+  border: "2px solid #16a34a",
+  padding: "2px",
+  display: "inline-block",
+  width: "100%",
+  boxSizing: "border-box",
 }}>
-  MusicGPT **v6 Pro** is live now : Access the world’s most advanced AI audio models with the MusicGPT API
+  <style>{`
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  `}</style>
+  <div style={{
+    borderRadius: "12px",
+    padding: "1.25rem 1.5rem",
+    textAlign: "center",
+  }}>
+    <div style={{
+      display: "inline-flex", alignItems: "center", gap: "6px",
+      fontSize: "14px",fontWeight: 700, padding: "3px 8px",
+      borderRadius: "99px", marginBottom: "12px",
+      border: "1px solid #16a34a",
+    }}>
+      <span style={{
+        width: "7px", height: "7px", borderRadius: "50%",
+        background: "#16a34a", display: "inline-block",
+        animation: "pulse 1.5s ease-in-out infinite",
+      }} />
+      Live now
+    </div>
+    <p style={{ fontSize: "32px", fontWeight: 700, margin: "0 0 6px", lineHeight: 1.2 }}>
+      MusicGPT v7 & v7 Pro
+    </p>
+    <p style={{ fontSize: "18px", fontWeight: 700, color: "#16a34a", margin: "0 0 14px" }}>
+      The world's most advanced AI audio models
+    </p>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center" }}>
+      {[
+        { icon: "〜", label: "Real-time generation" },
+        { icon: "⊞", label: "Maximum control" },
+        { icon: "⇢", label: "Streaming available" },
+        { icon: "♛", label: "Pro models available" },
+      ].map(({ icon, label }) => (
+        <span key={label} style={{
+          display: "inline-flex", alignItems: "center", gap: "8px",
+          fontSize: "12px", padding: "7px 14px", borderRadius: "8px", fontWeight: 700,
+          border: "0.5px solid #16a34a",
+        }}>
+          {icon} {label}
+        </span>
+      ))}
+    </div>
+    <div style={{ marginTop: "16px" }}>
+      <a href="/api-documentation/conversions/musicaistreaming" style={{
+        display: "inline-flex", alignItems: "center",
+        padding: "8px 18px", borderRadius: "99px",
+        background: "#16a34a", color: "#fff",
+        fontSize: "13px", fontWeight: 500,
+        textDecoration: "none",
+      }}>
+        Try it →
+      </a>
+    </div>
+  </div>
 </div>
+
 
 
 ## **MusicGPT Public API Documentation**
@@ -17,9 +78,17 @@
 Welcome to **MusicGPT** — your **all-in-one AI-powered** music and audio platform. Our API lets you generate, remix, enhance, convert, and manipulate audio effortlessly, turning creative ideas into production-ready music.
 We offer:
 <div style={{ textAlign: "center", marginTop: "15px" }}>
-  {["Music AI", "Cover", "Text to Speech", "Remix", "Extraction", "+20 features"].map((item) => (
-    <span 
-      key={item} 
+  {[
+    { label: "Music AI", href: "/api-documentation/conversions/musicaistreaming" },
+    { label: "Remix", href: "/api-documentation/conversions/remix" },
+    { label: "Text to Speech", href: "/api-documentation/conversions/texttospeech" },
+    { label: "Extend", href: "/api-documentation/conversions/extend" },
+    { label: "Sound Generator", href: "/api-documentation/conversions/soundgenerator" },
+    { label: "+20 features", href: "/api-documentation" }
+  ].map((item) => (
+    <a
+      key={item.label}
+      href={item.href}
       style={{
         display: "inline-block",
         backgroundColor: "#376643ff",
@@ -29,14 +98,25 @@ We offer:
         borderRadius: "8px",
         fontSize: "0.85rem",
         fontWeight: "500",
-        cursor: "default"
+        textDecoration: "none"
       }}
     >
-      {item}
-    </span>
+      {item.label}
+    </a>
   ))}
 </div>
-Whether it’s AI-generated songs, voice transformation, audio inpainting, stem extraction, or seamless format conversion, MusicGPT gives developers and creators the tools to do anything possible with music and audio.
+Whether you're building AI music applications, creating content at scale, or developing professional audio workflows, Music AI v2 delivers enterprise-grade music generation and advanced audio capabilities through a simple API. Generate songs, transform voices, edit audio, extract stems, and more with ease.
+
+
+
+
+<div style={{ display: "flex", justifyContent: "right", marginTop: "20px" }}>
+  <div style={{ maxWidth: "460px", width: "100%" }}>
+    <Card title="Get your API key and use $20 free credits now" icon="gift"  href="https://musicgpt.com/api-dashboard" color="#2e9e5b" horizontal>
+    </Card>
+    
+  </div>
+</div>
 
 
 
@@ -47,12 +127,12 @@ Whether it’s AI-generated songs, voice transformation, audio inpainting, stem 
 
 Musicgpt is a comprehensive AI audio platform offering a wide range of features including:
 - **Music Generation** (MusicAI): Turn text prompts into full-length songs.
+- **Remixing and Editing Tools**: Cut, master, change pitch/speed, remix, inpaint and more.
+- **Text-to-Speech (TTS)**: Convert text to expressive voice using custom voice profiles.
 - **Voice Changing**: Convert any voice into a new one — ideal for character work, privacy, or creativity.
 - **Cover Song Generation**: Recreate any song with a new voice or style.
 - **Vocal, Instrumental and Stems Extraction**: Isolate or remove vocals or instruments or stems.
-- **Text-to-Speech (TTS)**: Convert text to expressive voice using custom voice profiles.
 - **Audio Cleaning**: De-noise, de-echo, and de-reverb your recordings.
-- **Remixing and Editing Tools**: Cut, master, change pitch/speed, remix, inpaint and more.
 - **Key/BPM Detection**: Instantly extract musical key and tempo.
 - **Transcription**: Get accurate text from speech.
 - **File Format Conversion**: Seamlessly convert between audio formats.

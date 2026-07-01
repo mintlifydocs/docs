@@ -13,7 +13,7 @@ Generate a sung vocal performance over an instrumental audio track using a style
 POST /sing_over_instrumental
 ```
 
-This endpoint enables you to overlay vocals onto an instrumental audio using a textual description of the singing style and provided lyrics. Input can be either a file upload or a URL. You can optionally specify the vocal gender and a webhook URL for asynchronous processing.
+This endpoint enables you to overlay vocals onto an instrumental audio using a textual description of the singing style and provided lyrics. Input can be either a file upload or a URL.
 
 ---
 
@@ -21,6 +21,7 @@ This endpoint enables you to overlay vocals onto an instrumental audio using a t
 
 | Parameter     | Type         | Required | Description                                                                         |
 | ------------- | ------------ | -------- | ----------------------------------------------------------------------------------- |
+| `title`             | `String`  | Optional| Title of the generated music                    |
 | `audio_file`  | `UploadFile` | Optional | Upload the instrumental audio file. Required if `audio_url` is not provided.        |
 | `audio_url`   | `String`     | Optional | URL or youtube link to the instrumental audio. Required if `audio_file` is not provided. |
 | `prompt`      | `String`     | Required | Text describing the desired singing style. Example: "Sing in soft jazz style"       |

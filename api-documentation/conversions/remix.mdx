@@ -20,6 +20,7 @@ POST /Remix
 
 | Parameter     | Type         | Required     | Description                                                               |
 | ------------- | ------------ | ------------ | ------------------------------------------------------------------------- |
+| `title`             | `String`  | Optional        | Title of the generated music                    |
 | `audio_file`  | `UploadFile` | Optional     | Upload the audio file directly. Required if `audio_url` is not provided.  |
 | `audio_url`   | `String`     | Optional     | Public URL or S3 path to audio. Required if `audio_file` is not provided. |
 | `prompt`      | `String`     | ✅ Yes        | Describes how the audio should be transformed.                            |

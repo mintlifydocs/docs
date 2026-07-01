@@ -4,6 +4,10 @@ title: Pricing Plans
 
 Discover our flexible pricing options designed to scale with your creativity. Start free and upgrade anytime for more features, faster processing, and priority support. All paid plans include **commercial use**, **high-speed processing**, **studio-quality audio**, and **dedicated support**.
 
+<Info>
+  Plans don't give you credits - they just lower the cost of each API call. You are still billed per request based on your plan's rate.
+</Info>
+
 ---
 
 ## 🎁 Free Credits Included
@@ -149,32 +153,48 @@ Every new user gets **\$20 in free credits** to try out core features. Explore, 
 </div>
 
 
+
 ## Generation Features Pricing
 
+| Feature | Model | Pro Plan | Plus Plan | Free Plan |
+|---------|-------|---------:|----------:|----------:|
+| [AI Music Generator](/api-documentation/conversions/musicai)<br />Generate AI music from prompt | v6 | $0.03 /song | $0.05 /song | $0.495 /song |
+|  | v6 Pro | $0.04 /song | $0.06 /song | $0.595 /song |
+|  | v7 | $0.05 /song | $0.07 /song | $0.695 /song |
+|  | v7 Pro | $0.06 /song | $0.08 /song | $0.795 /song |
+| [Custom Voice Music Generator](/api-documentation/conversions/musicai)<br />Generate AI song with voice you like | v6 | $0.07 /song | $0.10 /song | $0.99 /song |
+|  | v6 Pro | $0.08 /song | $0.11 /song | $1.09 /song |
+|  | v7 | $0.09 /song | $0.12 /song | $1.19 /song |
+|  | v7 Pro | $0.10 /song | $0.13 /song | $1.29 /song |
+| [Remix](/api-documentation/conversions/remix)<br />Remix audio into a new music style | v6 | $0.05 /song | $0.07 /song | $0.595 /song |
+|  | v7 | $0.07 /song | $0.09 /song | $0.795 /song |
+| [Inpaint](/api-documentation/conversions/inpaint)<br />Replace Audio Section | v6 | $0.06 /song | $0.10 /song | $0.99 /song |
+|  | v7 | $0.08 /song | $0.12 /song | $1.19 /song |
+| [Extend](/api-documentation/conversions/extend)<br />Extend the input audio | v6 | $0.06 /song | $0.10 /song | $0.99 /song |
+|  | v7 | $0.08 /song | $0.12 /song | $1.19 /song |
+| [Sing Over Instrumental](/api-documentation/conversions/sing_over_instrumental)<br />Blend Lyrics with Instrumental | v6 | $0.05 /song | $0.07 /song | $0.595 /song |
+|  | v7 | $0.07 /song | $0.09 /song | $0.795 /song |
 
+<Note>
+  The pricing for Music AI, Remix, Inpaint, and Extend has been updated.
+
+  AI Music, Custom Voice Music, Remix, Inpaint, Extend, and Sing Over Instrumental generate 2 output versions by default. All features use 60-second increments (except Text-to-Speech, which uses 100 words).
+</Note>
+
+## Voice & Audio Features
 | Feature | Pro Plan | Plus Plan | Free Plan |
 |--------|----------|-----------|-----------|
-| [AI Music Generator](/api-documentation/conversions/musicai)<br />Generate AI music from prompt | \$0.03 /song | \$0.05 /song | \$0.495 /song |
-| [AI Music Generator (Single Song)](/api-documentation/conversions/musicaibatch)<br />Only for enterprise users | \$0.04 /song | - | - |
-| [Custom Voice Music Generator](/api-documentation/conversions/musicai)<br />Generate AI song with voice you like | \$0.07 /song | \$0.1 /song | \$0.99 /song |
 | [Text to Speech](/api-documentation/conversions/texttospeech)<br />Convert text into speech | \$0.026/100 words | \$0.035/100 words | \$0.49 + \$0.19/100 words |
-| [Remix](/api-documentation/conversions/remix)<br />Remix audio into a new music style | \$0.05 /song | \$0.07 /song | \$0.595 /song |
-| [Inpaint ](/api-documentation/conversions/inpaint)<br />Re-imagine and replace the selected portion of audio | \$0.06 /song | \$0.1 /song | \$0.99 /song |
-| [Extend ](/api-documentation/conversions/extend)<br />Extend the input audio | \$0.06 /song | \$0.1 /song | \$0.99 /song |
-| [Sing Over Instrumental](/api-documentation/conversions/sing_over_instrumental)<br />Blend your custom lyrics to an instrumental audio | \$0.05 /song | \$0.07 /song | \$0.595 /song |
 | [Sound Generator](/api-documentation/conversions/soundgenerator)<br />Generate sounds from prompt | \$0.037 /generation | \$0.0496 /generation | \$0.99 /generation |
 | [Lyrics Generator](/api-documentation/conversions/lyrics_generator)<br />Generate Lyrics from prompt | \$0.005 /generation | \$0.005 /generation | \$0.05 /generation |
 | [Voice Changer](/api-documentation/conversions/voicechanger)<br />Transform voice in audio | \$0.016 + \$0.0022/min | \$0.022 + \$0.003/min | \$0.49 + \$0.058/min |
 | [Cover Song](/api-documentation/conversions/cover)<br />Create AI-generated cover songs | \$0.0235 + \$0.0037/min | \$0.0315 + \$0.005/min | \$0.49 + \$0.078/min |
 
-> The pricing for Inpaint and Extend has been updated.
 
-> 📝 **Note:** AI Music, Custom Voice Music, Remix, Inpaint, Extend and Sing Over Instrumental generates **2 output versions by default**. All features use 60s increments (except Text-to-Speech: 100 words).
 
 ---
 
 ## Stem Splitter Features Pricing
-
 | Feature | Pro Plan | Plus Plan | Free Plan |
 |--------|----------|-----------|-----------|
 | [Vocal Extraction](/api-documentation/conversions/extraction)<br />Isolate vocals from track | \$0.0115 + \$0.0022/min | \$0.0155 + \$0.003/min | \$0.49 + \$0.29/min |
@@ -191,7 +211,7 @@ Every new user gets **\$20 in free credits** to try out core features. Explore, 
 | [Drum Stems Separation](/api-documentation/conversions/extraction)<br />Separate Drum Stems | \$0.1078 + \$0.0179/min | \$0.1438 + \$0.0238/min | \$0.49 + \$0.29/min |
 
 ---
->> **Example** : For Vocal Extraction Pro plan, a 3-minute song costs 0.0115+(0.0022 × 3 minutes).
+> **Example** : For Vocal Extraction Pro plan, a 3-minute song costs 0.0115+(0.0022×3).
 
 ## Audio Enhancement Features Pricing
 
@@ -216,17 +236,7 @@ Every new user gets **\$20 in free credits** to try out core features. Explore, 
 | [Audio to MIDI](/api-documentation/conversions/audiotomidi)<br />Generate MIDI from audio | \$0.005 + \$0.0037/min | \$0.007 + \$0.005/min | \$0.29 + \$0.042/min |
 
 ---
-<div style={{
-  textAlign: "center",
-  fontSize: "1rem",
-  fontFamily: "Arial, sans-serif",
-  border: "1px solid #1e1d1dff",  
-  padding: "3px",               // spacing inside the box
-  borderRadius: "10px",          // rounded corners
-  display: "inline-block"        // shrink width to content
-}}>
- Plans don’t give you credits—they just lower the cost of each API call.
-</div>
+
 ### 💡 Pricing Summary
 - **Base Cost**: One-time charge per request
 - **+/min**: Additional cost per minute (60s increments)

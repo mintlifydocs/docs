@@ -1,10 +1,29 @@
 ---
 title: 'Extraction'
-openapi: 'POST /v1/Extraction'
+openapi: 'POST /v2/Extraction'
 ---
-Extract vocals, instrumentals, or other stems from an audio file or URL, with optional preprocessing. This endpoint supports file uploads or remote URLs and allows webhook callbacks for async updates.
+Extract vocals, instrumentals, or other stems from an audio file or URL, with optional preprocessing. 
 
 ---
+
+<div
+  style={{
+    backgroundColor: "#fbfaf8",
+    border: "1px solid #f5c542",
+    borderLeft: "6px solid #f5c542",
+    padding: "14px",
+    borderRadius: "8px",
+    fontSize: "0.95rem",
+    lineHeight: "1.5",
+    color: "#000000",
+  }}
+>
+  <strong>⚠ Deprecation Notice:</strong>
+  <div style={{ marginTop: "4px" }}>
+    Extraction v1 is still functional but has been deprecated. We recommend switching to the v2 endpoint for improved response times and better quality.
+  </div>
+</div>
+
 ## Endpoint
 
 ```http
@@ -23,6 +42,7 @@ Use this endpoint to extract stems like vocals, drums, guitar, or more from an a
 | `audio_file`            | `UploadFile` | Optional | Audio file to upload and process. Either `audio_url` or `audio_file` must be provided.      |
 | `stems`                 | `string`     | Optional | JSON string list of required stems. e.g., `["vocals", "drums"]`. See all options below.     |
 | `preprocessing_options` | `string`     | Optional | JSON string list of preprocessing options. e.g., `["Denoise"]`. See all options below.      |
+| `eco_mode`              | `boolean` | Optional     | Enable eco mode for faster parallel extraction. Default: `false`. |
 | `webhook_url`           | `string`     | Optional | Callback URL to receive async processing results.                                           |
 
 > **content-type:** multipart/form-data
@@ -125,7 +145,7 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
 import requests
 import json
 
-url = "https://api.musicgpt.com/api/public/v1/Extraction"
+url = "https://api.musicgpt.com/api/public/v2/Extraction"
 headers = {
     "accept": "application/json",
     "Authorization": "<api_key>"
