@@ -1,17 +1,23 @@
 ---
 title: Pricing Plans
+description: "Flexible plans that lower your per-request rates — now with yearly billing that locks in current pricing."
 ---
 
 Discover our flexible pricing options designed to scale with your creativity. Start free and upgrade anytime for more features, faster processing, and priority support. All paid plans include **commercial use**, **high-speed processing**, **studio-quality audio**, and **dedicated support**.
 
- **Plans don't give you credits - they just lower the cost of each API call. You are still billed per request based on your plan's rate.**
-
 <Note>
-  The **Yearly Plan** is now available — the most affordable option. Yearly plan members retain the current per-song rates.
-
-  Starting **August 1**, monthly plan pricing will be updated. Subscribe to a yearly plan to lock in current rates.
+  **Plans don't give you credits** — they lower the cost of each API call. You are still billed per request based on your plan's rate.
 </Note>
----
+
+<div className="mg-ratelock">
+  <div>
+    <p className="mg-ratelock-title">🔒 New: Yearly plans — lock in today's rates</p>
+    <p className="mg-ratelock-body">
+      Starting <strong>August 1</strong>, monthly plan pricing will be updated. <strong>Yearly plan members keep the current per-song rates.</strong> Subscribe to a yearly plan before then to lock in what you pay today — it's our most affordable option.
+    </p>
+  </div>
+  <a href="https://musicgpt.com/api-dashboard" className="mg-btn mg-btn-primary">Lock in my rate →</a>
+</div>
 
 ## 🎁 Free Credits Included
 
@@ -19,172 +25,72 @@ Every new user gets **\$20 in free credits** to try out core features. Explore, 
 
 ---
 
-# Plans
+## Plans
 
-<div style={{
-  display: 'flex',
-  justifyContent: 'center',
-  gap: '1rem',
-  marginTop: '2rem',
-  flexWrap: 'wrap'
-}}>
+<div className="mg-plans">
+  <a href="https://musicgpt.com/api-dashboard" className="mg-plan">
+    <p className="mg-plan-name">API Free</p>
+    <p className="mg-plan-price">\$0<span> /month</span></p>
+    <p className="mg-plan-desc">Try every feature with your \$20 in free credits. No card required.</p>
+  </a>
 
-  <a
-  href="https://musicgpt.com/api-dashboard"
-  style={{
-    backgroundColor: 'rgba(221, 222, 224, 0.8)',
-    color: '#1c1c1a',
-    border: '1px solid #d6d3d3',
-    borderRadius: '12px',
-    padding: '1rem 2rem',
-    textAlign: 'center',
-    width: '154px',
-    textDecoration: 'none',
-    userSelect: 'none',
-    fontWeight: '700',
-    display: 'inline-block',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
-    backdropFilter: 'blur(10px)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  }}
-  onMouseEnter={e => {
-    e.currentTarget.style.transform = 'translateY(-6px)';
-    e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)';
-  }}
-  onMouseLeave={e => {
-    e.currentTarget.style.transform = 'translateY(0)';
-    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-  }}
->
-  <span style={{ textDecoration: 'underline' }}>API Free</span><br />
-  $0/month
-</a>
+  <a href="https://musicgpt.com/api-dashboard" className="mg-plan">
+    <p className="mg-plan-name">API Plus</p>
+    <p className="mg-plan-price">\$19<span> /month</span></p>
+    <p className="mg-plan-desc">Lower per-call rates for growing projects and side products.</p>
+    <span className="mg-plan-yearly">🔒 Yearly billing available</span>
+  </a>
 
-  <a
-  href="https://musicgpt.com/api-dashboard"
-  style={{
-    backgroundColor: 'rgba(221, 222, 224, 0.8)',
-    color: '#1c1c1a',
-    border: '1px solid #d6d3d3',
-    borderRadius: '12px',
-    padding: '1rem 2rem',
-    textAlign: 'center',
-    width: '154px',
-    textDecoration: 'none',
-    userSelect: 'none',
-    fontWeight: '700',
-    display: 'inline-block',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
-    backdropFilter: 'blur(10px)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  }}
-  onMouseEnter={e => {
-    e.currentTarget.style.transform = 'translateY(-6px)';
-    e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)';
-  }}
-  onMouseLeave={e => {
-    e.currentTarget.style.transform = 'translateY(0)';
-    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-  }}
->
-  <span style={{ textDecoration: 'underline' }}>API Plus</span><br />
-  $19/month
-</a>
+  <a href="https://musicgpt.com/api-dashboard" className="mg-plan mg-plan-featured">
+    <span className="mg-plan-tag">Most popular</span>
+    <p className="mg-plan-name">API Pro</p>
+    <p className="mg-plan-price">\$69<span> /month</span></p>
+    <p className="mg-plan-desc">Our lowest per-call rates, priority processing, and higher limits.</p>
+    <span className="mg-plan-yearly">🔒 Yearly billing available</span>
+  </a>
 
-
-  <a
-  href="https://musicgpt.com/api-dashboard"
-  style={{
-    backgroundColor: 'rgba(221, 222, 224, 0.8)',
-    color: '#1c1c1a',
-    border: '1px solid #d6d3d3',
-    borderRadius: '12px',
-    padding: '1rem 2rem',
-    textAlign: 'center',
-    width: '157px',
-    textDecoration: 'none',
-    userSelect: 'none',
-    fontWeight: '700',
-    display: 'inline-block',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
-    backdropFilter: 'blur(10px)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  }}
-  onMouseEnter={e => {
-    e.currentTarget.style.transform = 'translateY(-6px)';
-    e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)';
-  }}
-  onMouseLeave={e => {
-    e.currentTarget.style.transform = 'translateY(0)';
-    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-  }}
->
-  <span style={{ textDecoration: 'underline' }}>API Pro</span><br />
-  $69/month
-</a>
-
-<a
-  style={{
-    backgroundColor: 'rgba(221, 222, 224, 0.8)',
-    color: '#1c1c1a',
-    border: '1px solid #d6d3d3',
-    borderRadius: '12px',
-    padding: '1rem 2rem',
-    textAlign: 'center',
-    width: '154px',
-    textDecoration: 'none',
-    userSelect: 'none',
-    fontWeight: '700',
-    display: 'inline-block',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
-    backdropFilter: 'blur(10px)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  }}
-  onMouseEnter={e => {
-    e.currentTarget.style.transform = 'translateY(-6px)';
-    e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)';
-  }}
-  onMouseLeave={e => {
-    e.currentTarget.style.transform = 'translateY(0)';
-    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)';
-  }}
->
-  <span>Enterprise</span><br />
-  Contact Us
-</a>
-
+  <a href="mailto:support@musicgpt.com" className="mg-plan">
+    <p className="mg-plan-name">Enterprise</p>
+    <p className="mg-plan-price">Custom</p>
+    <p className="mg-plan-desc">Volume pricing, custom limits, and dedicated support for teams at scale.</p>
+  </a>
 </div>
 
+<Tip>
+  Paid plans are available on **monthly or yearly billing**. Yearly members retain the current per-song rates — monthly pricing updates on **August 1**.
+</Tip>
 
+---
 
 ## Generation Features Pricing
 
 | Feature | Model | Pro Plan | Plus Plan | Free Plan |
-|---------|-------|---------:|----------:|----------:|
-| [AI Music Generator](/api-documentation/conversions/musicai)<br />Generate AI music from prompt | v6 | $0.03 /song | $0.05 /song | $0.495 /song |
-|  | v6 Pro | $0.04 /song | $0.06 /song | $0.595 /song |
-|  | v7 | $0.05 /song | $0.07 /song | $0.695 /song |
-|  | v7 Pro | $0.06 /song | $0.08 /song | $0.795 /song |
-| [Custom Voice Music Generator](/api-documentation/conversions/musicai)<br />Generate AI song with voice you like | v6 | $0.07 /song | $0.10 /song | $0.99 /song |
-|  | v6 Pro | $0.08 /song | $0.11 /song | $1.09 /song |
-|  | v7 | $0.09 /song | $0.12 /song | $1.19 /song |
-|  | v7 Pro | $0.10 /song | $0.13 /song | $1.29 /song |
-| [Remix](/api-documentation/conversions/remix)<br />Remix audio into a new music style | v6 | $0.05 /song | $0.07 /song | $0.595 /song |
-|  | v7 | $0.07 /song | $0.09 /song | $0.795 /song |
-| [Inpaint](/api-documentation/conversions/inpaint)<br />Replace Audio Section | v6 | $0.06 /song | $0.10 /song | $0.99 /song |
-|  | v7 | $0.08 /song | $0.12 /song | $1.19 /song |
-| [Extend](/api-documentation/conversions/extend)<br />Extend the input audio | v6 | $0.06 /song | $0.10 /song | $0.99 /song |
-|  | v7 | $0.08 /song | $0.12 /song | $1.19 /song |
-| [Sing Over Instrumental](/api-documentation/conversions/sing_over_instrumental)<br />Blend Lyrics with Instrumental | v6 | $0.05 /song | $0.07 /song | $0.595 /song |
-|  | v7 | $0.07 /song | $0.09 /song | $0.795 /song |
+|---------|:-----:|---------:|----------:|----------:|
+| [AI Music Generator](/api-documentation/conversions/musicai)<br />Generate AI music from prompt | `v6` | \$0.03 /song | \$0.05 /song | \$0.495 /song |
+|  | `v6-pro` | \$0.04 /song | \$0.06 /song | \$0.595 /song |
+|  | `v7` | \$0.05 /song | \$0.07 /song | \$0.695 /song |
+|  | `v7-pro` | \$0.06 /song | \$0.08 /song | \$0.795 /song |
+| [Custom Voice Music Generator](/api-documentation/conversions/musicai)<br />Generate AI song with voice you like | `v6` | \$0.07 /song | \$0.10 /song | \$0.99 /song |
+|  | `v6-pro` | \$0.08 /song | \$0.11 /song | \$1.09 /song |
+|  | `v7` | \$0.09 /song | \$0.12 /song | \$1.19 /song |
+|  | `v7-pro` | \$0.10 /song | \$0.13 /song | \$1.29 /song |
+| [Remix](/api-documentation/conversions/remix)<br />Remix audio into a new music style | `v6` | \$0.05 /song | \$0.07 /song | \$0.595 /song |
+|  | `v7` | \$0.07 /song | \$0.09 /song | \$0.795 /song |
+| [Inpaint](/api-documentation/conversions/inpaint)<br />Replace Audio Section | `v6` | \$0.06 /song | \$0.10 /song | \$0.99 /song |
+|  | `v7` | \$0.08 /song | \$0.12 /song | \$1.19 /song |
+| [Extend](/api-documentation/conversions/extend)<br />Extend the input audio | `v6` | \$0.06 /song | \$0.10 /song | \$0.99 /song |
+|  | `v7` | \$0.08 /song | \$0.12 /song | \$1.19 /song |
+| [Sing Over Instrumental](/api-documentation/conversions/sing_over_instrumental)<br />Blend Lyrics with Instrumental | `v6` | \$0.05 /song | \$0.07 /song | \$0.595 /song |
+|  | `v7` | \$0.07 /song | \$0.09 /song | \$0.795 /song |
 
 <Note>
-  The pricing for Music AI, Remix, Inpaint, and Extend has been updated.
+  The pricing for Music AI, Remix, Inpaint, and Extend has been updated. These rates apply per model — choose your model with the `model` parameter on [Music AI v2](/api-documentation/conversions/musicaistreaming).
 
   AI Music, Custom Voice Music, Remix, Inpaint, Extend, and Sing Over Instrumental generate 2 output versions by default. All features use 60-second increments (except Text-to-Speech, which uses 100 words).
 </Note>
 
 ## Voice & Audio Features
+
 | Feature | Pro Plan | Plus Plan | Free Plan |
 |--------|----------|-----------|-----------|
 | [Text to Speech](/api-documentation/conversions/texttospeech)<br />Convert text into speech | \$0.026/100 words | \$0.035/100 words | \$0.49 + \$0.19/100 words |
@@ -193,11 +99,10 @@ Every new user gets **\$20 in free credits** to try out core features. Explore, 
 | [Voice Changer](/api-documentation/conversions/voicechanger)<br />Transform voice in audio | \$0.016 + \$0.0022/min | \$0.022 + \$0.003/min | \$0.49 + \$0.058/min |
 | [Cover Song](/api-documentation/conversions/cover)<br />Create AI-generated cover songs | \$0.0235 + \$0.0037/min | \$0.0315 + \$0.005/min | \$0.49 + \$0.078/min |
 
-
-
 ---
 
 ## Stem Splitter Features Pricing
+
 | Feature | Pro Plan | Plus Plan | Free Plan |
 |--------|----------|-----------|-----------|
 | [Vocal Extraction](/api-documentation/conversions/extraction)<br />Isolate vocals from track | \$0.0115 + \$0.0022/min | \$0.0155 + \$0.003/min | \$0.49 + \$0.29/min |
@@ -241,13 +146,16 @@ Every new user gets **\$20 in free credits** to try out core features. Explore, 
 ---
 
 ### 💡 Pricing Summary
+
 - **Base Cost**: One-time charge per request
 - **+/min**: Additional cost per minute (60s increments)
 - **Text-to-Speech**: Only feature using word count (per 100 words)
-- **Multiple Outputs**: AI Music, Custom Voice Music & Remix deliver 2 versions and its cost is based on per each song. 
+- **Multiple Outputs**: AI Music, Custom Voice Music & Remix deliver 2 versions and its cost is based on per each song.
+- **Yearly billing**: Locks in the current per-song rates — monthly plan pricing updates on **August 1**.
 
 > For custom plans, contact us at [support@musicgpt.com](mailto:support@musicgpt.com).
---- 
+
+---
 
 ## 📈 API Usage Limits
 
@@ -260,4 +168,3 @@ To ensure optimal system performance and fair usage:
 Upgrade to increase limits and enjoy priority processing.
 
 ---
-
