@@ -155,6 +155,7 @@
       "get": {
         "summary": "Get Conversion by ID Streaming",
         "description": "Streams the generated audio for a conversion created with **Music AI v2**.\n\nTo listen to the live stream, replace the placeholders in the example request with your actual `task_id` and `conversion_id`, and poll the endpoint until streaming becomes available:\nhttps://api.musicgpt.com/api/public/v2/MusicAI/stream?task_id={your_task_id}&conversion_id={your_conversion_id}",
+        "deprecated": true,
 
         "parameters": [
           {
@@ -440,6 +441,7 @@
       "post": {
         "summary": "Generate Custom Music",
         "description": "Create music powered by AI using just a prompt, lyrics, or a defined music style.",
+        "deprecated": true,
         "requestBody": {
           "required": true,
           "content": {

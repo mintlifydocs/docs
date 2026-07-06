@@ -1,43 +1,40 @@
----
-title: "Changelog"
-description: "New features, improvements, and pricing updates for the MusicGPT API."
-rss: true
----
 
-<Update label="June 2026" description="Model selection, yearly plans, streaming for all paid users" tags={["Music AI", "Pricing", "Streaming"]}>
-  ## Model selection & yearly plans
-
-  - **Model Selection** added to Audio Generation — choose from `v6`, `v6-pro`, `v7`, or `v7-pro` with the `model` parameter. See [Music AI v2](/api-documentation/conversions/musicaistreaming).
-  - **Streaming** is now available for **all paid users** on `v6-pro` and `v7-pro`.
-  - **Yearly Plan** is now available — the most affordable option. Yearly plan members retain the current per-song rates.
-  - Starting **August 1**, monthly plan pricing will be updated. [Subscribe to a yearly plan](/api-documentation/index/pricing) to lock in current rates.
-  - Updated pricing for **Music AI**, **Remix**, **Inpaint**, **Extend**, and **Sing Over Instrumental**. See [Pricing](/api-documentation/index/pricing).
-  - Deprecated **Music AI v1** — please migrate to [Music AI v2](/api-documentation/conversions/musicaistreaming).
+<Update label="June 2026" description="Models, Pricing, Streaming">
+  **Model Selection** added to Audio Generation — choose from `v6`, `v6-pro`, `v7`, or `v7-pro` with the `model` parameter. See [Music AI V2](/api-documentation/conversions/musicaistreaming).<br />
+  **Streaming** is now available for **all paid users** on `v6-pro` and `v7-pro`.<br />
+  **Yearly Plan** is now available — the most affordable option. Yearly plan members retain the current per-song rates.<br />
+  Starting **August 1**, monthly plan pricing will be updated. [Subscribe to a yearly plan](/api-documentation/index/pricing) to lock in current rates.<br />
+  Updated pricing for **Music AI**, **Remix**, **Inpaint**, **Extend**, and **Sing Over Instrumental**. See [Pricing](/api-documentation/index/pricing).<br />
+  Deprecated **Music AI V1** — please migrate to [Music AI V2](/api-documentation/conversions/musicaistreaming).<br />
 </Update>
 
-<Update label="May 2026" description="Extraction eco mode, optional cover images, streaming webhook" tags={["Extraction", "Webhooks"]}>
-  - **Extraction** endpoint updated — added `eco_mode` to support faster parallel extraction.
-  - Added a **title** field to the Audio Generation feature.
-  - Cover images are now **optional** in Audio Generation — enable it to receive a cover image along with the audio.
-  - Added a **Streaming URL** webhook. Music AI v2 now provides 7 webhooks.
+
+<Update label="May 2026" description="Extraction, Cover image, Streaming">
+  **Extraction** endpoint updated. Added `eco_mode` to support faster parallel extraction.<br />
+  Added **title** field to the Audio Generations feature.<br />
+  Cover images are now **optional** in Audio Generation — enable it to receive a cover image along with the audio.<br /> 
+  Added a **Streaming URL** webhook. Music AI V2 now provides 7 webhooks.
 </Update>
 
-<Update label="March 2026" description="Image to Song, output count control, file retention" tags={["New feature", "Pricing"]}>
-  - **Image to Song** feature introduced.
-  - New parameter to control the **number of song outputs** in Inpaint and Extend.
-  - Retention time: **MP3 files are stored for 90 days**, **WAV files for 7 days**.
-  - **WAV files** are sent in webhooks again starting March 24, 2026.
-  - Pricing updated for **Inpaint**, **Extend**, and **Custom Voice Music Generator**.
+
+<Update label="March 2026" description="Image to Song, Single song, WAV file">
+  Retention time: **MP3 files are stored for 90 days**, while **WAV files are stored for 7 days**.<br />
+  **WAV files** will be sent in webhooks starting March 24, 2026. <br />
+  Parameter to control the **number of song** outputs in Inpaint and Extend. <br />
+  **Pricing** for Inpaint, Extend and Custom Voice Music Generator updated.<br />
+  **Image to Song** feature introduced. <br />
 </Update>
 
-<Update label="January 2026" description="Lyrics replacement, song length control, SDK, quality upgrades" tags={["Music AI", "SDK"]}>
-  - **Lyrics section replacement** added to Extend and Inpaint — specify the lyrics you want to add or replace.
-  - **Song length control** added to Music AI.
-  - **Streaming** available for enterprise users on [Music AI v2](/api-documentation/conversions/musicaistreaming).
-  - **Single-song generation** available for enterprise users.
-  - **SDK and tools** added to the [documentation](/api-documentation/index/sdk).
-  - Remix, Inpaint, Extend, and Sing Over Instrumental upgraded for **higher accuracy**.
-  - Improved Music AI output **quality**.
-  - **Cover image** now sent with Remix, Inpaint, Extend, and Sing Over Instrumental.
-  - **No WAV file** sent in webhooks starting **February 9**.
+
+
+<Update label="January 2026" description="Lyrics, Song Length Control & Streaming Features, SDK, Accuracy, Quality,WAV file">
+  **Lyrics_section_to_replace** added on extend and inpaint where people can specify lyrics they want to add or replace.<br />
+  **Song length control** feature added in Music AI.<br />
+  **Streaming available** for enterprise users. Go to Music AI v2.<br />
+  **Single-Song generation** is now available for enterprise users. Go to Music AI Single Song.<br />
+  **SDK and Tools** included in documentation.<br />
+  Remix, Inpaint, Extend, and Sing Over Instrumental upgraded for **higher accuracy**.<br />
+  Improved MusicAI output **quality**.<br />
+  **Cover image** is now sent with Remix, Inpaint, Extend, and Sing Over Instrumental.<br />
+  **No WAV** file will be sent in webhooks starting **February 9**.
 </Update>

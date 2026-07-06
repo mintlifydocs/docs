@@ -51,7 +51,7 @@
           {
             "group": "Features",
             "pages": [
-              "api-documentation/conversions/musicaistreaming",
+              "api-documentation/conversions/musicaiv2",
               "api-documentation/conversions/musicai",
               "api-documentation/conversions/remix",
               "api-documentation/conversions/inpaint",
@@ -96,8 +96,8 @@
           {
             "group": "Conversion Endpoints",
             "pages": [
+              "api-documentation/endpoint/Musicaiv2",
               "api-documentation/endpoint/MusicAI",
-              "api-documentation/endpoint/Musicaistreaming",
               "api-documentation/endpoint/cover",
               "api-documentation/endpoint/voicetovoice",
               "api-documentation/endpoint/TextToSpeech",
@@ -139,16 +139,22 @@
     "dark": "https://lalals.s3.us-east-1.amazonaws.com/ApiDocumentationFiles/MusicGPT+Logo+White.svg"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "MusicGPT",
-        "href": "https://musicgpt.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "API Key",
-      "href": "https://musicgpt.com/api-dashboard"
+  "links": [
+    {
+      "label": "MusicGPT",
+      "href": "https://musicgpt.com"
+    },
+    {
+      "label": "Contact Support",
+      "href": "mailto:api@musicgpt.com",
+      "icon": "envelope",
+      "title": "api@musicgpt.com"
     }
+  ],
+  "primary": {
+    "type": "button",
+    "label": "API Key",
+    "href": "https://musicgpt.com/api-dashboard"
   }
+}
 }
