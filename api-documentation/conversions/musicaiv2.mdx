@@ -4,24 +4,24 @@ openapi: 'POST /v2/MusicAI'
 ---
 
 
-**Music AI v2** is our most advanced music generation model yet — faster generation, higher-quality audio, sharper prompt understanding, and more creative control than any version before it.
+**Music AI v2** is our most advanced music generation model yet, faster generation, higher-quality audio, sharper prompt understanding, and more creative control than any version before it.
 
 ## Choose your model
 
 <CardGroup cols={2}>
-  <Card title="v6" icon="music">
-    Studio-quality tracks in seconds — reliable, fast, and built for everyday creation.
+  <Card title="v6" icon="music" href="/api-documentation/index/pricing">
+    Studio-quality tracks in seconds, reliable, fast, and built for everyday creation.
   </Card>
 
-  <Card title="v6-pro" icon="tower-broadcast">
+  <Card title="v6-pro" icon="tower-broadcast" href="/api-documentation/index/pricing">
     Everything in v6, now with real-time streaming so listeners hear the track as it's composed.
   </Card>
 
-  <Card title="v7" icon="wand-magic-sparkles">
-    Our best-sounding model yet — richer detail, more texture, state-of-the-art quality.
+  <Card title="v7" icon="wand-magic-sparkles" href="/api-documentation/index/pricing">
+    Our best-sounding model yet, richer detail, more texture, state-of-the-art quality.
   </Card>
 
-  <Card title="v7-pro" icon="crown" color="#1a9662" cta="Recommended" arrow="true" >
+  <Card title="v7-pro" icon="crown" color="#1a9662" cta="Recommended" arrow="true" href="/api-documentation/index/pricing" >
     The full power of v7 with real-time streaming and advanced creative controls. Our flagship.
   </Card>
 </CardGroup>
@@ -34,9 +34,9 @@ openapi: 'POST /v2/MusicAI'
 
 | Model     | Audio quality | Streaming | Best for                              |
 | --------- | ------------- | --------- | ------------------------------------- |
-| `v6`      | Very good     | —         | Fast, dependable everyday tracks      |
+| `v6`      | Very good     | -         | Fast, dependable everyday tracks      |
 | `v6-pro`  | Very good     | Real-time | Live, as-it-generates playback        |
-| `v7`      | Best-in-class | —         | Highest-quality final renders         |
+| `v7`      | Best-in-class | -        | Highest-quality final renders         |
 | `v7-pro`  | Best-in-class | Real-time | Production apps that want everything  |
 
 Pass your choice with the `model` parameter (`v6`, `v6-pro`, `v7`, or `v7-pro`). Streaming is available on the `pro` models for paid users. Per-model rates are listed on the [Pricing page](/api-documentation/index/pricing).
@@ -47,7 +47,7 @@ Pass your choice with the `model` parameter (`v6`, `v6-pro`, `v7`, or `v7-pro`).
 - Generate complete tracks from a single prompt, including lyrics, instrumentation, and melody
 - Apply voice conversion using a custom voice model
 - Output full tracks, instrumental-only, or vocal-only versions
-- View the live streaming of the song as it generates (`-pro` models)
+- View the live streaming of the song as it generates (`pro` models)
 - Asynchronous webhook support for clean integration
 
 <Info>
@@ -59,7 +59,7 @@ Pass your choice with the `model` parameter (`v6`, `v6-pro`, `v7`, or `v7-pro`).
 ## Endpoint
 
 ```http
-POST /MusicAI
+POST /v2/MusicAI
 ```
 
 This is the primary endpoint for initiating music generation.
@@ -79,7 +79,7 @@ Prompt: a song about greenery, nature and forest.
 
 ## Try It Yourself
 
-Use the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to test your own requests using prompts, lyrics, and more.
+Use the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAiv2) to test your own requests using prompts, lyrics, and more.
 
 > Each request returns **two distinct versions** of the track.
 
@@ -89,14 +89,14 @@ Use the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAI) to test
 
 | Parameter           | Type    | Required | Default | Description                                     |
 | ------------------- | ------- | -------- | ------- | ----------------------------------------------- |
-| `prompt`            | String  | Optional | —       | A natural language prompt for music generation  |
-| `title`             | String  | Optional | —       | Title of the generated music                    |
-| `music_style`       | String  | Optional | —       | Musical style or genre (e.g., Rock, Pop, Lo-fi) |
+| `prompt`            | String  | Optional | -      | A natural language prompt for music generation  |
+| `title`             | String  | Optional | -       | Title of the generated music                    |
+| `music_style`       | String  | Optional | -       | Musical style or genre (e.g., Rock, Pop, Lo-fi) |
 | `lyrics`            | String  | Optional | ""      | Custom lyrics to use in the song                |
 | `make_instrumental` | Boolean | Optional | false   | If true, generate instrumental-only audio       |
 | `vocal_only`        | Boolean | Optional | false   | If true, generate vocals without instruments    |
+| `voice_id`          | String  | Optional | ""      | Apply voice model for vocal rendering           |
 | `generate_album_cover` | Boolean | Optional | false | If `true`, generate an album cover for the generated audio |
-| `streaming` | Boolean | Optional | false | If `true`, stream audio generation in real time |
 | `model` | String | Optional | "v6" | Allowed values: `v6`, `v6-pro`, `v7`, `v7-pro` |
 | `webhook_url`       | String  | Optional | ""      | URL to receive generated results via webhook    |
 | `gender`       | String  | Optional | ""      | Allowed values: male, female, neutral.    |
