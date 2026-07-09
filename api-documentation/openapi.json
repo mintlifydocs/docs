@@ -155,6 +155,7 @@
       "get": {
         "summary": "Get Conversion by ID Streaming",
         "description": "Streams the generated audio for a conversion created with **Music AI v2**.\n\nTo listen to the live stream, replace the placeholders in the example request with your actual `task_id` and `conversion_id`, and poll the endpoint until streaming becomes available:\nhttps://api.musicgpt.com/api/public/v2/MusicAI/stream?task_id={your_task_id}&conversion_id={your_conversion_id}",
+        "deprecated": true,
 
         "parameters": [
           {
@@ -440,6 +441,7 @@
       "post": {
         "summary": "Generate Custom Music",
         "description": "Create music powered by AI using just a prompt, lyrics, or a defined music style.",
+        "deprecated": true,
         "requestBody": {
           "required": true,
           "content": {
@@ -459,6 +461,10 @@
                     "type": "string",
                     "description": "Custom lyrics for the generated music"
                   },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
+                  },
                   "make_instrumental": {
                     "type": "boolean",
                     "description": "Whether to make the music instrumental",
@@ -477,13 +483,12 @@
                     "type": "string",
                     "description": "Voice model to convert generated audio"
                   },
-                  "output_length": {
-                    "type": "number",
-                    "format":"float",
-                    "description" : "The requested output audio length of the request in seconds. This feature is purely experimental."
-            
-
-                },
+                  
+                  "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
                   "webhook_url": {
                     "type": "string",
                     "description": "URL for callback upon completion"
@@ -581,7 +586,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v2/MusicAI\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"Content-Type\": \"application/json\"\n}\n\npayload = {\n    \"prompt\": \"Create a relaxing lo-fi song for studying\",\n    \"music_style\": \"Lo-fi\",\n    \"lyrics\": \"It's a brand new day\",\n    \"make_instrumental\": False,\n    \"vocal_only\": False,\n    \"title\": \"My Generated Track\",\n    \"gender\": \"female\",\n    \"generate_album_cover\": False,\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\nresponse = requests.post(url, json=payload, headers=headers)\n\nprint(response.json())"
+  }
+]
       }
     },
     "/v2/MusicAI": {
@@ -617,15 +628,32 @@
                     "description": "Whether to generate only vocals of output audio",
                     "default": false
                   },
-
-                  "output_length": {
-                    "type": "number",
-                    "description" : "The requested output audio length of the request in seconds. This feature is purely experimental."
-
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
                   },
                   "gender": {
                     "type": "string",
                     "description": "Gender of the voice model"
+                  },
+                   "voice_id": {
+                    "type": "string",
+                    "description": "Voice model to convert generated audio"
+                  },
+                  "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Model version to use for generation",
+                    "enum": [
+                      "v6",
+                      "v6-pro",
+                      "v7",
+                      "v7-pro"
+                    ]
                   },
                   "webhook_url": {
                     "type": "string",
@@ -725,7 +753,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v2/MusicAI\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"Content-Type\": \"application/json\"\n}\n\npayload = {\n    \"prompt\": \"Create a relaxing lo-fi song for studying\",\n    \"music_style\": \"Lo-fi\",\n    \"lyrics\": \"It's a brand new day\",\n    \"make_instrumental\": False,\n    \"vocal_only\": False,\n    \"voice_id\": \"e1cb7380-e3db-433a-b186-a996d7545986\",\n    \"title\": \"My Generated Track\",\n    \"gender\": \"female\",\n    \"generate_album_cover\": False,\n    \"model\": \"v7-pro\",\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\nresponse = requests.post(url, json=payload, headers=headers)\n\nprint(response.json())"
+  }
+]
       }
     },
     "/v2/MusicAI/batch": {
@@ -751,6 +785,10 @@
                     "type": "string",
                     "description": "Custom lyrics for the generated music"
                   },
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
+                  },
                   "make_instrumental": {
                     "type": "boolean",
                     "description": "Whether to make the music instrumental",
@@ -775,6 +813,11 @@
                     "type": "number",
                     "format":"integer",
                     "description" : "The number of outputs to generate (1 or 2 only)."
+                  },
+                   "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
                   },
                   "webhook_url": {
                     "type": "string",
@@ -889,7 +932,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of audio file to process",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/audio.wav"
               },
               "audio_file": {
@@ -1031,24 +1074,25 @@
         "ApiKeyAuth": []
       }
     ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/VoiceChanger\"\n\npayload = {\n    \"audio_url\": \"<string>\",\n    \"voice_id\": \"<string>\",\n    \"remove_background\": \"<int>\",\n    \"pitch\": \"<int>\",\n    \"webhook_url\": \"<string>\"\n}\n\n# For file upload instead of URL:\n# files = {'audio_file': open('filepath', 'rb')}\n\nheaders = {\n    \"Authorization\": \"<API Key>\"\n}\n\nresponse = requests.post(url, data=payload, headers=headers)\n# For file upload:\n# response = requests.post(url, data=payload, files=files, headers=headers)\n\nprint(response.text)"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = \"https://api.musicgpt.com/api/public/v1/VoiceChanger\";\n$apiKey = \"<API_KEY>\";\n\n// For URL-based processing\n$data = [\n    \"audio_url\" => \"<AUDIO_URL>\",\n    \"voice_id\" => \"<VOICE_ID>\",\n    \"remove_background\" => 0, // 0 or 1\n    \"pitch\" => 0, // -12 to +12\n    \"webhook_url\" => \"<WEBHOOK_URL>\"\n];\n\n// For file upload (uncomment and replace)\n// $data = [\"voice_id\" => \"<VOICE_ID>\"];\n// $file = new CURLFile('path/to/audio.wav', 'audio/wav', 'audio_file');\n\n$headers = [\n    \"Authorization: \" . $apiKey\n];\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_POST, 1);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\n// For file upload:\n// curl_setopt($ch, CURLOPT_POSTFIELDS, array_merge($data, ['audio_file' => $file]));\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;\n?>"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/VoiceChanger\"\n\tapiKey := \"<API_KEY>\"\n\n\t// For URL-based processing\n\tpayload := map[string]string{\n\t\t\"audio_url\":        \"<AUDIO_URL>\",\n\t\t\"voice_id\":        \"<VOICE_ID>\",\n\t\t\"remove_background\": \"0\",\n\t\t\"pitch\":           \"0\",\n\t\t\"webhook_url\":     \"<WEBHOOK_URL>\",\n\t}\n\n\t// For file upload (uncomment and replace)\n\t// file, _ := os.Open(\"audio.wav\")\n\t// defer file.Close()\n\n\tbody := &bytes.Buffer{}\n\twriter := multipart.NewWriter(body)\n\n\tfor key, val := range payload {\n\t\t_ = writer.WriteField(key, val)\n\t}\n\n\t// For file upload:\n\t// part, _ := writer.CreateFormFile(\"audio_file\", \"audio.wav\")\n\t// io.Copy(part, file)\n\twriter.Close()\n\n\treq, _ := http.NewRequest(\"POST\", url, body)\n\treq.Header.Set(\"Authorization\", apiKey)\n\treq.Header.Set(\"Content-Type\", writer.FormDataContentType())\n\n\tclient := &http.Client{}\n\tresp, err := client.Do(req)\n\tif err != nil {\n\t\tfmt.Println(err)\n\t\treturn\n\t}\n\tdefer resp.Body.Close()\n\n\tresponse, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(response))\n}"
-      },
-      {
-        "lang": "Java",
-        "source": "import okhttp3.*;\n\nimport java.io.File;\nimport java.io.IOException;\n\npublic class VoiceChanger {\n    public static void main(String[] args) throws IOException {\n        String url = \"https://api.musicgpt.com/api/public/v1/VoiceChanger\";\n        String apiKey = \"<API_KEY>\";\n\n        // For URL-based processing\n        RequestBody requestBody = new FormBody.Builder()\n                .add(\"audio_url\", \"<AUDIO_URL>\")\n                .add(\"voice_id\", \"<VOICE_ID>\")\n                .add(\"remove_background\", \"0\")\n                .add(\"pitch\", \"0\")\n                .add(\"webhook_url\", \"<WEBHOOK_URL>\")\n                .build();\n\n        // For file upload (uncomment and replace)\n        /*\n        File audioFile = new File(\"audio.wav\");\n        RequestBody requestBody = new MultipartBody.Builder()\n                .setType(MultipartBody.FORM)\n                .addFormDataPart(\"voice_id\", \"<VOICE_ID>\")\n                .addFormDataPart(\"audio_file\", \"audio.wav\",\n                        RequestBody.create(audioFile, MediaType.parse(\"audio/wav\")))\n                .build();\n        */\n\n        Request request = new Request.Builder()\n                .url(url)\n                .post(requestBody)\n                .header(\"Authorization\", apiKey)\n                .build();\n\n        OkHttpClient client = new OkHttpClient();\n        try (Response response = client.newCall(request).execute()) {\n            System.out.println(response.body().string());\n        }\n    }\n}"
-      }
-    ]
+    "x-codeSamples": 
+    [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/VoiceChanger\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"voice_id\": \"e0bb585f-b798-4bac-ac4e-de7fff38f9d75\",\n    \"remove_background\": 1,\n    \"pitch\": 0,\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  },
+  {
+    "lang": "PHP",
+    "source": "<?php\n$url = \"https://api.musicgpt.com/api/public/v1/VoiceChanger\";\n$apiKey = \"<API_KEY>\";\n\n$data = [\n    \"voice_id\" => \"voice_12345\",\n    \"remove_background\" => 1,\n    \"pitch\" => 0,\n    \"webhook_url\" => \"https://example.com/my-webhook\"\n];\n\n// Option 1: audio_url\n$data[\"audio_url\"] = \"<YOUR_AUDIO_URL>\";\n\n// Option 2: File Upload\n// $data[\"audio_file\"] = new CURLFile(\"song.mp3\");\n\n$headers = [\n    \"Authorization: \" . $apiKey\n];\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n\n$response = curl_exec($ch);\ncurl_close($ch);\n\necho $response;\n?>"
+  },
+  {
+    "lang": "Go",
+    "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/VoiceChanger\"\n\tapiKey := \"<API_KEY>\"\n\n\tpayload := map[string]string{\n\t\t\"voice_id\": \"voice_12345\",\n\t\t\"remove_background\": \"1\",\n\t\t\"pitch\": \"0\",\n\t\t\"webhook_url\": \"https://example.com/my-webhook\",\n\t}\n\n\tbody := &bytes.Buffer{}\n\twriter := multipart.NewWriter(body)\n\n\tfor key, val := range payload {\n\t\t_ = writer.WriteField(key, val)\n\t}\n\n\t// Option 1: audio_url\n\twriter.WriteField(\"audio_url\", \"<YOUR_AUDIO_URL>\")\n\n\t// Option 2: File Upload\n\t// file, _ := os.Open(\"song.mp3\")\n\t// defer file.Close()\n\t// part, _ := writer.CreateFormFile(\"audio_file\", \"song.mp3\")\n\t// io.Copy(part, file)\n\n\twriter.Close()\n\n\treq, _ := http.NewRequest(\"POST\", url, body)\n\treq.Header.Set(\"Authorization\", apiKey)\n\treq.Header.Set(\"Content-Type\", writer.FormDataContentType())\n\n\tclient := &http.Client{}\n\tresp, err := client.Do(req)\n\tif err != nil {\n\t\tfmt.Println(err)\n\t\treturn\n\t}\n\tdefer resp.Body.Close()\n\n\tresponse, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(response))\n}"
+  },
+  {
+    "lang": "Java",
+    "source": "import okhttp3.*;\n\nimport java.io.File;\nimport java.io.IOException;\n\npublic class VoiceChanger {\n    public static void main(String[] args) throws IOException {\n        String url = \"https://api.musicgpt.com/api/public/v1/VoiceChanger\";\n        String apiKey = \"<API_KEY>\";\n\n        // Option 1: audio_url\n        RequestBody requestBody = new FormBody.Builder()\n                .add(\"audio_url\", \"<YOUR_AUDIO_URL>\")\n                .add(\"voice_id\", \"voice_12345\")\n                .add(\"remove_background\", \"1\")\n                .add(\"pitch\", \"0\")\n                .add(\"webhook_url\", \"https://example.com/my-webhook\")\n                .build();\n\n        // Option 2: File Upload\n        // File audioFile = new File(\"song.mp3\");\n        // RequestBody requestBody = new MultipartBody.Builder()\n        //         .setType(MultipartBody.FORM)\n        //         .addFormDataPart(\"voice_id\", \"voice_12345\")\n        //         .addFormDataPart(\"remove_background\", \"1\")\n        //         .addFormDataPart(\"pitch\", \"0\")\n        //         .addFormDataPart(\"webhook_url\", \"https://example.com/my-webhook\")\n        //         .addFormDataPart(\"audio_file\", audioFile.getName(),\n        //                 RequestBody.create(audioFile, MediaType.parse(\"audio/mpeg\")))\n        //         .build();\n\n        Request request = new Request.Builder()\n                .url(url)\n                .post(requestBody)\n                .header(\"Authorization\", apiKey)\n                .build();\n\n        OkHttpClient client = new OkHttpClient();\n        try (Response response = client.newCall(request).execute()) {\n            System.out.println(response.body().string());\n        }\n    }\n}"
+  }
+]
   }
 },  
 "/v1/Cover": {
@@ -1064,7 +1108,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of an audio file to process. Either audio_url or audio_file must be provided.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/audio.wav"
               },
               "audio_file": {
@@ -1199,7 +1243,13 @@
       {
         "ApiKeyAuth": []
       }
-    ]
+    ],
+    "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/Cover\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"voice_id\": \"e0bb585f-b798-4bac-ac4e-de7fff38f9d7\",\n    \"pitch\": 0,\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },
 
@@ -1314,10 +1364,16 @@
       {
         "ApiKeyAuth": []
       }
-    ]
+    ],
+    "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/TextToSpeech\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\",\n    \"Content-Type\": \"application/json\"\n}\n\npayload = {\n    \"text\": \"Welcome to MusicGPT! This is a sample text-to-speech generation.\",\n    \"sample_audio_url\": \"<YOUR_AUDIO_URL>\",\n    \"voice_id\": \"e0bb585f-b798-4bac-ac4e-de7fff38f9d7voice_12345\",\n    \"gender\": \"female\",\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\nresponse = requests.post(url, json=payload, headers=headers)\n\nprint(response.json())"
+  }
+]
   }
 }, 
-"/v1/Extraction": {
+"/v2/Extraction": {
     "post": {
       "summary": "Extract stems from an audio file or URL",
       "description": "Process an audio file to extract specified stems (vocals, instrumental, or other components) with optional preprocessing. Supports file upload or URL with webhook callback.",
@@ -1330,8 +1386,8 @@
               "properties": {
                 "audio_url": {
                   "type": "string",
-                  "description": "The URL of the audio file to process.",
-                  "example": "https://www.youtube.com/watch?v=jGflUbPQfW8"
+                  "description": "Input audio URL (supported format: YouTube URL).",
+                  "example": "https://www.youtube.com/watch?v=example123"
                 },
                 "audio_file": {
                   "type": "string",
@@ -1349,6 +1405,11 @@
                   "default": "[]",
                   "description": "JSON string list of preprocessing steps. Available options: Denoise, Deecho, Dereverb.",
                   "example": "[\"Denoise\", \"Dereverb\"]"
+                },
+                "eco_mode": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Enable eco mode for faster parallel extraction."
                 },
                 "webhook_url": {
                   "type": "string",
@@ -1431,23 +1492,11 @@
         }
       ],
       "x-codeSamples": [
-        {
-          "lang": "Python",
-          "source": "import requests\nimport json\n\nurl = \"https://api.musicgpt.com/api/public/v1/Extraction\"\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\nfiles = {\n    \"audio_file\": open(\"path_to_audio.mp3\", \"rb\")\n}\ndata = {\n    \"audio_url\": \"\",\n    \"stems\": json.dumps([\"vocals\", \"drums\"]),\n    \"preprocessing_options\": json.dumps([\"Denoise\"]),\n    \"webhook_url\": \"http://webhook.musicgpt.com\"\n}\n\nresponse = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
-        },
-        {
-          "lang": "PHP",
-          "source": "$curl = curl_init();\n\n$stems = json_encode(['vocals', 'drums']);\n$preprocessing = json_encode(['Denoise']);\n\ncurl_setopt_array($curl, [\n    CURLOPT_URL => 'https://api.musicgpt.com/api/public/v1/Extraction',\n    CURLOPT_RETURNTRANSFER => true,\n    CURLOPT_POST => true,\n    CURLOPT_POSTFIELDS => [\n        'audio_url' => '',\n        'stems' => $stems,\n        'preprocessing_options' => $preprocessing,\n        'webhook_url' => 'http://webhook.musicgpt.com',\n        'audio_file' => new CURLFile('path_to_audio.mp3')\n    ],\n    CURLOPT_HTTPHEADER => [\n        'Authorization: <API_KEY>',\n        'Accept: application/json'\n    ]\n]);\n\n$response = curl_exec($curl);\ncurl_close($curl);\n\necho $response;"
-        },
-        {
-          "lang": "Go",
-          "source": "package main\n\nimport (\n    \"bytes\"\n    \"encoding/json\"\n    \"fmt\"\n    \"io\"\n    \"mime/multipart\"\n    \"net/http\"\n    \"os\"\n)\n\nfunc main() {\n    body := &bytes.Buffer{}\n    writer := multipart.NewWriter(body)\n\n    file, _ := os.Open(\"path_to_audio.mp3\")\n    part, _ := writer.CreateFormFile(\"audio_file\", \"path_to_audio.mp3\")\n    io.Copy(part, file)\n    \n    stems, _ := json.Marshal([]string{\"vocals\", \"drums\"})\n    preprocessing, _ := json.Marshal([]string{\"Denoise\"})\n    \n    writer.WriteField(\"stems\", string(stems))\n    writer.WriteField(\"preprocessing_options\", string(preprocessing))\n    writer.WriteField(\"webhook_url\", \"http://webhook.musicgpt.com\")\n    writer.Close()\n\n    req, _ := http.NewRequest(\"POST\", \"https://api.musicgpt.com/api/public/v1/Extraction\", body)\n    req.Header.Add(\"Authorization\", \"<API_KEY>\")\n    req.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n    client := &http.Client{}\n    resp, _ := client.Do(req)\n    defer resp.Body.Close()\n\n    responseBody, _ := io.ReadAll(resp.Body)\n    fmt.Println(string(responseBody))\n}"
-        },
-        {
-          "lang": "Java",
-          "source": "import okhttp3.*;\nimport org.json.JSONArray;\nimport java.io.File;\nimport java.io.IOException;\n\npublic class MusicgptExtraction {\n    public static void main(String[] args) throws IOException {\n        OkHttpClient client = new OkHttpClient();\n\n        MediaType mediaType = MediaType.parse(\"audio/mpeg\");\n        File file = new File(\"path_to_audio.mp3\");\n\n        JSONArray stems = new JSONArray();\n        stems.put(\"vocals\");\n        stems.put(\"drums\");\n        \n        JSONArray preprocessing = new JSONArray();\n        preprocessing.put(\"Denoise\");\n\n        RequestBody fileBody = RequestBody.create(file, mediaType);\n        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)\n            .addFormDataPart(\"audio_file\", file.getName(), fileBody)\n            .addFormDataPart(\"stems\", stems.toString())\n            .addFormDataPart(\"preprocessing_options\", preprocessing.toString())\n            .addFormDataPart(\"webhook_url\", \"http://webhook.musicgpt.com\")\n            .build();\n\n        Request request = new Request.Builder()\n            .url(\"https://api.musicgpt.com/api/public/v1/Extraction\")\n            .post(requestBody)\n            .addHeader(\"Authorization\", \"<API_KEY>\")\n            .addHeader(\"Accept\", \"application/json\")\n            .build();\n\n        Response response = client.newCall(request).execute();\n        System.out.println(response.body().string());\n    }\n}"
-        }
-      ]
+  {
+    "lang": "Python",
+    "source": "import requests\nimport json\n\nurl = \"https://api.musicgpt.com/api/public/v2/Extraction\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"stems\": json.dumps([\"vocals\", \"drums\"]),\n    \"preprocessing_options\": json.dumps([\"Denoise\"]),\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
     }
   },
 "/v1/deecho": {
@@ -1463,7 +1512,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://www.youtube.com/watch?v=example123"
               },
               "audio_file": {
@@ -1543,19 +1592,11 @@
       { "ApiKeyAuth": [] }
     ],
     "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/deecho\"\nheaders = {\n    \"Authorization\": \"<<<api key>>>\"\n}\n\n# Option 1: URL\npayload = {\n    \"audio_url\": \"https://example.com/audio.m4a\",\n    \"webhook_url\": \"\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: File Upload\n# payload = {\n#     \"webhook_url\": \"https://www.test.requestcatcher.com/test\"\n# }\n# with open(\"audio.m4a\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n# print(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/deecho';\n$headers = ['Authorization: <<<api key>>>'];\n\n// Option 1: URL\n$data = [\n    'audio_url' => 'https://example.com/audio.m4a',\n    'webhook_url' => ''\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = [\n    'webhook_url' => 'https://www.test.requestcatcher.com/test',\n    'audio_file' => new CURLFile('audio.m4a')\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/deecho\"\n\theaders := map[string]string{\n\t\t\"Authorization\": \"<<<api key>>>\",\n\t}\n\n\t// Option 1: URL\n\tdata := \"audio_url=https://example.com/audio.m4a&webhook_url=\"\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\tfor k, v := range headers {\n\t\treq.Header.Add(k, v)\n\t}\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\t_ = writer.WriteField(\"webhook_url\", \"https://www.test.requestcatcher.com/test\")\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", \"<<<api key>>>\")\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      }
-    ]
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/deecho\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },
  "/v1/denoise": {
@@ -1571,7 +1612,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://www.youtube.com/watch?v=example123"
               },
               "audio_file": {
@@ -1651,19 +1692,11 @@
       { "ApiKeyAuth": [] }
     ],
     "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/denoise\"\nheaders = {\n    \"Authorization\": \"<<<api key>>>\"\n}\n\n# Option 1: URL\npayload = {\n    \"audio_url\": \"https://example.com/audio.m4a\",\n    \"webhook_url\": \"\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: File Upload\n# payload = {\n#     \"webhook_url\": \"https://www.test.requestcatcher.com/test\"\n# }\n# with open(\"audio.m4a\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n# print(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/denoise';\n$headers = ['Authorization: <<<api key>>>'];\n\n// Option 1: URL\n$data = [\n    'audio_url' => 'https://example.com/audio.m4a',\n    'webhook_url' => ''\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = [\n    'webhook_url' => 'https://www.test.requestcatcher.com/test',\n    'audio_file' => new CURLFile('audio.m4a')\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/denoise\"\n\theaders := map[string]string{\n\t\t\"Authorization\": \"<<<api key>>>\"\n\t}\n\n\t// Option 1: URL\n\tdata := \"audio_url=https://example.com/audio.m4a&webhook_url=\"\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\tfor k, v := range headers {\n\t\treq.Header.Add(k, v)\n\t}\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\t_ = writer.WriteField(\"webhook_url\", \"https://www.test.requestcatcher.com/test\")\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", \"<<<api key>>>\")\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      }
-    ]
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/denoise\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },
 "/v1/dereverb": {
@@ -1679,7 +1712,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://www.youtube.com/watch?v=example123"
               },
               "audio_file": {
@@ -1758,20 +1791,12 @@
     "security": [
       { "ApiKeyAuth": [] }
     ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/dereverb\"\nheaders = {\n    \"Authorization\": \"<<<api key>>>\"\n}\n\n# Option 1: URL\npayload = {\n    \"audio_url\": \"https://example.com/audio.m4a\",\n    \"webhook_url\": \"\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: File Upload\n# payload = {\n#     \"webhook_url\": \"https://www.test.requestcatcher.com/test\"\n# }\n# with open(\"audio.m4a\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n# print(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/dereverb';\n$headers = ['Authorization: <<<api key>>>'];\n\n// Option 1: URL\n$data = [\n    'audio_url' => 'https://example.com/audio.m4a',\n    'webhook_url' => ''\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = [\n    'webhook_url' => 'https://www.test.requestcatcher.com/test',\n    'audio_file' => new CURLFile('audio.m4a')\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/dereverb\"\n\theaders := map[string]string{\n\t\t\"Authorization\": \"<<<api key>>>\"\n\t}\n\n\t// Option 1: URL\n\tdata := \"audio_url=https://example.com/audio.m4a&webhook_url=\"\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\tfor k, v := range headers {\n\t\treq.Header.Add(k, v)\n\t}\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\t_ = writer.WriteField(\"webhook_url\", \"https://www.test.requestcatcher.com/test\")\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", \"<<<api key>>>\")\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      }
-    ]
+  "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/dereverb\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },
 "/v1/extract_key_bpm": {
@@ -1787,7 +1812,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to process (e.g., YouTube, direct audio link).",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://www.youtube.com/watch?v=example123"
               },
               "audio_file": {
@@ -1868,20 +1893,12 @@
     "security": [
       { "ApiKeyAuth": [] }
     ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extract_key_bpm\"\nheaders = {\n    \"Authorization\": \"<<<api key>>>\"\n}\n\n# Option 1: URL\npayload = {\n    \"audio_url\": \"https://example.com/audio.m4a\",\n    \"webhook_url\": \"\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: File Upload\n# payload = {\n#     \"webhook_url\": \"https://www.test.requestcatcher.com/test\"\n# }\n# with open(\"audio.m4a\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n# print(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/extract_key_bpm';\n$headers = ['Authorization: <<<api key>>>'];\n\n// Option 1: URL\n$data = [\n    'audio_url' => 'https://example.com/audio.m4a',\n    'webhook_url' => ''\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = [\n    'webhook_url' => 'https://www.test.requestcatcher.com/test',\n    'audio_file' => new CURLFile('audio.m4a')\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/extract_key_bpm\"\n\theaders := map[string]string{\n\t\t\"Authorization\": \"<<<api key>>>\"\n\t}\n\n\t// Option 1: URL\n\tdata := \"audio_url=https://example.com/audio.m4a&webhook_url=\"\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\tfor k, v := range headers {\n\t\treq.Header.Add(k, v)\n\t}\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.m4a\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\t_ = writer.WriteField(\"webhook_url\", \"https://www.test.requestcatcher.com/test\")\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.m4a\")\n\tio.Copy(part, file)\n\twriter.Close()\n\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", \"<<<api key>>>\")\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      }
-    ]
+  "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extract_key_bpm\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },          
 "/v1/audio_transcribe": {
@@ -1897,7 +1914,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to transcribe.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/audio.mp3"
               },
               "audio_file": {
@@ -2006,23 +2023,23 @@
       { "ApiKeyAuth": [] }
     ],
     "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_transcribe\"\nheaders = {\"Authorization\": \"<<<api key>>>\"}\n\n# Option 1: URL\npayload = {\n    \"audio_url\": \"https://example.com/audio.mp3\",\n    \"language\": \"en\",\n    \"translate\": True,\n    \"transcription_format\": \"srt\",\n    \"word_timestamps\": True\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: File Upload\n# payload = {\n#     \"language\": \"en\",\n#     \"translate\": False,\n#     \"transcription_format\": \"plain_text\",\n#     \"word_timestamps\": True\n# }\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n# print(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_transcribe';\n$headers = ['Authorization: <<<api key>>>'];\n\n// Option 1: URL\n$data = [\n    'audio_url' => 'https://example.com/audio.mp3',\n    'language' => 'en',\n    'translate' => true,\n    'transcription_format' => 'srt',\n    'word_timestamps' => true\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n$data = [\n    'language' => 'en',\n    'translate' => false,\n    'transcription_format' => 'plain_text',\n    'word_timestamps' => true,\n    'audio_file' => new CURLFile('audio.mp3')\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_transcribe\"\n\tapiKey := \"<<<api key>>>\"\n\n\t// Option 1: URL\n\tpayload := \"audio_url=https://example.com/audio.mp3&language=en&translate=true&transcription_format=srt&word_timestamps=true\"\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(payload))\n\treq.Header.Add(\"Authorization\", apiKey)\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n\n\t// Option 2: File Upload\n\tfile, _ := os.Open(\"audio.mp3\")\n\tdefer file.Close()\n\tbodyBuf := &bytes.Buffer{}\n\twriter := multipart.NewWriter(bodyBuf)\n\twriter.WriteField(\"language\", \"en\")\n\twriter.WriteField(\"translate\", \"false\")\n\twriter.WriteField(\"transcription_format\", \"plain_text\")\n\twriter.WriteField(\"word_timestamps\", \"true\")\n\tpart, _ := writer.CreateFormFile(\"audio_file\", \"audio.mp3\")\n\tio.Copy(part, file)\n\twriter.Close()\n\n\treq, _ = http.NewRequest(\"POST\", url, bodyBuf)\n\treq.Header.Add(\"Authorization\", apiKey)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\tres, _ = http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ = io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      },
-      {
-        "lang": "Java",
-        "source": "// Java example omitted for brevity. Request if needed."
-      }
-    ]
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_transcribe\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\n\npayload = {\n    \"language\": \"en\",\n    \"translate\": True,\n    \"transcription_format\": \"plain_text\",\n    \"word_timestamps\": True\n}\n\n# Option 1: audio_url\npayload[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: File Upload\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n\nprint(response.json())"
+  },
+  {
+    "lang": "PHP",
+    "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_transcribe';\n$headers = ['Authorization: <API_KEY>'];\n\n$data = [\n    'language' => 'en',\n    'translate' => true,\n    'transcription_format' => 'srt',\n    'word_timestamps' => true\n];\n\n// Option 1: audio_url\n$data['audio_url'] = '<YOUR_AUDIO_URL>';\n\n// Option 2: File Upload\n// $data['audio_file'] = new CURLFile('audio.mp3');\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+  },
+  {
+    "lang": "Go",
+    "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_transcribe\"\n\tapiKey := \"<API_KEY>\"\n\n\tbody := &bytes.Buffer{}\n\twriter := multipart.NewWriter(body)\n\n\twriter.WriteField(\"language\", \"en\")\n\twriter.WriteField(\"translate\", \"true\")\n\twriter.WriteField(\"transcription_format\", \"srt\")\n\twriter.WriteField(\"word_timestamps\", \"true\")\n\n\t// Option 1: audio_url\n\twriter.WriteField(\"audio_url\", \"<YOUR_AUDIO_URL>\")\n\n\t// Option 2: File Upload\n\t// file, _ := os.Open(\"audio.mp3\")\n\t// defer file.Close()\n\t// part, _ := writer.CreateFormFile(\"audio_file\", \"audio.mp3\")\n\t// io.Copy(part, file)\n\n\twriter.Close()\n\n\treq, _ := http.NewRequest(\"POST\", url, body)\n\treq.Header.Add(\"Authorization\", apiKey)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n\tresp, _ := http.DefaultClient.Do(req)\n\tdefer resp.Body.Close()\n\n\tresponse, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(response))\n}"
+  },
+  {
+    "lang": "Java",
+    "source": "// Java example omitted for brevity. Request if needed."
+  }
+]
   }
 },
 "/v1/sound_generator": {
@@ -2041,6 +2058,11 @@
                 "description": "Text prompt guiding the sound generation.",
                 "example": "Generate a soothing ambient soundscape."
               },
+              "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing results.",
@@ -2131,7 +2153,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the input audio to be processed.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/input_audio.mp3"
               },
               "audio_file": {
@@ -2273,20 +2295,12 @@
     "security": [
       { "ApiKeyAuth": [] }
     ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_mastering\"\nheaders = {\"Authorization\": \"<<<api key>>>\"}\n\n# Option 1: Using URLs\npayload = {\n    \"audio_url\": \"https://example.com/input_audio.mp3\",\n    \"reference_audio_url\": \"https://example.com/reference_track.wav\",\n    \"output_extension\": \"wav\",\n    \"webhook_url\": \"http://your-webhook-url.com/callback\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: Upload files\n# with open(\"input.mp3\", \"rb\") as input_file, open(\"ref.wav\", \"rb\") as ref_file:\n#     files = {\n#         \"audio_file\": input_file,\n#         \"reference_audio_file\": ref_file\n#     }\n#     data = {\n#         \"output_extension\": \"wav\",\n#         \"webhook_url\": \"http://your-webhook-url.com/callback\"\n#     }\n#     response = requests.post(url, headers=headers, files=files, data=data)\n#     print(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_mastering';\n$headers = ['Authorization: <<<api key>>>'];\n\n// Option 1: URL mode\n$data = [\n    'audio_url' => 'https://example.com/input_audio.mp3',\n    'reference_audio_url' => 'https://example.com/reference_track.wav',\n    'output_extension' => 'wav',\n    'webhook_url' => 'http://your-webhook-url.com/callback'\n];\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;\n\n// Option 2: File Upload\n// $data = [\n//     'audio_file' => new CURLFile('input.mp3'),\n//     'reference_audio_file' => new CURLFile('ref.wav'),\n//     'output_extension' => 'wav',\n//     'webhook_url' => 'http://your-webhook-url.com/callback'\n// ];\n// $ch = curl_init($url);\n// curl_setopt($ch, CURLOPT_POST, true);\n// curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n// curl_setopt($ch, CURLOPT_POSTFIELDS, $data);\n// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n// $response = curl_exec($ch);\n// curl_close($ch);\n// echo $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_mastering\"\n\ttoken := \"<<<api key>>>\"\n\tdata := \"audio_url=https://example.com/input_audio.mp3&reference_audio_url=https://example.com/reference_track.wav&output_extension=wav&webhook_url=http://your-webhook-url.com/callback\"\n\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\treq.Header.Add(\"Authorization\", token)\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      }
-    ]
+ "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_mastering\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"output_extension\": \"wav\",\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio URLs\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\ndata[\"reference_audio_url\"] = \"<YOUR_REFERENCE_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as audio, open(\"reference.mp3\", \"rb\") as reference:\n#     files = {\n#         \"audio_file\": audio,\n#         \"reference_audio_file\": reference\n#     }\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },
 "/v1/audio_cutter": {
@@ -2302,7 +2316,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the input audio to be trimmed.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/input_audio.mp3"
               },
               "audio_file": {
@@ -2445,23 +2459,23 @@
       { "ApiKeyAuth": [] }
     ],
     "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_cutter\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\n\n# Option 1: Using audio URL\npayload = {\n    \"audio_url\": \"https://example.com/input_audio.mp3\",\n    \"start_time\": 10500,\n    \"end_time\": 45000,\n    \"output_extension\": \"mp3\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: Upload local audio file\npayload = {\n    \"start_time\": 5000,\n    \"end_time\": 20000,\n    \"output_extension\": \"wav\"\n}\nwith open(\"input_audio.mp3\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, data=payload, files=files)\nprint(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_cutter';\n$headers = ['Authorization: <API_KEY>'];\n\n$data = [\n    'audio_url' => 'https://example.com/input_audio.mp3',\n    'start_time' => 10500,\n    'end_time' => 45000,\n    'output_extension' => 'mp3'\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_cutter\"\n\ttoken := \"<API_KEY>\"\n\tdata := \"audio_url=https://example.com/input_audio.mp3&start_time=10500&end_time=45000&output_extension=mp3\"\n\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\treq.Header.Add(\"Authorization\", token)\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      },
-      {
-        "lang": "Java",
-        "source": "// Java version omitted for brevity; request if needed."
-      }
-    ]
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_cutter\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\n\npayload = {\n    \"start_time\": 10500,\n    \"end_time\": 45000,\n    \"output_extension\": \"mp3\"\n}\n\n# Option 1: audio_url\npayload[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: File Upload\n# with open(\"input_audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n\nprint(response.json())"
+  },
+  {
+    "lang": "PHP",
+    "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_cutter';\n$headers = ['Authorization: <API_KEY>'];\n\n$data = [\n    'start_time' => 10500,\n    'end_time' => 45000,\n    'output_extension' => 'mp3'\n];\n\n// Option 1: audio_url\n$data['audio_url'] = 'https://example.com/input_audio.mp3';\n\n// Option 2: File Upload\n// $data['audio_file'] = new CURLFile('input_audio.mp3');\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+  },
+  {
+    "lang": "Go",
+    "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_cutter\"\n\tapiKey := \"<API_KEY>\"\n\n\tbody := &bytes.Buffer{}\n\twriter := multipart.NewWriter(body)\n\n\twriter.WriteField(\"start_time\", \"10500\")\n\twriter.WriteField(\"end_time\", \"45000\")\n\twriter.WriteField(\"output_extension\", \"mp3\")\n\n\t// Option 1: audio_url\n\twriter.WriteField(\"audio_url\", \"https://example.com/input_audio.mp3\")\n\n\t// Option 2: File Upload\n\t// file, _ := os.Open(\"input_audio.mp3\")\n\t// defer file.Close()\n\t// part, _ := writer.CreateFormFile(\"audio_file\", \"input_audio.mp3\")\n\t// io.Copy(part, file)\n\n\twriter.Close()\n\n\treq, _ := http.NewRequest(\"POST\", url, body)\n\treq.Header.Add(\"Authorization\", apiKey)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n\tresp, _ := http.DefaultClient.Do(req)\n\tdefer resp.Body.Close()\n\tresponse, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(response))\n}"
+  },
+  {
+    "lang": "Java",
+    "source": "// Java version omitted for brevity; request if needed."
+  }
+]
   }
 },
 "/v1/audio_speed_changer": {
@@ -2477,7 +2491,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the input audio to change speed.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/input_audio.mp3"
               },
               "audio_file": {
@@ -2615,23 +2629,23 @@
       { "ApiKeyAuth": [] }
     ],
     "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_speed_changer\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\n\n# Option 1: Use audio URL\npayload = {\n    \"audio_url\": \"https://example.com/input_audio.mp3\",\n    \"speed_change_factor\": 1.5,\n    \"output_extension\": \"mp3\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: Upload local audio file\npayload = {\n    \"speed_change_factor\": 1.25,\n    \"output_extension\": \"wav\"\n}\nwith open(\"input_audio.mp3\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, data=payload, files=files)\nprint(response.json())"
-      },
-      {
-        "lang": "PHP",
-        "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_speed_changer';\n$headers = ['Authorization: <API_KEY>'];\n\n$data = [\n    'audio_url' => 'https://example.com/input_audio.mp3',\n    'speed_change_factor' => 1.5,\n    'output_extension' => 'mp3'\n];\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
-      },
-      {
-        "lang": "Go",
-        "source": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"net/http\"\n\t\"strings\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_speed_changer\"\n\ttoken := \"<API_KEY>\"\n\tdata := \"audio_url=https://example.com/input_audio.mp3&speed_change_factor=1.5&output_extension=mp3\"\n\n\treq, _ := http.NewRequest(\"POST\", url, strings.NewReader(data))\n\treq.Header.Add(\"Authorization\", token)\n\tres, _ := http.DefaultClient.Do(req)\n\tdefer res.Body.Close()\n\tbody, _ := io.ReadAll(res.Body)\n\tfmt.Println(string(body))\n}"
-      },
-      {
-        "lang": "Java",
-        "source": "// Java version omitted for brevity; request if needed."
-      }
-    ]
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_speed_changer\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\n\npayload = {\n    \"speed_change_factor\": 1.5,\n    \"output_extension\": \"mp3\"\n}\n\n# Option 1: audio_url\npayload[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: File Upload\n# with open(\"input_audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n\nprint(response.json())"
+  },
+  {
+    "lang": "PHP",
+    "source": "<?php\n$url = 'https://api.musicgpt.com/api/public/v1/audio_speed_changer';\n$headers = ['Authorization: <API_KEY>'];\n\n$data = [\n    'speed_change_factor' => 1.5,\n    'output_extension' => 'mp3'\n];\n\n// Option 1: audio_url\n$data['audio_url'] = '<YOUR_AUDIO_URL>';\n\n// Option 2: File Upload\n// $data['audio_file'] = new CURLFile('input_audio.mp3');\n\n$ch = curl_init($url);\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $data);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$response = curl_exec($ch);\ncurl_close($ch);\necho $response;"
+  },
+  {
+    "lang": "Go",
+    "source": "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"mime/multipart\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\turl := \"https://api.musicgpt.com/api/public/v1/audio_speed_changer\"\n\tapiKey := \"<API_KEY>\"\n\n\tbody := &bytes.Buffer{}\n\twriter := multipart.NewWriter(body)\n\n\twriter.WriteField(\"speed_change_factor\", \"1.5\")\n\twriter.WriteField(\"output_extension\", \"mp3\")\n\n\t// Option 1: audio_url\n\twriter.WriteField(\"audio_url\", \"<YOUR_AUDIO_URL>\")\n\n\t// Option 2: File Upload\n\t// file, _ := os.Open(\"input_audio.mp3\")\n\t// defer file.Close()\n\t// part, _ := writer.CreateFormFile(\"audio_file\", \"input_audio.mp3\")\n\t// io.Copy(part, file)\n\n\twriter.Close()\n\n\treq, _ := http.NewRequest(\"POST\", url, body)\n\treq.Header.Add(\"Authorization\", apiKey)\n\treq.Header.Add(\"Content-Type\", writer.FormDataContentType())\n\n\tresp, _ := http.DefaultClient.Do(req)\n\tdefer resp.Body.Close()\n\tresponse, _ := io.ReadAll(resp.Body)\n\tfmt.Println(string(response))\n}"
+  },
+  {
+    "lang": "Java",
+    "source": "// Java version omitted for brevity; request if needed."
+  }
+]
   }
 },
 "/v1/audio_to_midi": {
@@ -2647,7 +2661,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to convert to MIDI.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/audio.mp3"
               },
               "audio_file": {
@@ -2739,7 +2753,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_to_midi\"\nheaders = {\"Authorization\": \"<<<api key>>>\"}\n\n# Option 1: Use audio URL\npayload = {\n    \"audio_url\": \"https://example.com/audio_file.wav\",\n    \"sonify_midi\": True,\n    \"save_note_events\": True,\n    \"webhook_url\": \"https://your-webhook-url.com/callback\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: Upload local audio file\npayload = {\n    \"sonify_midi\": True,\n    \"save_note_events\": True,\n    \"webhook_url\": \"https://your-webhook-url.com/callback\"\n}\nwith open(\"audio.wav\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, data=payload, files=files)\nprint(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/audio_to_midi\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\n\npayload = {\n    \"sonify_midi\": True,\n    \"save_note_events\": True,\n    \"webhook_url\": \"https://your-webhook-url.com/callback\"\n}\n\n# Option 1: audio_url\npayload[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=payload)\n\n# Option 2: File Upload\n# with open(\"audio.wav\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n\nprint(response.json())"
       }
     ]
   }
@@ -2762,7 +2776,7 @@
               },
               "audio_url": {
                 "type": "string",
-                "description": "URL or S3 path to the input audio.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://mybucket.s3.amazonaws.com/song.mp3"
               },
               "prompt": {
@@ -2776,12 +2790,21 @@
                 "example": "It's a brand new day",
                 "maxLength": 2000
               },
+              "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
+              },
               "gender": {
                 "type": "string",
                 "description": "Voice style if vocal content is generated.",
                 "enum": ["male", "female", "neutral"],
                 "example": "female"
               },
+               "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing results.",
@@ -2861,7 +2884,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/Remix\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Make it sound like Lo-fi with chill beats\",\n  \"lyrics\": \"It's a brand new day\",\n  \"gender\": \"female\",\n  \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\nfiles = {}\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data, files=files)\n\n# Option 2: File Upload\nwith open(\"song.mp3\", \"rb\") as f:\n    files = {\"audio_file\": f}\n    response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/Remix\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Make it sound like Lo-fi with chill beats\",\n  \"lyrics\": \"It's a brand new day\",\n  \"gender\": \"female\",\n  \"title\": \"My Generated Track\",\n  \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\nfiles = {}\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data, files=files)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#    files = {\"audio_file\": f}\n#    response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
       }
     ]
   }
@@ -2884,7 +2907,7 @@
               },
               "audio_url": {
                 "type": "string",
-                "description": "URL or S3 path to the input audio.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://mybucket.s3.amazonaws.com/song.mp3"
               },
               "extend_after": {
@@ -2915,11 +2938,20 @@
                 "enum": ["male", "female", "neutral"],
                 "example": "neutral"
               },
+              "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
+              },
               "num_outputs": {
                       "type": "number",
                       "format":"integer",
                       "description" : "The number of outputs to generate (1 or 2 only):default is 2."
               },
+              "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing results.",
@@ -3000,7 +3032,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extend\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"extend_after\": 35.0,\n  \"prompt\": \"Add a calming piano outro\",\n  \"lyrics\": \"Let the journey fade away\",\n  \"gender\": \"neutral\", \n  \"lyrics_section_to_extend\": \"New lyrics\",\n  \"num_outputs\": 1,\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/extend\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"extend_after\": 35.0,\n  \"prompt\": \"Add a calming piano outro\",\n  \"lyrics\": \"Let the journey fade away\",\n  \"gender\": \"neutral\", \n  \"lyrics_section_to_extend\": \"New_lyrics\",\n  \"num_outputs\": 1,\n  \"title\": \"My Generated Track\",\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\nprint(response.json())"
       }
     ]
   }
@@ -3023,7 +3055,7 @@
               },
               "audio_url": {
                 "type": "string",
-                "description": "URL or S3 path to the input audio.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://mybucket.s3.amazonaws.com/song.mp3"
               },
               "prompt": {
@@ -3065,6 +3097,15 @@
                       "format":"integer",
                       "description" : "The number of outputs to generate (1 or 2 only):default is 2."
               },
+              "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
+              },
+              "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL for async processing results.",
@@ -3144,7 +3185,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/inpaint\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Add a soft guitar solo here\",\n  \"replace_start_at\": 12.5,\n  \"replace_end_at\": 20.0,\n  \"lyrics\": \"This is where my story begins\",\n  \"lyrics_section_to_replace\": \"New lyrics\",\n  \"gender\": \"male\",\n  \"num_outputs\": 1,\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"https://mybucket.s3.amazonaws.com/song.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/inpaint\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Add a soft guitar solo here\",\n  \"replace_start_at\": 12.5,\n  \"replace_end_at\": 20.0,\n  \"lyrics\": \"This is where my story begins\",\n  \"lyrics_section_to_replace\": \"New lyrics\",\n  \"gender\": \"male\",\n  \"num_outputs\": 1,\n  \"title\": \"My Generated Track\",\n  \"webhook_url\": \"https://example.com/webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n print(response.json())"
       }
     ]
   }
@@ -3168,7 +3209,7 @@
               },
               "audio_url": {
                 "type": "string",
-                "description": "URL or S3 path to the input instrumental audio.",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://bucket.s3.amazonaws.com/audio.mp3"
               },
               "prompt": {
@@ -3188,6 +3229,15 @@
                 "enum": ["male", "female", "neutral"],
                 "example": "female"
               },
+              "title": {
+                    "type": "string",
+                    "description": "Title of the generated music track"
+                  },
+              "generate_album_cover": {
+                    "type": "boolean",
+                    "description": "Whether to generate an album cover for the generated audio",
+                    "default": false
+                  },
               "webhook_url": {
                 "type": "string",
                 "description": "Callback URL to receive status updates or final audio result.",
@@ -3267,7 +3317,7 @@
     "x-codeSamples": [
       {
         "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/sing_over_instrumental\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Sing emotional vocals over a soft piano instrumental.\",\n  \"lyrics\": \"Never mind I'll find someone like you...\",\n  \"gender\": \"female\",\n  \"webhook_url\": \"https://yourdomain.com/webhook\"\n}\n\n# Option 1: Use audio_url\ndata[\"audio_url\"] = \"https://bucket.s3.amazonaws.com/audio.mp3\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: Upload file\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n# print(response.json())"
+        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/sing_over_instrumental\"\nheaders = {\"Authorization\": \"<API_KEY>\"}\ndata = {\n  \"prompt\": \"Sing emotional vocals over a soft piano instrumental.\",\n  \"lyrics\": \"Never mind I'll find someone like you...\",\n  \"gender\": \"female\",\n  \"title\": \"My Generated Track\",\n  \"webhook_url\": \"https://yourdomain.com/webhook\"\n}\n\n# Option 1: Use audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: Upload file\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\n print(response.json())"
       }
     ]
   }
@@ -3286,7 +3336,7 @@
             "properties": {
               "audio_url": {
                 "type": "string",
-                "description": "URL of the audio file to convert",
+                "description": "Input audio URL (supported format: YouTube URL).",
                 "example": "https://example.com/audio.mp3"
               },
               "audio_file": {
@@ -3385,12 +3435,12 @@
     "security": [
       { "ApiKeyAuth": [] }
     ],
-    "x-codeSamples": [
-      {
-        "lang": "Python",
-        "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/file_convert\"\nheaders = {\n    \"Authorization\": \"<<<api key>>>\"\n}\n\n# Option 1: URL\npayload = {\n    \"audio_url\": \"https://example.com/audio.mp3\",\n    \"target_format\": \"wav\",\n    \"target_sr\": 44100,\n    \"webhook_url\": \"https://your-webhook-url.com/callback\"\n}\nresponse = requests.post(url, headers=headers, data=payload)\nprint(response.json())\n\n# Option 2: File Upload\n# payload = {\n#     \"target_format\": \"flac\",\n#     \"target_bit_depth\": 24,\n#     \"webhook_url\": \"https://your-webhook-url.com/callback\"\n# }\n# with open(\"audio.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=payload, files=files)\n# print(response.json())"
-      }
-    ]
+ "x-codeSamples": [
+  {
+    "lang": "Python",
+    "source": "import requests\n\nurl = \"https://api.musicgpt.com/api/public/v1/file_convert\"\n\nheaders = {\n    \"Authorization\": \"<API_KEY>\"\n}\n\ndata = {\n    \"target_format\": \"wav\",\n    \"target_sr\": 44100,\n    \"webhook_url\": \"https://example.com/my-webhook\"\n}\n\n# Option 1: audio_url\ndata[\"audio_url\"] = \"<YOUR_AUDIO_URL>\"\nresponse = requests.post(url, headers=headers, data=data)\n\n# Option 2: File Upload\n# with open(\"song.mp3\", \"rb\") as f:\n#     files = {\"audio_file\": f}\n#     response = requests.post(url, headers=headers, data=data, files=files)\n\nprint(response.json())"
+  }
+]
   }
 },
 "/v1/prompt_to_lyrics": {

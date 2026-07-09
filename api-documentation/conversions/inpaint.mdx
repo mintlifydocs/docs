@@ -10,7 +10,7 @@ Replace a specific segment of an audio file using a prompt and optional lyrics.
 ## Endpoint
 
 ```http
-POST /inpaint
+POST /v1/inpaint
 ```
 
 This endpoint processes an input audio file along with a prompt, timestamp range, and optional lyrics to perform inpainting (replacement) in the specified segment.
@@ -22,6 +22,7 @@ This endpoint processes an input audio file along with a prompt, timestamp range
 | Parameter          | Type         | Required | Description                                                                                                 |
 | ------------------ | ------------ | -------- | ----------------------------------------------------------------------------------------------------------- |
 | `audio_file`       | `UploadFile` | Optional | Upload the input audio file. Required if `audio_url` is not provided.                                       |
+| `title`             | `String`  | Optional |  Title of the generated music                    |
 | `audio_url`        | `String`     | Optional | Public/S3/YouTube URL of the input audio. Required if `audio_file` is not provided.                         |
 | `prompt`           | `String`     | Required | Prompt describing how the replacement should sound. Example: "Replace this part with an opera-style vocal." |
 | `replace_start_at` | `Float`      | Required | Start time (in seconds) of the segment to replace.                                                          |
@@ -29,7 +30,7 @@ This endpoint processes an input audio file along with a prompt, timestamp range
 | `lyrics`           | `String`     | Optional | Original lyrics of song.                                                                      |
 | `lyrics_section_to_replace`      | `String`     | Optional     | Lyrics to be used for the replaced portion(optional, max 3000 characters)           |
 | `gender`           | `String`     | Optional | Voice style for vocal generation. One of: `male`, `female`, `neutral`. 
-| `num_outputs`     | int  | Optional |The number of outputs to generate (1 or 2 only default : 1).         |                                     |
+| `num_outputs`     | `int`  | Optional |The number of outputs to generate (1 or 2 only default : 2).         |                                     |
 | `webhook_url`      | `String`     | Optional | Callback URL for async response.                                                                            |
 
 > 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
@@ -53,7 +54,7 @@ Prompt: inpaint from 60 to 120 seconds in classical slow vibe - audio input : Mo
 
 ## Try it Yourself
 
-Visit the [Inpaint Endpoint Explorer](/api-documentation/endpoint/Inpaint) to test the endpoint — set your payload, hit send, and view the generated results.
+Visit the [Inpaint Endpoint Explorer](/api-documentation/endpoint/inpaint) to test the endpoint — set your payload, hit send, and view the generated results.
 
 ---
 
