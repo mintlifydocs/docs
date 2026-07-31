@@ -30,6 +30,8 @@ This endpoint allows users to extend an existing audio file or stream by appendi
 | `lyrics_section_to_extend`       | `String`     | Optional | Optional lyrics for the extended segment. Max 3000 characters.                   |
 | `gender`       | `String`     | Optional | Voice style if vocals are generated. Must be one of `male`, `female`, `neutral`. |
 | `num_outputs`     | `int`  | Optional | The number of outputs to generate (1 or 2 only, default : 2).         |
+| `generate_album_cover` | Boolean | Optional | true | If `true`, generate an album cover for the generated audio |
+| `lyrics_timestamps`  | Boolean | Optional | true | If true, generates lyric timestamps for the output track |
 | `webhook_url`  | `String`     | Optional | Callback URL for async result delivery.                                          |
 
 > 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.

@@ -26,6 +26,8 @@ POST /v1/Remix
 | `prompt`      | `String`     | ✅ Yes        | Describes how the audio should be transformed.                            |
 | `lyrics`      | `String`     | Optional     | Lyrics to guide remix or vocal generation. Max 2000 characters.           |
 | `gender`      | `String`     | Optional     | Vocal tone. One of: `male`, `female`, `neutral`.                          |
+| `generate_album_cover` | Boolean | Optional | true | If `true`, generate an album cover for the generated audio |
+| `lyrics_timestamps`  | Boolean | Optional | true | If true, generates lyric timestamps for the output track |
 | `webhook_url` | `String`     | Optional     | Callback URL for async response.                                          |
 
 >💡**Note:** Either `audio_file` or `audio_url` must be provided.

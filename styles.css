@@ -178,21 +178,7 @@
 
 /* ---------- Rate-lock / yearly plan banner ---------- */
 
-.mg-ratelock {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border: 1px solid var(--mg-green-border);
-  border-left: 5px solid var(--mg-green);
-  background:
-    linear-gradient(90deg, var(--mg-green-soft), transparent 65%),
-    var(--mg-card-bg);
-  border-radius: 12px;
-  padding: 1.1rem 1.4rem;
-  margin: 1.5rem 0;
-}
+
 
 .mg-ratelock-title {
   font-size: 1rem;
@@ -226,6 +212,7 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+  justify-content: center;
   border: 1px solid var(--mg-card-border);
   background: var(--mg-card-bg);
   border-radius: 14px;
@@ -265,7 +252,7 @@
 }
 
 .mg-plan-name {
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--mg-text);
   margin: 0;
@@ -361,3 +348,69 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+
+/* ---------- Billing toggle (Monthly / Yearly) ---------- */
+ 
+.mg-toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--mg-card-border);
+  background: var(--mg-card-bg);
+  border-radius: 99px;
+  box-shadow: var(--mg-shadow);
+  margin: 0.25rem 0 1.25rem;
+}
+ 
+.mg-toggle-btn {
+  border: none;
+  background: transparent;
+  color: var(--mg-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 7px 20px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+ 
+.mg-toggle-btn:hover {
+  color: var(--mg-text);
+}
+ 
+.mg-toggle-active,
+.mg-toggle-active:hover {
+  background: var(--mg-green);
+  color: #ffffff !important;
+}
+
+
+
+
+
+
+.mg-ratelock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--mg-green-border);
+  border-left: 5px solid var(--mg-green);
+  background:
+    linear-gradient(90deg, var(--mg-green-soft), transparent 65%),
+    var(--mg-card-bg);
+  border-radius: 12px;
+  padding: 1.1rem 1.4rem;
+  margin: 1.5rem 0;
+}
+
+
+/* .mg-plan-name-lg {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--mg-text);
+  margin: 0;
+} */

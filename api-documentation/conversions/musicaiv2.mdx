@@ -41,6 +41,10 @@ openapi: 'POST /v2/MusicAI'
 
 Pass your choice with the `model` parameter (`v6`, `v6-pro`, `v7`, or `v7-pro`). Streaming is available on the `pro` models for paid users. Per-model rates are listed on the [Pricing page](/api-documentation/index/pricing).
 
+<Info>
+If you provide a voice_id or set make_vocal_only to true, the request will always use the v6 model, regardless of the value passed in the model parameter.
+</Info>
+
 ### Key features
 
 - Compose custom songs using your own lyrics and chosen music style
@@ -96,7 +100,8 @@ Use the [MusicAI Endpoint Explorer](/api-documentation/endpoint/MusicAiv2) to te
 | `make_instrumental` | Boolean | Optional | false   | If true, generate instrumental-only audio       |
 | `vocal_only`        | Boolean | Optional | false   | If true, generate vocals without instruments    |
 | `voice_id`          | String  | Optional | ""      | Apply voice model for vocal rendering           |
-| `generate_album_cover` | Boolean | Optional | false | If `true`, generate an album cover for the generated audio |
+| `generate_album_cover` | Boolean | Optional | true | If `true`, generate an album cover for the generated audio |
+| `lyrics_timestamps`  | Boolean | Optional | true | If true, generates lyric timestamps for the output track |
 | `model` | String | Optional | "v6" | Allowed values: `v6`, `v6-pro`, `v7`, `v7-pro` |
 | `webhook_url`       | String  | Optional | ""      | URL to receive generated results via webhook    |
 | `gender`       | String  | Optional | ""      | Allowed values: male, female, neutral.    |

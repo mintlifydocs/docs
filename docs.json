@@ -44,6 +44,7 @@
             "group": "Keep in mind",
             "pages": [
               "api-documentation/utilities/error",
+              "api-documentation/utilities/prompt_guideline",
               "api-documentation/utilities/ratelimits",
               "api-documentation/utilities/finalnotes"
             ]
@@ -73,7 +74,9 @@
               "api-documentation/conversions/extractkeybpm",
               "api-documentation/conversions/fileconvert",
               "api-documentation/conversions/audiomastering",
-              "api-documentation/conversions/imagetosong"
+              "api-documentation/conversions/imagetosong",
+              "api-documentation/conversions/image_generator",
+              "api-documentation/conversions/sing_over_vocal"
             ]
           },
           {
@@ -118,7 +121,9 @@
               "api-documentation/endpoint/inpaint",
               "api-documentation/endpoint/sing_over_instrumental",
               "api-documentation/endpoint/lyrics_generator",
-              "api-documentation/endpoint/imagetosong"
+              "api-documentation/endpoint/imagetosong",
+              "api-documentation/endpoint/image_generator",
+              "api-documentation/endpoint/sing_over_vocal"
             ]
           }
         ]

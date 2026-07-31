@@ -1,0 +1,123 @@
+---
+title: Sing Over Vocal
+openapi: 'POST /v1/sing_over_vocal'
+---
+
+Generate a brand-new vocal performance over an existing vocal recording using AI.
+
+**Sing Over a Vocal** lets you transform an existing vocal track into a completely new performance by providing lyrics, a singing style prompt, and optional voice controls. Perfect for creating covers, experimenting with different vocal styles, or generating new performances from existing recordings.
+
+- Generate a new vocal performance from an existing vocal
+- Control singing style with prompts
+- Apply voice conversion with custom voice IDs
+- Generate album artwork automatically
+- Receive results via webhook or retrieve them asynchronously
+
+---
+
+## Endpoint
+
+```http
+POST /v1/sing_over_vocal
+```
+
+Use this endpoint to generate a new vocal performance over a provided vocal track.
+
+---
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|----------|------|----------|-------------|
+| `audio_url` | String | Optional | Publicly accessible URL or S3 URL of the vocal audio. Either `audio_url` or `audio_file` is required. |
+| `audio_file` | File | Optional | Upload a vocal audio file. Either `audio_url` or `audio_file` is required. |
+| `lyrics` | String | Yes | Lyrics to be sung over the provided vocal track. |
+| `prompt` | String | Optional | Describe the desired vocal tone, genre, or singing style. |
+| `gender` | String | Optional | One of `male`, `female`, or `neutral`. |
+| `make_instrumental` | Boolean | Optional | Generate an instrumental-only output. Default: `false`. |
+| `title` | String | Optional | Optional title for the generated song. |
+| `webhook_url` | String | Optional | Webhook URL to receive the completed result. |
+| `generate_album_cover` | Boolean | Optional | Whether to generate an album cover. Default: `true`. |
+| `lyrics_timestamps` | Boolean | Optional | Whether to generate timestamps for the output lyrics. Default: `true`. Automatically set to `false` when `make_instrumental=true`. |
+
+> 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
+
+> **content-type:** `multipart/form-data`
+
+---
+
+## Sample Request
+
+### cURL
+
+```bash
+curl -X POST "https://api.musicgpt.com/api/public/v1/sing_over_vocal" \
+-H "accept: application/json" \
+-H "Authorization: <api_key>" \
+-F "audio_url=https://example.com/vocal.mp3" \
+-F "lyrics=We're dancing through the night..." \
+-F "prompt=Energetic pop vocal with female singer" \
+-F "gender=female" \
+-F "webhook_url=https://yourdomain.com/webhook"
+```
+
+### Python
+
+```python
+import requests
+
+url = "https://api.musicgpt.com/api/public/v1/sing_over_vocal"
+headers = {"Authorization": "<API_KEY>"}
+
+data = {
+    "lyrics": "We're dancing through the night...",
+    "prompt": "Energetic pop vocal with female singer",
+    "gender": "female",
+    "webhook_url": "https://yourdomain.com/webhook"
+}
+
+# Option 1: Use audio_url
+data["audio_url"] = "https://example.com/vocal.mp3"
+response = requests.post(url, headers=headers, data=data)
+
+# Option 2: File upload
+# with open("vocal.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+# print(response.json())
+```
+
+> 🔐 Be sure to replace the placeholders like `<api_key>` and file paths with your actual values.
+
+---
+
+## Sample Response
+
+### Success (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "",
+  "task_id": "0af8567f-6156-4bb2-9adc-99b0c8792700",
+  "conversion_id_1": "9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8",
+  "conversion_id_2": "83c0d3ab-67f6-4309-9ca2-5cbe754ce9d4",
+  "is_flagged": false,
+  "reason": "",
+  "eta": 85,
+  "credit_estimate": 1.2
+}
+```
+
+---
+
+## Webhook Response
+
+Once the generation is complete, your webhook will receive the generated audio files and metadata.
+
+> **Note:** If a `webhook_url` is provided, the completed result will be delivered automatically. Otherwise, retrieve the output later using the returned `task_id` or `conversion_id`.
+
+---
+
+## Payload and Request Formation

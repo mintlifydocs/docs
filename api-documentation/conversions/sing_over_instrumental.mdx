@@ -27,6 +27,8 @@ This endpoint enables you to overlay vocals onto an instrumental audio using a t
 | `prompt`      | `String`     | Required | Text describing the desired singing style. Example: "Sing in soft jazz style"       |
 | `lyrics`      | `String`     | Required | The lyrics to be sung over the instrumental. Max 2000 characters.                   |
 | `gender`      | `String`     | Optional | Voice style. Options: `male`, `female`, `neutral`.                                  |
+| `generate_album_cover` | Boolean | Optional | true | If `true`, generate an album cover for the generated audio |
+| `lyrics_timestamps`  | Boolean | Optional | true | If true, generates lyric timestamps for the output track |
 | `webhook_url` | `String`     | Optional | Callback URL to receive processing results.                                         |
 
 > 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
