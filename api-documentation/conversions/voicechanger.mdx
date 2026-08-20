@@ -40,16 +40,16 @@ Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/voicetovo
 
 | Parameter           | Type        | Required | Description                                                                 |
 |--------------------|-------------|----------|-----------------------------------------------------------------------------|
-| `audio_url`        | `String`    | Optional | URL of the audio file to convert. Either `audio_url` or `audio_file` must be provided. |
-| `audio_file`       | `UploadFile`| Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `audio_url`        | `String`    | Optional | URL of the audio file. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`       | `File`| Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
 | `voice_id`         | `String`    | ✅ Yes   | Voice model to convert the audio into.                                      |
 | `remove_background`| `Integer`   | Optional | Set to `1` to remove background noise. Default is `0`.                      |
 | `pitch`            | `Integer`   | Optional | Adjust pitch between -12 and 12 semitones. Default is `0`.                  |
 | `webhook_url`      | `String`    | Optional | Callback URL for async response.                                            |
 
->💡**Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
+>**Note:** Either audio_file or audio_url must be provided.
 
-> **content-type:** multipart/form-data
+>**content-type:** multipart/form-data
 
 
 ---
@@ -60,13 +60,12 @@ Visit the [VoiceChanger Endpoint Explorer](/api-documentation/endpoint/voicetovo
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/VoiceChanger" \
--H "accept: multipart/form-data" \
--H "Authorization: <api_key>" \
--F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
--F "voice_id=Drake" \
--F "remove_background=0" \
--F "pitch=0" \
--F "webhook_url=http://webhook.musicgpt.com"
+  -H "Authorization: <API_KEY>" \
+  -F "voice_id=e0bb585f-b798-4bac-ac4e-de7fff38f9d75" \
+  -F "remove_background=1" \
+  -F "pitch=0" \
+  -F "webhook_url=https://example.com/my-webhook" \
+  -F "audio_url=<YOUR_AUDIO_URL>"
 ```
 
 ### Python
@@ -75,25 +74,29 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/VoiceChanger" \
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/VoiceChanger"
+
 headers = {
-    "accept": "multipart/form-data",
-    "Authorization": "<api_key>"
+    "Authorization": "<API_KEY>"
 }
 
-input_audio_file = open("{path_to_your_audio_file}", "rb")
-payload = {
-    "audio_url": "",
-    "voice_id": "Drake",
+data = {
+    "voice_id": "e0bb585f-b798-4bac-ac4e-de7fff38f9d75",
+    "remove_background": 1,
     "pitch": 0,
-    "remove_background": 0,
-    "webhook_url": "http://abc.requestcatcher.com/test",
+    "webhook_url": "https://example.com/my-webhook"
 }
 
-response = requests.post(url, headers=headers, data=payload, files={"audio_file": input_audio_file})
+# Option 1: audio_url
+data["audio_url"] = "<YOUR_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=data)
+
+# Option 2: File Upload
+# with open("song.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
 print(response.json())
 ```
-
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
@@ -116,18 +119,16 @@ print(response.json())
 ---
 ## Webhook Response
 
-### Success (200 OK)
-
 ```json
 {
   "success": true, 
   "conversion_type": "Voice Conversion", 
   "task_id": "fdcca59e-9788-43fc-9ee6-e9983064c432", 
   "conversion_id": "67092f68-045d-4e3c-8006-532f144dd610", 
-  "audio_url": "https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.mp3", 
-  "audio_url_wav": "https://lalals.s3.amazonaws.com/projects/67092f68-045d-4e3c-8006-532f144dd610.wav", 
+  "conversion_path": "https://cdn1.musicgpt.com/projects/standard/ffa2da3a-af79-4cbd-9cf6-ea178c9b2f90.mp3",
   "conversion_cost": "0.78", 
-  "conversion_duration": 272.44
+  "conversion_duration": 272.44,
+  "message": "Conversion Completed",
 }
 ```
 ---
@@ -138,9 +139,6 @@ print(response.json())
 - **402 Payment Required**: Your credit balance is insufficient.
 - **422 Unprocessable Entity**: No `audio_url` or `audio_file` provided.
 - **500 Internal Server Error**: Something went wrong on our end.
-
-
-You can download or stream the result directly from the `audio_url`.
 
 ---
 

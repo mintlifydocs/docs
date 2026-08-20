@@ -40,12 +40,13 @@ Visit the [Audio to MIDI Endpoint Explorer](/api-documentation/endpoint/audio_to
 
 | Parameter         | Type      | Required | Default  | Description                                                                  |
 |-------------------|-----------|----------|----------|------------------------------------------------------------------------------|
-| `audio_path`      | `String`  | ✅ Yes   | -        | The **S3 path** of the input audio file to convert.                          |
+| `audio_file`  | `File` | Optional     | Upload the audio file directly. Required if `audio_url` is not provided.  |
+| `audio_url`   | `String`     | Optional     | URL to the audio file. |
 | `sonify_midi`     | `Boolean` | Optional | `true`   | If `true`, generates a `.wav` file that plays the MIDI output.                |
 | `save_note_events`| `Boolean` | Optional | `true`   | If `true`, saves predicted note events as a `.csv` file.                     |
 | `webhook_url`     | `String`  | Optional | `""`     | Callback URL for asynchronous result delivery.                               |
 
->💡**Note:** `audio_path` must be a valid and accessible S3 URL.
+>**Note:** Either audio_file or audio_url must be provided.
 
 > **content-type:** multipart/form-data
 
@@ -58,14 +59,11 @@ Visit the [Audio to MIDI Endpoint Explorer](/api-documentation/endpoint/audio_to
 
 ```bash
 curl -X POST "https://api.musicgpt.com/api/public/v1/audio_to_midi" \
--H "accept: application/json" \
--H "Authorization: <api_key>" \
--d '{
-  "audio_path": "s3://your-bucket/input_audio.wav",
-  "sonify_midi": true,
-  "save_note_events": true,
-  "webhook_url": "https://yourdomain.com/webhook"
-}'
+  -H "Authorization: <API_KEY>" \
+  -F "audio_url=<YOUR_AUDIO_URL>" \
+  -F "sonify_midi=true" \
+  -F "save_note_events=true" \
+  -F "webhook_url=https://your-webhook-url.com/callback"
 ```
 
 ### Python
@@ -74,31 +72,25 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/audio_to_midi" \
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_to_midi"
-headers = {"Authorization": "<<<api key>>>"}
+headers = {"Authorization": "<API_KEY>"}
 
-# Option 1: Use audio URL
 payload = {
-    "audio_url": "https://example.com/audio_file.wav",
     "sonify_midi": True,
     "save_note_events": True,
     "webhook_url": "https://your-webhook-url.com/callback"
 }
+
+# Option 1: audio_url
+payload["audio_url"] = "<YOUR_AUDIO_URL>"
 response = requests.post(url, headers=headers, data=payload)
-print(response.json())
 
-# Option 2: Upload local audio file
-payload = {
-    "sonify_midi": True,
-    "save_note_events": True,
-    "webhook_url": "https://your-webhook-url.com/callback"
-}
-with open("audio.wav", "rb") as f:
-    files = {"audio_file": f}
-    response = requests.post(url, headers=headers, data=payload, files=files)
+# Option 2: File Upload
+# with open("audio.wav", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+
 print(response.json())
 ```
-
-> 🔐 Replace `api_key`, `audio_path`, and `webhook_url` with your own values before sending.
 
 ---
 
@@ -108,9 +100,29 @@ print(response.json())
 
 ```json
 {
+ "success": true,
+  "task_id": "cf34f4e0-3273-41e4-95e5-05dc745b9852",
+  "conversion_id": "0b0b59e5-4c71-49ec-8ca5-5cd05142d5ab",
+  "eta": 37,
+  "credit_estimate": 0.016,
+  "message": "Message published to queue",
+  "status": "IN_QUEUE"
+}
+```
+
+---
+### Webhook Response
+
+```json
+{
   "success": true,
-  "task_id": "abcdef1234567890",
-  "status": "processing"
+  "conversion_type": "Audio To MIDI",
+  "task_id": "cf34f4e0-3273-41e4-95e5-05dc745b9852",
+  "conversion_id": "0b0b59e5-4c71-49ec-8ca5-5cd05142d5ab",
+  "midi_file_path": "",
+  "sonify_file_path": "",
+  "notes_file_path": "",
+  "message": "Audio To MIDI Completed",
 }
 ```
 
@@ -122,27 +134,6 @@ print(response.json())
 - **404 Not Found**: Provided audio file not found in S3.
 - **422 Unprocessable Entity**: Unsupported audio format.
 - **500 Internal Server Error**: An unexpected error occurred while processing.
-
----
-
-## Webhook Response
-
-When the conversion process completes, if a `webhook_url` was provided, the system sends a POST request:
-
-```json
-{
-  "success": true, 
-  "conversion_type": "Audio to MIDI", 
-  "task_id": "f5b563e5-e414-47ec-989b-255c74d90119", 
-  "conversion_id": "c7127f6b-e9a4-4d22-8804-d94a8521155a", 
-  "midi_file_path": "https://lalals.s3.amazonaws.com/AudioToMidi/f5b563e5-e414-47ec-989b-255c74d90119.mid", 
-  "sonify_file_path": "https://lalals.s3.amazonaws.com/AudioToMidi/f5b563e5-e414-47ec-989b-255c74d90119.wav", 
-  "notes_file_path": "", 
-  "message": "Audio to Midi Completed"
-}
-```
-
-You can download your generated files using the provided URLs.
 
 ---
 

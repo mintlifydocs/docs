@@ -50,7 +50,8 @@ Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/soundg
 |------------------|---------|----------|---------------------------------------------------------|
 | `prompt`         | String  | Yes      | A natural language description of the sound you want    |
 | `webhook_url`    | String  | Optional | Webhook URL to receive a callback with the audio result |
-| `audio_length`        | int  | Optional | Specify song length (optional)                 |
+| `audio_length`        | int  | Optional | Specify song length             |
+| `generate_album_cover` | Boolean | Optional  | If `true`, generate an album cover for the generated audio |
 
 > **content-type:** application/x-www-form-urlencoded 
 
@@ -62,18 +63,22 @@ Visit the [Sound Generator Endpoint Explorer](/api-documentation/endpoint/soundg
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/SoundGenerator"
-headers = {
-    "Authorization": "<api_key>"
-}
+url = "https://api.musicgpt.com/api/public/v1/sound_generator"
+
 payload = {
-    "prompt": "sound of an ancient temple door creaking open",
-    "webhook_url": "https://abcd.requestcatcher.com/",
-    "audio_length" : 20
+    "prompt": "Generate a soothing ambient soundscape.",
+    "generate_album_cover": "false",
+    "webhook_url": "http://your-webhook-url.com/callback",
+    "audio_length": "30"
+}
+headers = {
+    "Authorization": "<api-key>",
+    "Content-Type": "application/x-www-form-urlencoded"
 }
 
-response = requests.post(url, json=payload, headers=headers)
-print(response.json())
+response = requests.post(url, data=payload, headers=headers)
+
+print(response.text)
 ```
 
 ---
@@ -105,12 +110,9 @@ Once the sound is ready, your webhook will receive:
   "conversion_type": "Sound Creator", 
   "task_id": "0af8567f-6156-4bb2-9adc-99b0c8792700", 
   "conversion_id": "9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8", 
-  "conversion_path": "https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3", 
-  "conversion_path_wav": "https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav", 
   "conversion_duration": 2.089795918367347, 
   "message": "Audio Generation Completed Successfully", 
   "conversion_paths": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": "https://lalals.s3.amazonaws.com/https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.mp3"}, 
-  "conversion_paths_wav": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": "https://lalals.s3.amazonaws.com/https://lalals.s3.amazonaws.com/conversions/0af8567f-6156-4bb2-9adc-99b0c8792700_sound.wav"}, 
   "conversion_durations": {"9e6ac90d-c09e-4ea6-8c39-d9f4e39bbbc8": 2.089795918367347}
 }
 ```

@@ -20,14 +20,6 @@ The API may return different types of responses, including success and error mes
 ### 3. **Use Webhook URLs for Asynchronous Responses**
 Many API endpoints, especially those related to audio generation or large files, are asynchronous. This means you won’t receive the final output immediately. In such cases, use **webhook URLs** to receive a callback when the process is complete. This helps automate the process and improves efficiency.
 
-### 4. **Respect Rate Limits**
-The API enforces rate limits to prevent abuse and to ensure fair usage. Be mindful of these limits when making requests:
-
-- **Audio Generations Endpoint**: Maximum **10 parallel** requests at a time.
-- **Audio Utlities Endpoints**: Maximum **10 parallel** requests at a time.
-- **GetConversionById**: Maximum **500 calls per minute**.
-
-By adhering to these limits, you’ll prevent throttling or disruptions in service.
 
 ---
 
