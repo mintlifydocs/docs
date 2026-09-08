@@ -1,14 +1,19 @@
 ---
 title: 'Extraction'
-openapi: 'POST /Extraction'
+openapi: 'POST /v2/Extraction'
 ---
-Extract vocals, instrumentals, or other stems from an audio file or URL, with optional preprocessing. This endpoint supports file uploads or remote URLs and allows webhook callbacks for async updates.
+
+<Warning>
+   **Deprecation Notice:** Extraction v1 is still functional but has been deprecated. We recommend switching to the v2 endpoint for improved response times and better quality.
+</Warning>
+
+Extract vocals, instrumentals, or other stems from an audio file or URL, with optional preprocessing. 
 
 ---
 ## Endpoint
 
 ```http
-POST /Extraction
+POST /v2/Extraction
 ```
 
 Use this endpoint to extract stems like vocals, drums, guitar, or more from an audio source.
@@ -20,12 +25,15 @@ Use this endpoint to extract stems like vocals, drums, guitar, or more from an a
 | Parameter               | Type         | Required | Description                                                                                 |
 | ----------------------- | ------------ | -------- | ------------------------------------------------------------------------------------------- |
 | `audio_url`             | `string`     | Optional | URL of the audio file to extract from. Either `audio_url` or `audio_file` must be provided. |
-| `audio_file`            | `UploadFile` | Optional | Audio file to upload and process. Either `audio_url` or `audio_file` must be provided.      |
+| `audio_file`            | `File` | Optional | Audio file to upload and process. Either `audio_url` or `audio_file` must be provided.      |
 | `stems`                 | `string`     | Optional | JSON string list of required stems. e.g., `["vocals", "drums"]`. See all options below.     |
 | `preprocessing_options` | `string`     | Optional | JSON string list of preprocessing options. e.g., `["Denoise"]`. See all options below.      |
+| `eco_mode`              | `boolean` | Optional     | Enable eco mode for faster parallel extraction. Default: `false`. |
 | `webhook_url`           | `string`     | Optional | Callback URL to receive async processing results.                                           |
 
-> **content-type:** multipart/form-data
+>**Note:** Either audio_file or audio_url must be provided.
+
+>**content-type:** multipart/form-data
 
 ---
 
@@ -110,7 +118,7 @@ Sample Output : instrumentals
 ### cURL
 
 ```bash
-curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
+curl -X POST "https://api.musicgpt.com/api/public/v2/Extraction" \
 -H "accept: application/json" \
 -H "Authorization: <api_key>" \
 -F "audio_file=@path_to_audio.mp3" \
@@ -125,28 +133,29 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Extraction" \
 import requests
 import json
 
-url = "https://api.musicgpt.com/api/public/v1/Extraction"
+url = "https://api.musicgpt.com/api/public/v2/Extraction"
+
 headers = {
-    "accept": "application/json",
-    "Authorization": "<api_key>"
+    "Authorization": "<API_KEY>"
 }
 
-files = {
-    "audio_file": open("path_to_audio.mp3", "rb")
-}
 data = {
-    "audio_url": "",
     "stems": json.dumps(["vocals", "drums"]),
     "preprocessing_options": json.dumps(["Denoise"]),
-    "webhook_url": "http://webhook.musicgpt.com"
+    "webhook_url": "https://example.com/my-webhook"
 }
 
-response = requests.post(url, headers=headers, data=data, files=files)
+# Option 1: audio_url
+data["audio_url"] = "<YOUR_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=data)
+
+# Option 2: File Upload
+# with open("song.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
 print(response.json())
 ```
-
-> 🔐 Replace `path_to_audio.mp3`, `api_key`, and `webhook_url` with actual values.
-
 ---
 
 ## Sample Response
@@ -169,20 +178,13 @@ print(response.json())
 
 ## Webhook Response
 
-### Success (200 OK)
-
 ```json
 {
   "success": true, 
   "conversion_type": "Extraction", 
   "task_id": "1683c35d-3990-4aac-98da-6847a6893893", 
   "conversion_id": "dded3f43-4715-4564-88e0-b66ebc00c466", 
-  "audio_url": "{\"vocals\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.mp3\", 
-                \"instrumental\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.mp3\", 
-                \"solo_guitar\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_solo_guitar.mp3\"}", 
-  "audio_url_wav": "{\"vocals\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.wav\", 
-                \"instrumental\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.wav\", 
-                \"solo_guitar\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_solo_guitar.wav\"}", 
+  "audio_url": "{\"vocals\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_vocals.mp3\", \"instrumental\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_instrumental.mp3\", \"solo_guitar\": \"https://lalals.s3.amazonaws.com/conversions/1683c35d-3990-4aac-98da-6847a6893893_solo_guitar.mp3\"}", 
   "conversion_cost": "5.55", 
   "conversion_duration": 136.83045351473922
 }
@@ -194,8 +196,6 @@ print(response.json())
 
 * **422 Unprocessable Entity**: When neither `audio_url` nor `audio_file` is provided.
 * **500 Internal Server Error**: A server-side error occurred.
-
-Download or stream individual stems from their respective URLs.
 
 ---
 

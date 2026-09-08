@@ -1,22 +1,21 @@
 ---
 title: 'Audio Mastering'
-openapi: 'POST /audio_mastering'
+openapi: 'POST /v1/audio_mastering'
 ---
 
 Master your audio files professionally using a reference track.
 
-**Audio Mastering** uses intelligent processing to match the sonic quality of your track to a reference file — perfect for music production, podcasts, and post-production work.
+**Audio Mastering** uses intelligent processing to match the sonic quality of your track to a reference file, perfect for music production, podcasts, and post-production work.
 
-- 🎛️ Match tone, loudness, and clarity
-- 🎵 Supports formats like MP3, WAV, FLAC, and more
-- 🚀 Quick, accurate mastering with webhook support
+- Match tone, loudness, and clarity
+- Quick, accurate mastering with webhook support
 
 ---
 
 ## Endpoint
 
 ```http
-POST /audio_mastering
+POST /v1/audio_mastering
 ```
 
 Use this endpoint to master an audio file based on a reference track.
@@ -43,16 +42,16 @@ Visit the [Audio Mastering Endpoint Explorer](/api-documentation/endpoint/audio_
 
 | Parameter              | Type    | Required | Description                                                                 |
 |------------------------|---------|----------|-----------------------------------------------------------------------------|
-| `audio_path`           | String  | Yes      | URL path of the input audio file to be mastered                            |
-| `conversion_id`        | String  | Yes      | Unique identifier for this conversion request                              |
-| `reference_audio_path` | String  | Yes      | URL path of the reference audio file to match                              |
+| `audio_file`  | `File` | Optional     | Upload the audio file directly. Required if `audio_url` is not provided.  |
+| `reference_audio_file`  | `File` | Optional     | rReference audio file.  |
+| `audio_url`   | `String`     | Optional     | URL to the audio file. |
+| `reference_audio_url` | String  | Optional      | URL path of the reference audio file to match.                            |
 | `output_extension`     | String  | Optional | Desired output format (`mp3`, `wav`, `flac`, `ogg`, `aac`, `webm`)          |
-| `audio_duration`       | Float   | Yes      | Duration of input audio in seconds (for credit calculation)                |
 | `webhook_url`          | String  | Optional | URL to receive callback notification when processing completes             |
-| `user_id`              | String  | Optional | User ID for tracking (from authentication token)                           |
 
-> **content-type:** multipart/form-data
-  
+>**Note:** Either audio_file or audio_url must be provided.
+
+>**content-type:** multipart/form-data  
 ---
 
 ## Sample Request
@@ -62,30 +61,30 @@ Visit the [Audio Mastering Endpoint Explorer](/api-documentation/endpoint/audio_
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/audio_mastering"
-headers = {"Authorization": "<<<api key>>>"}
 
-# Option 1: Using URLs
-payload = {
-    "audio_url": "https://example.com/input_audio.mp3",
-    "reference_audio_url": "https://example.com/reference_track.wav",
-    "output_extension": "wav",
-    "webhook_url": "http://your-webhook-url.com/callback"
+headers = {
+    "Authorization": "<API_KEY>"
 }
-response = requests.post(url, headers=headers, data=payload)
-print(response.json())
 
-# Option 2: Upload files
-# with open("input.mp3", "rb") as input_file, open("ref.wav", "rb") as ref_file:
+data = {
+    "output_extension": "wav",
+    "webhook_url": "https://example.com/my-webhook"
+}
+
+# Option 1: audio URLs
+data["audio_url"] = "<YOUR_AUDIO_URL>"
+data["reference_audio_url"] = "<YOUR_REFERENCE_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=data)
+
+# Option 2: File Upload
+# with open("song.mp3", "rb") as audio, open("reference.mp3", "rb") as reference:
 #     files = {
-#         "audio_file": input_file,
-#         "reference_audio_file": ref_file
+#         "audio_file": audio,
+#         "reference_audio_file": reference
 #     }
-#     data = {
-#         "output_extension": "wav",
-#         "webhook_url": "http://your-webhook-url.com/callback"
-#     }
-#     response = requests.post(url, headers=headers, files=files, data=data)
-#     print(response.json())
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+print(response.json())
 ```
 
 ---
@@ -100,7 +99,8 @@ print(response.json())
   "conversion_id": "user_master_12345",
   "credit_estimate": 0.02,
   "eta": 120,
-  "message": "Mastering request accepted"
+  "message": "Mastering request accepted",
+  "status": "IN_QUEUE"
 }
 ```
 
@@ -108,19 +108,17 @@ print(response.json())
 
 ## Webhook Response
 
-If a `webhook_url` is provided, you will receive the following once processing completes:
-
 ```json
 {
   "success": true,
+  "conversion_type": "Audio Mastering",
   "task_id": "0d12ef34-5678-4abc-9123-456def7890ab",
-  "conversion_id": "user_master_12345",
-  "conversion_path": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-mastered.mp3",
-  "credit_cost": 0.02
+  "conversion_id": "de7b2225-9a75-4315-b761-6dcc4357a8de",
+  "output_file": "https://musicgpt.s3.us-east-1.amazonaws.com/conversions/sample-mastered.mp3",
+  "message": "Audio Mastering Completed"
+
 }
 ```
-
-> 📂 If no webhook is provided, you can fetch the final mastered audio manually later using the `conversion_id`.
 
 ---
 

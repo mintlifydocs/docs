@@ -1,16 +1,16 @@
 ---
 title: Deecho
-openapi: 'POST /deecho'
+openapi: 'POST /v1/deecho'
 ---
 Remove echo from input audio with optional webhook support for async updates.
 
 ## Endpoint
 
 ```http
-POST /deecho
+POST /v1/deecho
 ```
 
-This endpoint processes an audio file to reduce or eliminate echo effects. You can specify a `webhook_url` to receive a callback when processing completes.
+This endpoint processes an audio file to reduce or eliminate echo effects.
 
 ---
 
@@ -19,11 +19,12 @@ This endpoint processes an audio file to reduce or eliminate echo effects. You c
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
 | `audio_url`      | `String`     | Optional | The URL of an audio file to remove echo from. Either `audio_url` or `audio_file` must be provided. |
-| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`     | `File` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
 | `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
-> 💡 **Note:** You must provide either `audio_url` or `audio_file` — not both as `None`.
 
-> **content-type:** multipart/form-data
+>**Note:** Either audio_file or audio_url must be provided.
+
+>**content-type:** multipart/form-data
 
 
 
@@ -41,8 +42,6 @@ Listen to a real sample output:
 
 Visit the [Deecho Endpoint Explorer](/api-documentation/endpoint/deecho) to try your own text samples.
 
-> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
-
 ---
 
 ## Sample Request
@@ -50,11 +49,10 @@ Visit the [Deecho Endpoint Explorer](/api-documentation/endpoint/deecho) to try 
 ### cURL
 
 ```bash
-curl -X POST "https://api.musicgpt.com/api/public/v1/Deecho" \
--H "accept: application/json" \
--H "Authorization: <api_key>" \
--F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
--F "webhook_url=http://webhook.musicgpt.com"
+curl -X POST "https://api.musicgpt.com/api/public/v1/deecho" \
+  -H "Authorization: <API_KEY>" \
+  -F "audio_url=<YOUR_AUDIO_URL>" \
+  -F "webhook_url=https://example.com/my-webhook"
 ```
 
 ### Python
@@ -63,29 +61,27 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Deecho" \
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/deecho"
+
 headers = {
-    "Authorization": "<<<api key>>>"
+    "Authorization": "<API_KEY>"
 }
 
-# Option 1: URL
-payload = {
-    "audio_url": "https://example.com/audio.m4a",
-    "webhook_url": ""
+data = {
+    "webhook_url": "https://example.com/my-webhook"
 }
-response = requests.post(url, headers=headers, data=payload)
-print(response.json())
+
+# Option 1: audio_url
+data["audio_url"] = "<YOUR_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=data)
 
 # Option 2: File Upload
-# payload = {
-#     "webhook_url": "https://www.test.requestcatcher.com/test"
-# }
-# with open("audio.m4a", "rb") as f:
+# with open("song.mp3", "rb") as f:
 #     files = {"audio_file": f}
-#     response = requests.post(url, headers=headers, data=payload, files=files)
-# print(response.json())
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+print(response.json())
 ```
 
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
@@ -108,8 +104,6 @@ print(response.json())
 ---
 ## Webhook Response
 
-### Success (200 OK)
-
 ```json
 {
   "success": true, 
@@ -118,14 +112,14 @@ print(response.json())
   "conversion_id": "e53b1bb5-381c-4e6f-844d-6a604002483c", 
   "audio_path": "files/8fd19e25-88c2-49e9-9641-7214cbe99a4f.wav", 
   "no_echo": "https://lalals.s3.amazonaws.com/conversions/938a071a-a5f5-40df-8eeb-972edcff26c4_noecho.mp3", 
-  "no_echo_wav": "https://lalals.s3.amazonaws.com/conversions/938a071a-a5f5-40df-8eeb-972edcff26c4_noecho.wav", 
+  "no_echo_wav": "", 
   "echo": "https://lalals.s3.amazonaws.com/conversions/938a071a-a5f5-40df-8eeb-972edcff26c4_echo.mp3", 
-  "echo_wav": "https://lalals.s3.amazonaws.com/conversions/938a071a-a5f5-40df-8eeb-972edcff26c4_echo.wav", 
   "message": "de_echo conversion Completed", 
   "conversion_duration": 136.82721088435375, 
   "conversion_cost": "0.48"
 }
 ```
+
 
 ---
 
