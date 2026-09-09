@@ -20,10 +20,10 @@ This endpoint processes an image (uploaded or via URL) to generate a song. The i
 
 | Parameter           | Type         | Required | Description                                                                                       |
 | ------------------- | ------------ | -------- | ------------------------------------------------------------------------------------------------- |
-| `image_file`        | `UploadFile` | Optional | Upload the image to analyze. Required if `image_url` is not provided.                             |
-| `image_url`         | `String`     | Optional | Public or S3 URL to the input image. Required if `image_file` is not provided.                    |
-| `prompt`            | `String`     | Optional | Additional text to guide the song generation (max 300 characters).                                 |
-| `lyrics`            | `String`     | Optional | Custom lyrics to include in the generated audio (max 3000 characters).                             |
+| `image_file`        | `File` | Optional | Upload the image to analyze. Required if `image_url` is not provided.                             |
+| `image_url`         | `String`     | Optional | URL to the image file. Required if `image_file` is not provided.                    |
+| `prompt`            | `String`     | Optional | Additional text to guide the song generation (max 1000 characters).                                 |
+| `lyrics`            | `String`     | Optional | Custom lyrics to include in the generated audio (max 5000 characters).                             |
 | `negative_tags`     | `String`     | Optional | Tags or themes to avoid in the song.                                                              |
 | `make_instrumental` | `Boolean`    | Optional | If true, generates an instrumental version. Defaults to false.                                     |
 | `vocal_only`        | `Boolean`    | Optional | If true, generates a vocal-only version. Defaults to false.                                        |
@@ -32,9 +32,9 @@ This endpoint processes an image (uploaded or via URL) to generate a song. The i
 | `webhook_url`       | `String`     | Optional | Callback URL for async result delivery.                                                           |
 | `voice_id`          | `String`     | Optional | Voice ID for converting generated audio. Cannot be used with `vocal_only` mode.                   |
 
-> 💡 **Note:** You must provide either `audio_file` or `audio_url` — at least one is required.
+>**Note:** Either image_file or image_url must be provided.
 
-> **content-type:** multipart/form-data
+>**content-type:** multipart/form-data
 
 
 ---
@@ -83,9 +83,11 @@ data = {
 }
 
 # Option 1: image_url
-files = {}
 data["image_url"] = "https://mybucket.s3.amazonaws.com/image.png"
-response = requests.post(url, headers=headers, data=data, files=files)
+# This endpoint expects multipart/form-data, so send the fields as form parts
+response = requests.post(
+    url, headers=headers, files={k: (None, str(v)) for k, v in data.items()}
+)
 
 # Option 2: File Upload
 # with open("image.png", "rb") as f:
@@ -94,8 +96,6 @@ response = requests.post(url, headers=headers, data=data, files=files)
 
 print(response.json())
 ```
-
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
@@ -133,7 +133,7 @@ Once the generation is complete, **webhooks** will be triggered to deliver the f
 
 ## Common Errors
 
-* **422 Unprocessable Entity**: Missing required fields like `prompt`, `replace_start_at`, or `replace_end_at`, or neither `audio_file` nor `audio_url` provided.
+* **422 Unprocessable Entity**: Neither `image_file` nor `image_url` provided.
 * **500 Internal Server Error**: An unexpected error occurred during processing.
 
 ---

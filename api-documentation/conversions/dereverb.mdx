@@ -21,13 +21,13 @@ This endpoint removes reverberation (echo) from an uploaded or linked audio file
 
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
-| `audio_url`      | `String`     | Optional | The URL of an audio file to clean. Either `audio_url` or `audio_file` must be provided. |
-| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `audio_url`      | `String`     | Optional | The URL of an audio file. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`     | `File` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
 | `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
 
-> 💡 **Note:** Either `audio_url` or `audio_file` must be provided — one is required.
+>**Note:** Either audio_file or audio_url must be provided.
 
-> **content-type:** multipart/form-data
+>**content-type:** multipart/form-data
 
 
 ---
@@ -44,8 +44,6 @@ Listen to a real sample output:
 
 Visit the [Dereverb Endpoint Explorer](/api-documentation/endpoint/dereverb) to try your own text samples.
 
-> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
-
 ---
 
 ## Sample Request
@@ -53,11 +51,10 @@ Visit the [Dereverb Endpoint Explorer](/api-documentation/endpoint/dereverb) to 
 ### cURL
 
 ```bash
-curl -X POST "https://api.musicgpt.com/api/public/v1/Dereverb" \
--H "accept: application/json" \
--H "Authorization: <api_key>" \
--F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
--F "webhook_url=http://webhook.musicgpt.com"
+curl -X POST "https://api.musicgpt.com/api/public/v1/dereverb" \
+  -H "Authorization: <API_KEY>" \
+  -F "audio_url=<YOUR_AUDIO_URL>" \
+  -F "webhook_url=https://example.com/my-webhook"
 ```
 
 ### Python
@@ -66,29 +63,26 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Dereverb" \
 import requests
 
 url = "https://api.musicgpt.com/api/public/v1/dereverb"
+
 headers = {
-    "Authorization": "<<<api key>>>"
+    "Authorization": "<API_KEY>"
 }
 
-# Option 1: URL
-payload = {
-    "audio_url": "https://example.com/audio.m4a",
-    "webhook_url": ""
+data = {
+    "webhook_url": "https://example.com/my-webhook"
 }
-response = requests.post(url, headers=headers, data=payload)
-print(response.json())
+
+# Option 1: audio_url
+data["audio_url"] = "<YOUR_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=data)
 
 # Option 2: File Upload
-# payload = {
-#     "webhook_url": "https://www.test.requestcatcher.com/test"
-# }
-# with open("audio.m4a", "rb") as f:
+# with open("song.mp3", "rb") as f:
 #     files = {"audio_file": f}
-#     response = requests.post(url, headers=headers, data=payload, files=files)
-# print(response.json())
-```
+#     response = requests.post(url, headers=headers, data=data, files=files)
 
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
+print(response.json())
+```
 
 ---
 
@@ -120,10 +114,9 @@ print(response.json())
   "task_id": "e99d00bb-2ddf-4279-a15e-6e22801ee575", 
   "conversion_id": "fbcf0c40-a33d-40aa-8c1d-7bb6f9df0b0f", 
   "audio_path": "files/4efbdeff-48a2-401c-a9e6-8a2ffe465487.wav", 
-  "noreverb": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.mp3", 
-  "noreverb_wav": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.wav", 
-  "reverb": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_noreverb.mp3", 
-  "reverb_wav": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_noreverb.wav", 
+  "noreverb": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_noreverb.mp3", 
+  "reverb": "https://lalals.s3.amazonaws.com/conversions/e99d00bb-2ddf-4279-a15e-6e22801ee575_reverb.mp3", 
+  "reverb_wav": "", 
   "message": "de_reverb conversion Completed", 
   "conversion_duration": 136.83045351473922, 
   "conversion_cost": "0.48"
