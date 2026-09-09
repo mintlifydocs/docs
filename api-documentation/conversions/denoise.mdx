@@ -1,6 +1,6 @@
 ---
 title: 'Denoise'
-openapi: 'POST /denoise'
+openapi: 'POST /v1/denoise'
 ---
 
 Remove background noise from an input audio file with optional webhook callback for asynchronous updates.
@@ -10,7 +10,7 @@ Remove background noise from an input audio file with optional webhook callback 
 ## Endpoint
 
 ```http
-POST /denoise
+POST /v1/denoise
 ```
 
 This endpoint removes noise from an uploaded or linked audio file. A `webhook_url` can be provided for asynchronous task status updates.
@@ -30,8 +30,6 @@ Listen to a real sample output:
 
 Visit the [Denoise Endpoint Explorer](/api-documentation/endpoint/denoise) to try your own text samples.
 
-> 💡 Tip: Set a `webhook_url` to receive results automatically when your audio is ready.
-
 ---
 
 ## Request Parameters
@@ -39,11 +37,12 @@ Visit the [Denoise Endpoint Explorer](/api-documentation/endpoint/denoise) to tr
 | Parameter        | Type         | Required | Description                                                                 |
 |------------------|--------------|----------|-----------------------------------------------------------------------------|
 | `audio_url`      | `String`     | Optional | The URL of an audio file to clean. Either `audio_url` or `audio_file` must be provided. |
-| `audio_file`     | `UploadFile` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
+| `audio_file`     | `File` | Optional | Upload the audio file directly. Either `audio_url` or `audio_file` must be provided. |
 | `webhook_url`    | `String`     | Optional | Callback URL for async response.                                           |
-> 💡 **Note:** Either `audio_url` or `audio_file` must be provided — one is required.
 
-> **content-type:** multipart/form-data
+>**Note:** Either audio_file or audio_url must be provided.
+
+>**content-type:** multipart/form-data
 
 
 ---
@@ -53,11 +52,10 @@ Visit the [Denoise Endpoint Explorer](/api-documentation/endpoint/denoise) to tr
 ### cURL
 
 ```bash
-curl -X POST "https://api.musicgpt.com/api/public/v1/Denoise" \
--H "accept: application/json" \
--H "Authorization: <api_key>" \
--F "audio_url=https://www.youtube.com/watch?v=jGflUbPQfW8" \
--F "webhook_url=http://webhook.musicgpt.com"
+curl -X POST "https://api.musicgpt.com/api/public/v1/denoise" \
+  -H "Authorization: <API_KEY>" \
+  -F "audio_url=<YOUR_AUDIO_URL>" \
+  -F "webhook_url=https://example.com/my-webhook"
 ```
 
 ### Python
@@ -65,31 +63,28 @@ curl -X POST "https://api.musicgpt.com/api/public/v1/Denoise" \
 ```python
 import requests
 
-url = "https://api.musicgpt.com/api/public/v1/deecho"
+url = "https://api.musicgpt.com/api/public/v1/denoise"
+
 headers = {
-    "Authorization": "<<<api key>>>"
+    "Authorization": "<API_KEY>"
 }
 
-# Option 1: URL
-payload = {
-    "audio_url": "https://youtube.com/example",
-    "webhook_url": ""
+data = {
+    "webhook_url": "https://example.com/my-webhook"
 }
-response = requests.post(url, headers=headers, data=payload)
-print(response.json())
+
+# Option 1: audio_url
+data["audio_url"] = "<YOUR_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=data)
 
 # Option 2: File Upload
-# payload = {
-#     "webhook_url": "https://www.test.requestcatcher.com/test"
-# }
-# with open("audio.m4a", "rb") as f:
+# with open("song.mp3", "rb") as f:
 #     files = {"audio_file": f}
-#     response = requests.post(url, headers=headers, data=payload, files=files)
-# print(response.json())
+#     response = requests.post(url, headers=headers, data=data, files=files)
+
+print(response.json())
 
 ```
-
-> 🔐 Replace `{path_to_your_audio_file}`, `api_key`, and `webhook_url` before executing.
 
 ---
 
@@ -122,9 +117,8 @@ print(response.json())
   "conversion_id": "c3f08613-998d-4ef9-80a9-9c05891e5237", 
   "audio_path": "files/2e7c373c-aef9-4dda-8e70-2ff50ad18169.wav", 
   "no_noise": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.mp3", 
-  "no_noise_wav": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_nonoise.wav", 
   "noise": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_noise.mp3", 
-  "noise_wav": "https://lalals.s3.amazonaws.com/conversions/01e88c6d-5006-4ad9-b7c4-80360ca37860_noise.wav", 
+  "noise_wav": "", 
   "message": "de_noising conversion Completed", 
   "conversion_duration": 136.82721088435375, 
   "conversion_cost": "0.48"
