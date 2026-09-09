@@ -45,10 +45,10 @@ import requests
 
 url = "https://api.musicgpt.com/data"
 headers = {
-    "Authorization": "Bearer <your_api_key>"
+    "Authorization": "<your_api_key>"
 }
 
-response = requests.get(url, headers=headers)
+response = requests.get(url, headers=headers, timeout=30)
 
 if response.status_code == 200:
     print("Request successful:", response.json())

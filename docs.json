@@ -1,12 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Musicgpt API Documentation",
+  "name": "MusicGPT API Documentation",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
     "dark": "#15803D"
   },
+ 
   "favicon": "logo/MusicGPT Icon.svg",
   "navigation": {
     "tabs": [
@@ -44,6 +45,7 @@
             "group": "Keep in mind",
             "pages": [
               "api-documentation/utilities/error",
+              "api-documentation/utilities/prompt_guideline",
               "api-documentation/utilities/ratelimits",
               "api-documentation/utilities/finalnotes"
             ]
@@ -74,6 +76,8 @@
               "api-documentation/conversions/fileconvert",
               "api-documentation/conversions/audiomastering",
               "api-documentation/conversions/imagetosong"
+
+  
             ]
           },
           {
@@ -88,11 +92,11 @@
             "pages": [
               "api-documentation/endpoint/getById",
               "api-documentation/endpoint/searchVoices",
-              "api-documentation/endpoint/getAllVoices",
-              "api-documentation/endpoint/getByStreaming"
+              "api-documentation/endpoint/getAllVoices"
 
             ]
           },
+         
           {
             "group": "Conversion Endpoints",
             "pages": [
@@ -119,6 +123,7 @@
               "api-documentation/endpoint/sing_over_instrumental",
               "api-documentation/endpoint/lyrics_generator",
               "api-documentation/endpoint/imagetosong"
+              
             ]
           }
         ]

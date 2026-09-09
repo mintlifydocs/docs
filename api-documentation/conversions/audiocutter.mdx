@@ -3,8 +3,6 @@ title: 'Audio Cutter'
 openapi: 'POST /v1/audio_cutter'
 ---
 
-Trim your audio files with precision using AI.
-
 **Audio Cutter** allows you to select specific sections of audio recordings, making it perfect for creating highlights, clips, ringtones, and more.
 
 - Easily extract the best parts of any audio
@@ -38,21 +36,21 @@ Listen to the trimmed audio:
 
 Visit the [Audio Cutter Endpoint Explorer](/api-documentation/endpoint/audio_cutter) to cut and download trimmed audio segments instantly.
 
-> ✂️ Try trimming different parts to see how accurate the cut is!
-
 ---
 
 ## Request Parameters
 
 | Parameter            | Type    | Required | Description                                                   |
 |----------------------|---------|----------|---------------------------------------------------------------|
-| `audio_path`         | String  | Yes      | The S3 path of the input audio file to trim                   |
-| `conversion_id`      | String  | Yes      | A unique identifier for the conversion request               |
+| `audio_file`   | `File` | Optional | Upload the audio file. Required if `audio_url` is not provided.        |
+| `audio_url`    | `String`     | Optional | URL to the audio file.   |
 | `start_time`         | Float   | Yes      | The start time (in milliseconds) of the audio to trim              |
 | `end_time`           | Float   | Yes      | The end time (in milliseconds) of the audio to trim                |
 | `output_extension`   | String  | Yes      | Output format: mp3, wav, flac, ogg, aac, or webm              |
 
-> **content-type:** multipart/form-data
+>**Note:** Either audio_file or audio_url must be provided.
+
+>**content-type:** multipart/form-data
 
 ---
 
@@ -65,25 +63,21 @@ import requests
 url = "https://api.musicgpt.com/api/public/v1/audio_cutter"
 headers = {"Authorization": "<API_KEY>"}
 
-# Option 1: Using audio URL
 payload = {
-    "audio_url": "https://example.com/input_audio.mp3",
     "start_time": 10500,
     "end_time": 45000,
     "output_extension": "mp3"
 }
-response = requests.post(url, headers=headers, data=payload)
-print(response.json())
 
-# Option 2: Upload local audio file
-payload = {
-    "start_time": 5000,
-    "end_time": 20000,
-    "output_extension": "wav"
-}
-with open("input_audio.mp3", "rb") as f:
-    files = {"audio_file": f}
-    response = requests.post(url, headers=headers, data=payload, files=files)
+# Option 1: audio_url
+payload["audio_url"] = "<YOUR_AUDIO_URL>"
+response = requests.post(url, headers=headers, data=payload)
+
+# Option 2: File Upload
+# with open("input_audio.mp3", "rb") as f:
+#     files = {"audio_file": f}
+#     response = requests.post(url, headers=headers, data=payload, files=files)
+
 print(response.json())
 ```
 
@@ -98,7 +92,7 @@ print(response.json())
   "task_id":"b0ac9d46-64d7-4843-af48-a0b6effe3666",
   "conversion_id":"fe19945b-d466-4183-b559-5d264bddd492",
   "eta":66,
-  "credit_estimate":25.0,
+  "credit_estimate":0.015,
   "message":"Message published to queue",
   "status":"IN_QUEUE"
 }
@@ -119,8 +113,6 @@ When audio cutter conversion completes, your webhook will receive:
   "message": "Audio cutter completed"
 } 
 ```
-
-> 📂 The `conversion_path` field contains the direct link to download the trimmed audio.
 
 ---
 

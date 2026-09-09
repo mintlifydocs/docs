@@ -2,7 +2,7 @@
 title: The First Time 
 ---
 
-Welcome to your **first experience** with the Musicgpt API — where creativity meets technology. Browse the wide range of features available for you through our API. 
+Welcome to your **first experience** with the Musicgpt API, where creativity meets technology. Browse the wide range of features available for you through our API. 
 
 ---
 ## Integrate in 5 minutes with 5 steps:
@@ -89,7 +89,7 @@ curl -X 'POST' \
 -H 'Content-Type: application/json' \
 -d '{
   "music_style": "Song about my love to AI Music in Country Style",
-  "webhook_url": "http://webhook.yourwebsite.com"
+  "webhook_url": "https://webhook.yourwebsite.com"
 }'
 ```
 
@@ -100,6 +100,7 @@ curl -X 'POST' \
 
 To get notified when the music generation is complete, we recommend setting up a webhook. This allows you to receive the URL of the generated song directly.
 > 🔗 Set the `webhook_url` to an endpoint on your server — this is where Musicgpt will notify you once the generation is done.
+> Webhook receivers must use HTTPS; `http://` URLs are not accepted.
 
 > **Tip:** If you can’t use a webhook (e.g., code running on a user device), you can retrive the result through our helper endpoint [get conversion by id](/api-documentation/endpoint/getById) instead.
 
@@ -114,7 +115,7 @@ To get notified when the music generation is complete, we recommend setting up a
   "success": true,
   "task_id": "string",
   "conversion_id": "string",
-  "audio_url": "https://...", // signed AWS URL, valid for 1 day
+  "audio_url": "https://...",
   "conversion_cost": 1.0,
   "title": "string",
   "lyrics": "string",
@@ -122,6 +123,9 @@ To get notified when the music generation is complete, we recommend setting up a
   "music_style": "string"
 }
 ```
+
+`audio_url` is a signed AWS URL that is valid for 1 day. Download the file within that
+window, or fetch a fresh URL from [get conversion by id](/api-documentation/endpoint/getById).
 
 ---
 

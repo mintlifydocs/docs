@@ -5,8 +5,8 @@
     <p>To get the best results, follow these rules:</p>
     <ul>
       <li>Keep prompts descriptive and simple</li>
-      <li><strong>Prompt limit:</strong> 300 characters</li>
-      <li><strong>Lyrics limit:</strong> 3000 characters</li>
+      <li><strong>Prompt limit:</strong> 1000 characters</li>
+      <li><strong>Lyrics limit:</strong> 5000 characters</li>
     </ul>
 
     <p>You can describe song sections like this:</p>
@@ -44,35 +44,26 @@
 
   <p><strong>Example (Music AI):</strong></p>
   <ul>
-    <li><span>Pro Plan: &#36;0.03 per song</span></li>
+    <li><span>Pro Plan: &#36;0.035 per song</span></li>
     <li><span>Plus Plan: &#36;0.05 per song</span></li>
-    <li><span>Free Plan: &#36;0.495 per song</span></li>
+    <li><span>Pay as You Go: &#36;0.10 per song</span></li>
   </ul>
-<p>If you are on the Pro plan, you first pay a &#36;69 base charge and top up credits. Credits are then deducted at &#36;0.03 per song, whereas on the Free plan, each song deducts &#36;0.485 </p>
+<p>If you are on the Pro plan, you first pay a &#36;69 base charge and top up credits. Credits are then deducted at &#36;0.035 per song, whereas on Pay as You Go, each song deducts &#36;0.10 per song. </p>
 </Accordion>
 
 
-<Accordion title="Is Voice Cloning Possible?">
-  <p>
-    Voice cloning is not currently available via the API. Please try the Voice Cloning feature on our next platform,
-    [Lalals](https://lalals.com/voice-cloning).
-  </p>
-
-  <p>
-    Once you’ve created your custom voice, you can find your <strong>Voice ID</strong> at the end of url.
-    This Voice ID is private to your account and can be used in the <code>voice_id</code> parameter in API.
-  </p>
-
-  <p>
-    We are actively working on bringing voice cloning directly into the API soon.
-  </p>
-</Accordion>
-
+<Accordion title="Which Endpoints send WAV Files?"> <p> WAV files are currently sent only for the following endpoints: </p> <ul> <li>Music AI</li> <li>Remix</li> <li>Extend</li> <li>Inpaint</li> <li>Sing Over Instrumental</li> </ul> </Accordion>
 
 <Accordion title="How can I contact support?">
   <p>
     If you need help, please email us at <strong>api@musicgpt.com</strong> with a detailed description of your issue.
     If applicable, include relevant information such as your <code>task_id</code>, API request, or any error messages to help us investigate more quickly.
+  </p>
+
+  <p>
+    <strong>Before you send anything, redact your credentials.</strong> Remove the
+    <code>Authorization</code> header, API Keys, and any other sensitive data from requests,
+    responses, and logs. Support never needs your API Key to investigate an issue.
   </p>
 
   <p>
